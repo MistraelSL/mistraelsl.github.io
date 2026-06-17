@@ -1,11 +1,77 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
 <meta charset="utf-8">
-<title>Mistrael — каталог персонажей</title>
+<title>Mistrael — каталог</title>
+<style>
+    /* Базовые настройки страницы */
+    body {
+        margin: 0;
+        background-color: #0a0a0a; /* Очень тёмный фон */
+        color: #eee;
+        font-family: sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow-x: hidden;
+    }
+
+    /* Магия фонарика */
+    #flashlight {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none; /* Чтоб клики проходили сквозь фонарь */
+        background: radial-gradient(
+            600px circle at var(--x, 50%) var(--y, 50%), 
+            rgba(255, 255, 255, 0.06), /* Яркость центра */
+            transparent 40%
+        );
+        z-index: 1;
+    }
+
+    /* Наша стеклянная кнопка */
+    .glass-btn {
+        position: relative;
+        z-index: 2; /* Кнопка поверх фонарика */
+        padding: 15px 40px;
+        font-size: 18px;
+        color: white;
+        background: rgba(255, 255, 255, 0.03); /* Чуть прозрачный белый */
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        backdrop-filter: blur(10px); /* Эффект стекла */
+        cursor: pointer;
+        transition: all 0.3s ease; /* Плавность анимации */
+    }
+
+    /* Анимация при наведении мыши */
+    .glass-btn:hover {
+        transform: translateY(-5px); /* Поднимается вверх на 5 пикселей */
+        background: rgba(255, 255, 255, 0.08); /* Становится светлее */
+        border-color: rgba(255, 255, 255, 0.3);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); /* Падает тень */
+    }
+</style>
 </head>
-<body style="background:#111; color:#eee; font-family:sans-serif; text-align:center; padding-top:100px;">
-<h1>Mistrael</h1>
-<p>Каталог персонажей. Скоро тут будет красиво.</p>
+<body>
+
+    <div id="flashlight"></div>
+
+    <h1>Mistrael</h1>
+    <div class="glass-btn">Я стеклянная кнопка</div>
+
+    <script>
+        /* Скрипт, который заставляет фонарик летать за мышью */
+        document.addEventListener('mousemove', function(e) {
+            document.documentElement.style.setProperty('--x', e.clientX + 'px');
+            document.documentElement.style.setProperty('--y', e.clientY + 'px');
+        });
+    </script>
+
 </body>
 </html>
