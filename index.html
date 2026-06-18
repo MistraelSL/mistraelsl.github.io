@@ -662,24 +662,40 @@
     }
 
     .fandom-bubble {
-        position: absolute;
-        border-radius: 50%;
-        background: radial-gradient(circle at 38% 32%, #fff, rgba(220,238,255,.85) 50%, rgba(180,215,255,.45) 80%, rgba(150,195,240,.12));
-        transform: translate(-50%, -50%);
-        transition: all .5s ease;
-        box-shadow:
-            0 0 30px rgba(220,240,255,.50),
-            0 0 60px rgba(180,215,255,.25),
-            0 0 100px rgba(160,200,255,.08);
-    }
+    position: absolute;
+    border-radius: 50%;
+    background: #111 center / cover no-repeat;
+    transform: translate(-50%, -50%);
+    transition: all .5s ease;
+    overflow: hidden;
+    border: 1px solid rgba(180, 225, 255, .25);
+    box-shadow:
+        0 0 20px rgba(180, 220, 255, .30),
+        0 0 50px rgba(150, 200, 255, .12);
+}
+/* стеклянное затемнение поверх неактивных */
+.fandom-bubble:not(.active)::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 35% 30%, rgba(200,230,255,.15), transparent 60%),
+        linear-gradient(135deg, rgba(10,20,30,.55), rgba(5,10,20,.70));
+    z-index: 1;
+    pointer-events: none;
+}
 
     .fandom-bubble.active {
-        background: #111 center / cover no-repeat;
-        box-shadow:
-            0 0 40px rgba(180,220,255,.45),
-            0 0 80px rgba(150,200,255,.18),
-            0 0 0 3px rgba(255,255,255,.18);
-    }
+    background: #111 center / cover no-repeat;
+    box-shadow:
+        0 0 30px rgba(100, 220, 235, .6),
+        0 0 60px rgba(80, 200, 230, .35),
+        0 0 100px rgba(60, 190, 225, .20),
+        0 0 160px rgba(50, 180, 220, .10),
+        0 0 0 2px rgba(140, 230, 255, .30),
+        inset 0 0 20px rgba(80, 200, 240, .15);
+}
     .fandom-bubble.active::after {
         content: "";
         position: absolute;
@@ -702,7 +718,58 @@
         opacity: .65;
         pointer-events: none;
     }
-   
+
+   /* орбитальные кольца вокруг активного пузыря */
+.orbit-system {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: -1;
+}
+.orbit-ring {
+    position: absolute;
+    top: 50%; left: 50%;
+    border-radius: 50%;
+    border: 1px solid rgba(160, 220, 255, .15);
+    transform: translate(-50%, -50%);
+}
+.orbit-ring:nth-child(1) {
+    width: 260px; height: 260px;
+    border-color: rgba(160, 220, 255, .18);
+    animation: orbitSpin 30s linear infinite;
+}
+.orbit-ring:nth-child(2) {
+    width: 340px; height: 340px;
+    border-color: rgba(140, 210, 255, .12);
+    animation: orbitSpin 45s linear infinite reverse;
+}
+.orbit-ring:nth-child(3) {
+    width: 420px; height: 420px;
+    border-color: rgba(120, 200, 255, .07);
+    animation: orbitSpin 60s linear infinite;
+}
+/* точки-узелки на кольцах */
+.orbit-dot {
+    position: absolute;
+    width: 5px; height: 5px;
+    background: rgba(180, 230, 255, .6);
+    border-radius: 50%;
+    box-shadow: 0 0 6px rgba(160, 220, 255, .5);
+}
+.orbit-ring:nth-child(1) .orbit-dot:nth-child(1) { top: 0; left: 50%; transform: translate(-50%, -50%); }
+.orbit-ring:nth-child(1) .orbit-dot:nth-child(2) { bottom: 0; left: 50%; transform: translate(-50%, 50%); }
+.orbit-ring:nth-child(1) .orbit-dot:nth-child(3) { top: 50%; right: 0; transform: translate(50%, -50%); }
+.orbit-ring:nth-child(2) .orbit-dot:nth-child(1) { top: 15%; left: 3%; transform: translate(-50%, -50%); }
+.orbit-ring:nth-child(2) .orbit-dot:nth-child(2) { bottom: 10%; right: 8%; transform: translate(50%, 50%); }
+.orbit-ring:nth-child(3) .orbit-dot:nth-child(1) { top: 8%; right: 15%; transform: translate(50%, -50%); }
+.orbit-ring:nth-child(3) .orbit-dot:nth-child(2) { bottom: 20%; left: 5%; transform: translate(-50%, 50%); }
+
+@keyframes orbitSpin {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
     .anchor-spacer { min-height: 20vh; }
 
         @media (max-width: 900px) {
@@ -1094,10 +1161,26 @@
                 bubble.style.height  = size + 'px';
                 bubble.style.opacity = alpha;
 
-                if (dist === 0) {
-                    bubble.style.backgroundImage = 'url(' + f.img + ')';
+                bubble.style.backgroundImage = 'url(' + f.img + ')';
                 }
 
+               if (dist === 0) {
+               var orbitSystem = document.createElement('div');
+               orbitSystem.className = 'orbit-system';
+               var rings = [3, 2, 2]; // точек на каждом кольце
+               for (var r = 0; r < 3; r++) {
+               var ring = document.createElement('div');
+               ring.className = 'orbit-ring';
+               for (var d = 0; d < rings[r]; d++) {
+               var dot = document.createElement('div');
+              dot.className = 'orbit-dot';
+             ring.appendChild(dot);
+        }
+        orbitSystem.appendChild(ring);
+    }
+    bubble.appendChild(orbitSystem);
+}
+           
                 wheel.appendChild(bubble);
             });
 
