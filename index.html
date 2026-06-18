@@ -14,48 +14,64 @@
         font-family: sans-serif;
     }
 
-    /* Контейнер карточки, даёт перспективу (3D-пространство) */
+    /* Контейнер — даёт перспективу */
     .card-wrapper {
         perspective: 1000px;
-        width: 300px; /* Ширина карточки */
-        height: 450px; /* Высота карточки */
+        width: 300px;
+        height: 450px;
     }
 
-    /* Сама карточка, которая будет крутиться */
+    /* Сама карточка — теперь это 3D-пространство */
     .hsr-card {
         width: 100%;
         height: 100%;
         position: relative;
-        border-radius: 12px;
-        transform-style: preserve-3d;
-        transition: transform 0.1s ease-out; /* Плавность возврата */
-        box-shadow: 0 20px 40px rgba(0,0,0,0.8);
-        border: 2px solid rgba(255, 255, 255, 0.2);
+        transform-style: preserve-3d; /* ВАЖНО: разрешает слоям отрываться друг от друга */
+        transition: transform 0.1s ease-out;
     }
 
-    /* Картинка Дэвида */
-    .hsr-card img {
+    /* Слой 1: Картинка Дэвида (лежит на дне) */
+    .card-image {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+        transform: translateZ(0px); /* Нулевая высота */
+    }
+
+    .card-image img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        border-radius: 10px;
     }
 
-    /* Тот самый стеклянный блик (Glare), бегающий за мышью */
+    /* Слой 2: Стеклянная рамка (ВИСИТ НАД КАРТИНКОЙ НА 50 ПИКСЕЛЕЙ) */
+    .card-glass {
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        right: -10px;
+        bottom: -10px;
+        border-radius: 16px;
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        transform: translateZ(50px); /* Вот она, 3D-глубина. Рамка выпирает на нас */
+        pointer-events: none;
+        box-shadow: inset 0 0 20px rgba(255,255,255,0.1), 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    /* Слой 3: Блик, который бегает по зависшему стеклу */
     .glare {
         position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        border-radius: 10px;
+        top: 0; left: 0; right: 0; bottom: 0;
+        border-radius: 14px;
         background: radial-gradient(
             circle at var(--mouseX) var(--mouseY), 
-            rgba(255, 255, 255, 0.4) 0%, 
-            rgba(255, 255, 255, 0) 60%
+            rgba(255, 255, 255, 0.6) 0%, 
+            rgba(255, 255, 255, 0) 50%
         );
-        mix-blend-mode: overlay; /* Эффект наложения света */
-        pointer-events: none; /* Чтоб не мешал мышке */
+        mix-blend-mode: overlay;
         opacity: 0;
         transition: opacity 0.3s;
     }
@@ -69,9 +85,17 @@
 
     <div class="card-wrapper">
         <div class="hsr-card" id="card">
-            <!-- ВПИШИ ИМЯ СВОЕГО ФАЙЛА НИЖЕ -->
-            <img src="david.png" alt="David">
-            <div class="glare" id="glare"></div>
+            
+            <!-- Нижний слой -->
+            <div class="card-image">
+                <img src="david.png" alt="David">
+            </div>
+
+            <!-- Верхний парящий слой (стекло + рамка + блик) -->
+            <div class="card-glass">
+                <div class="glare" id="glare"></div>
+            </div>
+
         </div>
     </div>
 
@@ -82,24 +106,23 @@
 
         wrapper.addEventListener('mousemove', (e) => {
             const rect = wrapper.getBoundingClientRect();
-            const x = e.clientX - rect.left; // Позиция мыши X внутри карточки
-            const y = e.clientY - rect.top;  // Позиция мыши Y внутри карточки
+            const x = e.clientX - rect.left; 
+            const y = e.clientY - rect.top;  
             
-            // Вычисляем угол наклона (макс 15 градусов)
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
+            
+            // Наклон карточки
             const rotateX = ((y - centerY) / centerY) * -15; 
             const rotateY = ((x - centerX) / centerX) * 15;
 
-            // Крутим карточку
             card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
             
-            // Двигаем блик
-            glare.style.setProperty('--mouseX', `${x}px`);
-            glare.style.setProperty('--mouseY', `${y}px`);
+            // Двигаем блик по стеклу
+            glare.style.setProperty('--mouseX', `${x + 10}px`);
+            glare.style.setProperty('--mouseY', `${y + 10}px`);
         });
 
-        // Возвращаем в нули, когда мышь уходит
         wrapper.addEventListener('mouseleave', () => {
             card.style.transform = `rotateX(0deg) rotateY(0deg)`;
         });
