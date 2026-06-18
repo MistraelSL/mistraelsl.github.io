@@ -694,41 +694,28 @@
             inset 0 0 30px rgba(60, 200, 240, .20);
     }
 
-    /* призматические лучи-осколки под активным */
-.fandom-bubble.active::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    top: 85%;
-    width: 500%;
-    height: 150%;
-    transform: translateX(-50%) perspective(250px) rotateX(55deg);
-    transform-origin: top center;
-    background: conic-gradient(
-        from 255deg at 50% 0%,
-        transparent 0deg,
-        rgba(255,40,120,.75) 1.2deg, rgba(255,40,120,.15) 3deg, transparent 4.5deg,
-        transparent 7deg,
-        rgba(210,50,255,.7) 8.2deg, rgba(210,50,255,.12) 10deg, transparent 11.5deg,
-        transparent 14.5deg,
-        rgba(60,130,255,.75) 15.7deg, rgba(60,130,255,.15) 17.5deg, transparent 19deg,
-        transparent 22deg,
-        rgba(30,220,240,.75) 23.2deg, rgba(30,220,240,.15) 25deg, transparent 26.5deg,
-        transparent 29.5deg,
-        rgba(60,255,160,.65) 30.7deg, rgba(60,255,160,.12) 32.5deg, transparent 34deg,
-        transparent 37deg,
-        rgba(250,250,50,.6) 38.2deg, rgba(250,250,50,.12) 40deg, transparent 41.5deg,
-        transparent 44.5deg,
-        rgba(255,130,30,.6) 45.7deg, rgba(255,130,30,.12) 47.5deg, transparent 49deg,
-        transparent 360deg
-    );
-    clip-path: polygon(44% 0%, 56% 0%, 100% 100%, 0% 100%);
-    filter: blur(2px);
-    opacity: .9;
-    pointer-events: none;
-    z-index: -1;
-}
+   .fandom-bubble.active::after { display: none; }
 
+   /* призматическое отражение — контейнер */
+.prism-glow {
+    position: absolute;
+    pointer-events: none;
+    z-index: 0;
+}
+/* луч */
+.prism-ray {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: top center;
+    border-radius: 0 0 2px 2px;
+}
+/* осколок-блик */
+.prism-spark {
+    position: absolute;
+    border-radius: 50%;
+}
+   
     /* --- ОРБИТАЛЬНЫЕ КОЛЬЦА --- */
     .orbit-system {
         position: absolute;
@@ -1130,7 +1117,7 @@
             var P1 = { x: cx, y: controlY };
             var P2 = { x: W,  y: edgeY };
 
-            wheel.querySelectorAll('.fandom-bubble').forEach(function (b) { b.remove(); });
+            wheel.querySelectorAll('.fandom-bubble, .prism-glow').forEach(function (b) { b.remove(); });
 
             FANDOMS.forEach(function (f, i) {
                 var offset = i - activeIndex;
@@ -1172,7 +1159,70 @@
                     bubble.appendChild(orbitSystem);
                 }
 
-                wheel.appendChild(bubble);
+                                if (dist === 0) {
+                    var prism = document.createElement('div');
+                    prism.className = 'prism-glow';
+                    prism.style.left = pos.x + 'px';
+                    prism.style.top = (pos.y + size * 0.44) + 'px';
+
+                    var rays = [
+                        { a:-40, c:'255,50,100',  w:2.5, h:95,  b:1.5, o:.9  },
+                        { a:-33, c:'255,70,170',  w:1.5, h:65,  b:1,   o:.7  },
+                        { a:-25, c:'190,50,255',  w:3,   h:135, b:2,   o:.85 },
+                        { a:-17, c:'120,70,255',  w:2,   h:105, b:1.5, o:.8  },
+                        { a:-9,  c:'55,130,255',  w:3,   h:160, b:2,   o:.9  },
+                        { a:-3,  c:'40,200,255',  w:2,   h:115, b:1,   o:.85 },
+                        { a:4,   c:'45,235,210',  w:2.5, h:145, b:2,   o:.85 },
+                        { a:11,  c:'70,255,140',  w:2,   h:95,  b:1.5, o:.75 },
+                        { a:19,  c:'170,255,55',  w:3,   h:125, b:2,   o:.8  },
+                        { a:27,  c:'255,215,35',  w:1.5, h:80,  b:1,   o:.7  },
+                        { a:34,  c:'255,145,35',  w:2.5, h:110, b:1.5, o:.85 },
+                        { a:41,  c:'255,75,45',   w:2,   h:70,  b:1,   o:.7  }
+                    ];
+
+                    rays.forEach(function(r) {
+                        var el = document.createElement('div');
+                        el.className = 'prism-ray';
+                        el.style.width = r.w + 'px';
+                        el.style.height = r.h + 'px';
+                        el.style.transform = 'rotate(' + r.a + 'deg)';
+                        el.style.background = 'linear-gradient(to bottom, rgba(' + r.c + ',' + r.o + ') 0%, rgba(' + r.c + ',.2) 45%, transparent 100%)';
+                        el.style.filter = 'blur(' + r.b + 'px)';
+                        el.style.boxShadow = '0 0 ' + (r.w + 3) + 'px rgba(' + r.c + ',.5)';
+                        prism.appendChild(el);
+                    });
+
+                    var sparks = [
+                        { a:-32, d:80,  c:'255,80,200',  s:5, o:.9  },
+                        { a:-18, d:120, c:'140,80,255',   s:4, o:.8  },
+                        { a:-7,  d:100, c:'60,160,255',   s:6, o:.9  },
+                        { a:6,   d:130, c:'50,240,210',   s:5, o:.85 },
+                        { a:16,  d:85,  c:'100,255,120',  s:4, o:.8  },
+                        { a:29,  d:105, c:'255,200,40',   s:5, o:.85 },
+                        { a:-25, d:55,  c:'180,50,255',   s:3, o:.75 },
+                        { a:38,  d:60,  c:'255,120,50',   s:3, o:.7  }
+                    ];
+
+                    sparks.forEach(function(s) {
+                        var el = document.createElement('div');
+                        el.className = 'prism-spark';
+                        var rad = s.a * Math.PI / 180;
+                        var sx = Math.sin(rad) * s.d;
+                        var sy = Math.cos(rad) * s.d;
+                        el.style.left = sx + 'px';
+                        el.style.top = sy + 'px';
+                        el.style.width = s.s + 'px';
+                        el.style.height = s.s + 'px';
+                        el.style.background = 'rgba(' + s.c + ',' + s.o + ')';
+                        el.style.boxShadow = '0 0 ' + (s.s * 2) + 'px rgba(' + s.c + ',.8), 0 0 ' + (s.s * 4) + 'px rgba(' + s.c + ',.4)';
+                        el.style.transform = 'translate(-50%, -50%)';
+                        prism.appendChild(el);
+                    });
+
+                    wheel.appendChild(prism);
+                }
+
+                wheel.appendChild(bubble);;
             });
 
             arcSvg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
