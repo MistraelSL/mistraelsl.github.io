@@ -39,7 +39,6 @@
         overflow-x: hidden;
     }
 
-       /* фоновое созвездие на canvas */
     #constellation {
         position: fixed;
         inset: 0;
@@ -47,18 +46,14 @@
         pointer-events: none;
         display: block;
     }
-    /* мерцание звёзд внутри панели */
     @keyframes twinkle {
         0%, 100% { opacity: 0; transform: scale(.5); filter: blur(1px); }
         50%      { opacity: 1; transform: scale(1.3); filter: blur(0px); box-shadow: 0 0 10px #fff, 0 0 18px #cfe9ff; }
     }
-   
 
-    /* скрыть системный курсор по всему сайту */
     * { cursor: none !important; user-select: none; -webkit-user-drag: none; }
     img { pointer-events: none; -webkit-user-drag: none; draggable: false; }
 
-    /* кастомный курсор */
     .cursor-glow {
         position: fixed;
         top: 0; left: 0;
@@ -87,15 +82,14 @@
         height: 230px;
     }
 
-    /* ===== НАВБАР ===== */
     .navbar {
-    display: block;
-    width: 100%;
-    height: 64px;
-    background: transparent;
-    border: none;
-    padding: 0;
-}
+        display: block;
+        width: 100%;
+        height: 64px;
+        background: transparent;
+        border: none;
+        padding: 0;
+    }
     .nav-button {
         color: rgba(255,255,255,.92);
         text-decoration: none;
@@ -109,7 +103,6 @@
         text-shadow: 0 0 14px rgba(180,225,255,.5);
     }
 
-    /* ===== ПРИВЕТСТВЕННЫЙ БЛОК ===== */
     .welcome-section {
         position: relative;
         width: 100%;
@@ -169,7 +162,6 @@
         pointer-events: none;
     }
 
-    /* тёмный градиент сверху и снизу фото */
     .welcome-image-layer::before {
         content: "";
         position: absolute;
@@ -183,7 +175,6 @@
             rgba(4,7,10,.92) 100%);
     }
 
-    /* звёзды внутри панели (поверх фото) */
     .panel-stars {
         position: absolute;
         inset: 0;
@@ -221,7 +212,6 @@
         pointer-events: none;
     }
 
-    /* переднее стекло — рамка-капсула */
     .welcome-front-glass {
         position: absolute;
         inset: 0;
@@ -242,7 +232,6 @@
         border-radius: 12px;
     }
 
-    /* радужный блик-перелив по стеклу */
     .welcome-front-glass::before {
         content: "";
         position: absolute;
@@ -265,7 +254,6 @@
     }
     .welcome-scene:hover .welcome-front-glass::before { opacity: 1; }
 
-    /* мягкий блик-свечение за курсором */
     .welcome-glare {
         position: absolute;
         inset: 0;
@@ -280,12 +268,10 @@
     }
     .welcome-scene:hover .welcome-glare { opacity: 1; }
 
-    /* плавность */
     .welcome-character { transition: transform .55s ease; }
     .welcome-copy { transition: top .5s ease, transform .5s ease; }
     .welcome-subtitle, .read-button { transition: opacity .35s ease; }
 
-    /* состояние "обо мне открыто" */
     .welcome-assembly.about-open .welcome-copy {
         transform: translateY(-50%) translateZ(40px) translateY(-90px);
     }
@@ -298,7 +284,6 @@
         transform: translateZ(60px) translateX(60%);
     }
 
-    /* ===== режим "Шейн" ===== */
     .welcome-assembly.shain-open .welcome-copy {
         opacity: 0;
         transform: translateY(-50%) translateZ(40px) translateX(60px);
@@ -370,7 +355,6 @@
         color: rgba(255,255,255,.88);
     }
 
-    /* стеклянная панель "обо мне" */
     .about-panel {
         position: absolute;
         z-index: 24;
@@ -412,7 +396,6 @@
         color: rgba(255,255,255,.88);
     }
 
-    /* ===== ТЕКСТ ===== */
     .welcome-copy {
         position: absolute;
         z-index: 25;
@@ -456,7 +439,7 @@
         -webkit-backdrop-filter: blur(6px);
         transition: transform .2s, background .2s, box-shadow .2s, border-color .2s, color .2s;
     }
-        .read-button:hover {
+    .read-button:hover {
         transform: translateY(-2px);
         color: #0a0e13;
         border-color: #cfe9ff;
@@ -464,7 +447,6 @@
         box-shadow: 0 0 28px rgba(190,235,255,.5);
     }
 
-    /* ===== СТЕКЛЯННЫЕ ПЛАШКИ "персонажи / темы" ===== */
     .welcome-tabs {
         position: absolute;
         z-index: 25;
@@ -476,7 +458,7 @@
         gap: 18px;
         transition: opacity .4s ease, transform .5s ease;
     }
-       .glass-tab {
+    .glass-tab {
         display: flex;
         align-items: center;
         gap: 16px;
@@ -495,7 +477,7 @@
         text-shadow: 0 0 3px rgba(0,0,0,.45), 0 0 14px rgba(0,0,0,.40);
         transition: border-color .25s, box-shadow .25s, transform .2s;
     }
-        .glass-tab-icon {
+    .glass-tab-icon {
         width: 65px;
         height: 65px;
         object-fit: contain;
@@ -518,7 +500,6 @@
             0 0 0 2px rgba(207,233,255,.85);
     }
 
-    /* плашки уезжают вправо и тают в обоих режимах */
     .welcome-assembly.about-open .welcome-tabs,
     .welcome-assembly.shain-open .welcome-tabs {
         opacity: 0;
@@ -526,8 +507,7 @@
         pointer-events: none;
     }
 
-    /* ===== ЗВЁЗДОЧКИ ВНИЗУ ===== */
-        .welcome-dots {
+    .welcome-dots {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -538,7 +518,7 @@
         position: relative;
         z-index: 1;
     }
-            .dot {
+    .dot {
         display: inline-block;
         color: #fff;
         line-height: 1;
@@ -560,7 +540,7 @@
         to   { transform: rotate(360deg); }
     }
 
-       /* ===== СЕКЦИЯ ФАНДОМОВ ===== */
+    /* ===== СЕКЦИЯ ФАНДОМОВ ===== */
     .fandom-section {
         position: relative;
         width: 100%;
@@ -661,41 +641,64 @@
         overflow: visible;
     }
 
+    /* --- ПУЗЫРИ --- */
     .fandom-bubble {
-    position: absolute;
-    border-radius: 50%;
-    background: #111 center / cover no-repeat;
-    transform: translate(-50%, -50%);
-    transition: all .5s ease;
-    overflow: hidden;
-    border: 1px solid rgba(180, 225, 255, .25);
-    box-shadow:
-        0 0 20px rgba(180, 220, 255, .30),
-        0 0 50px rgba(150, 200, 255, .12);
-}
-/* стеклянное затемнение поверх неактивных */
-.fandom-bubble:not(.active)::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    background:
-        radial-gradient(circle at 35% 30%, rgba(200,230,255,.15), transparent 60%),
-        linear-gradient(135deg, rgba(10,20,30,.55), rgba(5,10,20,.70));
-    z-index: 1;
-    pointer-events: none;
-}
+        position: absolute;
+        border-radius: 50%;
+        background: #111 center / cover no-repeat;
+        transform: translate(-50%, -50%);
+        transition: all .5s ease;
+        border: 1px solid rgba(180, 225, 255, .25);
+        box-shadow:
+            0 0 20px rgba(180, 220, 255, .30),
+            0 0 50px rgba(150, 200, 255, .12);
+    }
 
+    /* неактивные — обрезаем содержимое кругом */
+    .fandom-bubble:not(.active) {
+        overflow: hidden;
+    }
+
+    /* стеклянная дымка поверх неактивных */
+    .fandom-bubble:not(.active)::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background:
+            radial-gradient(circle at 30% 25%, rgba(180,220,255,.20) 0%, transparent 55%),
+            radial-gradient(circle at center, rgba(5,15,25,.30) 0%, rgba(5,15,25,.45) 100%);
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    /* стеклянный блик сверху на неактивных */
+    .fandom-bubble:not(.active)::after {
+        content: "";
+        position: absolute;
+        top: 4%; left: 15%; right: 15%;
+        height: 30%;
+        border-radius: 50%;
+        background: linear-gradient(to bottom, rgba(200,230,255,.18), transparent);
+        z-index: 2;
+        pointer-events: none;
+    }
+
+    /* активный пузырь — мощная бирюзовая аура */
     .fandom-bubble.active {
-    background: #111 center / cover no-repeat;
-    box-shadow:
-        0 0 30px rgba(100, 220, 235, .6),
-        0 0 60px rgba(80, 200, 230, .35),
-        0 0 100px rgba(60, 190, 225, .20),
-        0 0 160px rgba(50, 180, 220, .10),
-        0 0 0 2px rgba(140, 230, 255, .30),
-        inset 0 0 20px rgba(80, 200, 240, .15);
-}
+        background: #111 center / cover no-repeat;
+        border-color: rgba(100, 220, 240, .50);
+        box-shadow:
+            0 0 20px rgba(80, 210, 235, .70),
+            0 0 50px rgba(60, 200, 230, .50),
+            0 0 90px rgba(50, 190, 225, .35),
+            0 0 140px rgba(40, 180, 220, .20),
+            0 0 200px rgba(30, 170, 215, .10),
+            0 0 0 3px rgba(100, 220, 240, .35),
+            inset 0 0 30px rgba(60, 200, 240, .20);
+    }
+
+    /* радужный отсвет под активным */
     .fandom-bubble.active::after {
         content: "";
         position: absolute;
@@ -719,60 +722,60 @@
         pointer-events: none;
     }
 
-   /* орбитальные кольца вокруг активного пузыря */
-.orbit-system {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    z-index: -1;
-}
-.orbit-ring {
-    position: absolute;
-    top: 50%; left: 50%;
-    border-radius: 50%;
-    border: 1px solid rgba(160, 220, 255, .15);
-    transform: translate(-50%, -50%);
-}
-.orbit-ring:nth-child(1) {
-    width: 260px; height: 260px;
-    border-color: rgba(160, 220, 255, .18);
-    animation: orbitSpin 30s linear infinite;
-}
-.orbit-ring:nth-child(2) {
-    width: 340px; height: 340px;
-    border-color: rgba(140, 210, 255, .12);
-    animation: orbitSpin 45s linear infinite reverse;
-}
-.orbit-ring:nth-child(3) {
-    width: 420px; height: 420px;
-    border-color: rgba(120, 200, 255, .07);
-    animation: orbitSpin 60s linear infinite;
-}
-/* точки-узелки на кольцах */
-.orbit-dot {
-    position: absolute;
-    width: 5px; height: 5px;
-    background: rgba(180, 230, 255, .6);
-    border-radius: 50%;
-    box-shadow: 0 0 6px rgba(160, 220, 255, .5);
-}
-.orbit-ring:nth-child(1) .orbit-dot:nth-child(1) { top: 0; left: 50%; transform: translate(-50%, -50%); }
-.orbit-ring:nth-child(1) .orbit-dot:nth-child(2) { bottom: 0; left: 50%; transform: translate(-50%, 50%); }
-.orbit-ring:nth-child(1) .orbit-dot:nth-child(3) { top: 50%; right: 0; transform: translate(50%, -50%); }
-.orbit-ring:nth-child(2) .orbit-dot:nth-child(1) { top: 15%; left: 3%; transform: translate(-50%, -50%); }
-.orbit-ring:nth-child(2) .orbit-dot:nth-child(2) { bottom: 10%; right: 8%; transform: translate(50%, 50%); }
-.orbit-ring:nth-child(3) .orbit-dot:nth-child(1) { top: 8%; right: 15%; transform: translate(50%, -50%); }
-.orbit-ring:nth-child(3) .orbit-dot:nth-child(2) { bottom: 20%; left: 5%; transform: translate(-50%, 50%); }
+    /* --- ОРБИТАЛЬНЫЕ КОЛЬЦА --- */
+    .orbit-system {
+        position: absolute;
+        top: 50%; left: 50%;
+        width: 0; height: 0;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        z-index: 2;
+    }
+    .orbit-ring {
+        position: absolute;
+        top: 50%; left: 50%;
+        border-radius: 50%;
+        border: 1px solid rgba(160, 220, 255, .15);
+        transform: translate(-50%, -50%);
+    }
+    .orbit-ring:nth-child(1) {
+        width: 260px; height: 260px;
+        border-color: rgba(160, 220, 255, .18);
+        animation: orbitSpin 30s linear infinite;
+    }
+    .orbit-ring:nth-child(2) {
+        width: 340px; height: 340px;
+        border-color: rgba(140, 210, 255, .12);
+        animation: orbitSpin 45s linear infinite reverse;
+    }
+    .orbit-ring:nth-child(3) {
+        width: 420px; height: 420px;
+        border-color: rgba(120, 200, 255, .07);
+        animation: orbitSpin 60s linear infinite;
+    }
+    .orbit-dot {
+        position: absolute;
+        width: 5px; height: 5px;
+        background: rgba(180, 230, 255, .6);
+        border-radius: 50%;
+        box-shadow: 0 0 6px rgba(160, 220, 255, .5);
+    }
+    .orbit-ring:nth-child(1) .orbit-dot:nth-child(1) { top: 0; left: 50%; transform: translate(-50%, -50%); }
+    .orbit-ring:nth-child(1) .orbit-dot:nth-child(2) { bottom: 0; left: 50%; transform: translate(-50%, 50%); }
+    .orbit-ring:nth-child(1) .orbit-dot:nth-child(3) { top: 50%; right: 0; transform: translate(50%, -50%); }
+    .orbit-ring:nth-child(2) .orbit-dot:nth-child(1) { top: 15%; left: 3%; transform: translate(-50%, -50%); }
+    .orbit-ring:nth-child(2) .orbit-dot:nth-child(2) { bottom: 10%; right: 8%; transform: translate(50%, 50%); }
+    .orbit-ring:nth-child(3) .orbit-dot:nth-child(1) { top: 8%; right: 15%; transform: translate(50%, -50%); }
+    .orbit-ring:nth-child(3) .orbit-dot:nth-child(2) { bottom: 20%; left: 5%; transform: translate(-50%, 50%); }
 
-@keyframes orbitSpin {
-    from { transform: translate(-50%, -50%) rotate(0deg); }
-    to   { transform: translate(-50%, -50%) rotate(360deg); }
-}
+    @keyframes orbitSpin {
+        from { transform: translate(-50%, -50%) rotate(0deg); }
+        to   { transform: translate(-50%, -50%) rotate(360deg); }
+    }
 
     .anchor-spacer { min-height: 20vh; }
 
-        @media (max-width: 900px) {
+    @media (max-width: 900px) {
         .navbar { height: 56px; padding: 0 22px; gap: 26px; }
         .nav-button { font-size: 22px; }
         .welcome-section { padding: 16px 16px 0; }
@@ -783,19 +786,13 @@
         .welcome-back-glass { left: 8px; right: -8px; }
     }
 
-    /* ===== НОУТБУКИ: 901–1500px по ширине ===== */
     @media (min-width: 901px) and (max-width: 1500px) {
         .nav-button { font-size: 24px; }
-
         .welcome-assembly { height: 60vh; min-height: 460px; }
-
         .welcome-title  { font-size: clamp(44px, 4.2vw, 70px); }
         .shain-title    { font-size: clamp(34px, 3vw, 54px); }
         .welcome-subtitle { font-size: clamp(18px, 1.6vw, 26px); }
-
         .welcome-character { right: 24%; }
-
-        /* панель "обо мне" — уже и компактнее */
         .about-panel {
             width: 46%;
             max-height: 50%;
@@ -804,8 +801,6 @@
         }
         .about-panel h2 { font-size: clamp(24px, 2vw, 34px); margin-bottom: 12px; }
         .about-panel p  { font-size: clamp(14px, 1vw, 18px); line-height: 1.45; }
-
-        /* панель Шейн — отодвинуть вниз от имени, дать больше высоты */
         .shain-copy { right: 5%; }
         .welcome-assembly.shain-open .shain-copy {
             transform: translateY(-50%) translateZ(40px) translateY(-130px);
@@ -819,11 +814,9 @@
         .shain-panel p { font-size: clamp(14px, 1vw, 18px); line-height: 1.45; }
     }
 
-    /* ===== НИЗКИЕ ЭКРАНЫ по высоте (ноуты 768px и ниже) ===== */
     @media (max-height: 800px) {
         .welcome-assembly { height: 66vh; min-height: 420px; }
         .welcome-character { bottom: -2%; height: 110%; }
-
         .about-panel  { max-height: 56%; top: 52%; }
         .shain-panel  { max-height: 56%; top: 56%; }
         .welcome-assembly.shain-open .shain-copy {
@@ -889,13 +882,13 @@
             </div>
         </div>
 
-                <div class="welcome-dots" aria-hidden="true">
+        <div class="welcome-dots" aria-hidden="true">
             <span class="dot small"><span class="dot-inner">✦</span></span>
             <span class="dot big"><span class="dot-inner">✦</span></span>
             <span class="dot small"><span class="dot-inner">✦</span></span>
         </div>
     </section>
-   
+
     <section class="fandom-section" id="fandomSection">
         <div class="fandom-panel">
             <div class="fandom-bg-wrap" id="fandomBgWrap"></div>
@@ -911,7 +904,7 @@
             <span class="dot small"><span class="dot-inner">✦</span></span>
         </div>
     </section>
-   
+
     <section id="about" class="anchor-spacer"></section>
     <section id="characters" class="anchor-spacer"></section>
     <section id="themes" class="anchor-spacer"></section>
@@ -925,7 +918,7 @@
 
     const MAX_TILT = 6;
 
-       let tiltPending = false;
+    let tiltPending = false;
     scene.addEventListener('mousemove', (e) => {
         if (tiltPending) return;
         tiltPending = true;
@@ -956,7 +949,6 @@
         assembly.style.transform = 'rotateX(0deg) rotateY(0deg)';
     });
 
-    // ===== открытие/закрытие "обо мне" / "Шейн" =====
     const readBtn   = document.getElementById('readBtn');
     const character = document.querySelector('.welcome-character');
 
@@ -996,7 +988,6 @@
         closeShain();
     });
 
-    // ===== кастомный курсор =====
     const cursorImg  = document.getElementById('cursorImg');
     const cursorGlow = document.getElementById('cursorGlow');
 
@@ -1017,7 +1008,7 @@
     }
     animateCursor();
 
-        document.addEventListener('mouseover', (e) => {
+    document.addEventListener('mouseover', (e) => {
         if (e.target.closest('a, button, .read-button, .nav-button, .dot, .welcome-character, .about-panel, .glass-tab')) {
             cursorGlow.classList.add('is-hover');
         }
@@ -1037,13 +1028,12 @@
         cursorGlow.style.opacity = '1';
     });
 
-        // ===== фоновое созвездие (canvas) =====
     (function () {
         const canvas = document.getElementById('constellation');
         const ctx = canvas.getContext('2d');
 
         let W, H, points;
-        const DENSITY   = 22000; // чем меньше — тем больше звёзд
+        const DENSITY = 22000;
 
         function resize() {
             W = canvas.width  = window.innerWidth;
@@ -1057,30 +1047,26 @@
                     vx: (Math.random() - 0.5) * 0.18,
                     vy: (Math.random() - 0.5) * 0.18,
                     r: 0.7 + Math.random() * 1.4,
-                    tw: Math.random() * Math.PI * 2,        // фаза мерцания
-                    tws: 0.008 + Math.random() * 0.02       // скорость мерцания
+                    tw: Math.random() * Math.PI * 2,
+                    tws: 0.008 + Math.random() * 0.02
                 });
             }
         }
 
-                function draw() {
+        function draw() {
             ctx.clearRect(0, 0, W, H);
-
             for (const p of points) {
                 p.x += p.vx;
                 p.y += p.vy;
                 if (p.x < 0 || p.x > W) p.vx *= -1;
                 if (p.y < 0 || p.y > H) p.vy *= -1;
-
                 p.tw += p.tws;
                 const flick = 0.4 + (Math.sin(p.tw) + 1) / 2 * 0.6;
-
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
                 ctx.fillStyle = `rgba(207,233,255,${flick})`;
                 ctx.fill();
             }
-
             requestAnimationFrame(draw);
         }
 
@@ -1089,7 +1075,7 @@
         draw();
     })();
 
-       // ===== полуколесо фандомов (статика) =====
+    // ===== полуколесо фандомов =====
     (function () {
         const FANDOMS = [
             { name: 'ПРОМЕТЕЙ',               img: 'Prometheus.png' },
@@ -1160,8 +1146,7 @@
                 bubble.style.width   = size + 'px';
                 bubble.style.height  = size + 'px';
                 bubble.style.opacity = alpha;
-
-                               bubble.style.backgroundImage = 'url(' + f.img + ')';
+                bubble.style.backgroundImage = 'url(' + f.img + ')';
 
                 if (dist === 0) {
                     var orbitSystem = document.createElement('div');
@@ -1203,8 +1188,7 @@
         renderWheel();
         window.addEventListener('resize', renderWheel);
     })();
-   
-    // ===== звёзды внутри панели =====
+
     (function () {
         const box = document.getElementById('panelStars');
         const COUNT = 40;
