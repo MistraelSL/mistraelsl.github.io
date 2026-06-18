@@ -479,7 +479,7 @@
         position: relative;
         z-index: 1;
     }
-    .dot {
+        .dot {
         display: inline-block;
         color: #fff;
         line-height: 1;
@@ -490,8 +490,9 @@
     .dot.small { font-size: 18px; }
     .dot.big   { font-size: 34px; }
     .dot:hover {
-        transform: scale(1.4);
-        text-shadow: 0 0 18px rgba(207,233,255,.9);
+        transform: scale(1.7);
+        text-shadow: 0 0 22px rgba(207,233,255,1), 0 0 40px rgba(180,225,255,.6);
+        animation-play-state: paused;
     }
     @keyframes spinSlow {
         from { transform: rotate(0deg); }
