@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Mistrael — Каталог</title>
+<style>
+    body {
+        margin: 0;
+        background-color: #0a0a0a;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .scene {
+        perspective: 1200px;
+        width: 320px;
+        height: 480px;
+    }
+
+    .card-assembly {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.12s ease-out;
+    }
+
+    /* ====== СЛОЙ 1: ЗАДНЯЯ ПАНЕЛЬ (стекло, уходит НАЗАД и ВПРАВО) ====== */
+    .back-panel {
+        position: absolute;
+        top: -8px;
+        left: 8px;
+        right: -8px;
+        bottom: -8px;
+        border-radius: 8px;
+        transform: translateZ(-30px); /* ПОЗАДИ фото */
+        pointer-events: none;
+
+        background: linear-gradient(
+            135deg,
+            rgba(255,255,255,0.07) 0%,
+            rgba(255,255,255,0.02) 50%,
+            rgba(255,255,255,0.05) 100%
+        );
+        border: 1px solid rgba(255,255,255,0.15);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+    }
+
+    /* Блик на задней панели — лёгкий, не на фото */
+    .back-panel-glare {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        border-radius: 8px;
+        opacity: 0;
+        transition: opacity 0.3s;
+        background: radial-gradient(
+            circle at var(--mx, 50%) var(--my, 50%),
+            rgba(255,255,255,0.12) 0%,
+            transparent 50%
+        );
+    }
+
+    /* ====== СЛОЙ 2: ФОТО (середина, z = 0) ====== */
+    .card-photo {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 6px;
+        overflow: hidden;
+        transform: translateZ(0px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    }
+
+    .card-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* ====== СЛОЙ 3: ПЕРЕДНЯЯ ПАНЕЛЬ (стекло, ПЕРЕД фото, уходит ВЛЕВО) ====== */
+    .front-panel {
+        position: absolute;
+        top: -8px;
+        left: -8px;
+        right: 8px;
+        bottom: -8px;
+        border-radius: 8px;
+        transform: translateZ(40px); /* ВПЕРЕДИ фото */
+        pointer-events: none;
+
+        background: linear-gradient(
+            145deg,
+            rgba(255,255,255,0.06) 0%,
+            rgba(255,255,255,0.01) 40%,
+            rgba(255,255,255,0.04) 100%
+        );
+        border: 1px solid rgba(255,255,255,0.25);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.2),
+            0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    /* Внутренняя рамка на передней панели */
+    .front-panel::after {
+        content: '';
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        border: 1px solid rgba(255, 220, 160, 0.25);
+        border-radius: 4px;
+    }
+
+    /* Блик на передней панели — лёгкий градиент, НЕ залупа */
+    .front-panel-glare {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        border-radius: 8px;
+        opacity: 0;
+        transition: opacity 0.3s;
+        background: radial-gradient(
+            circle at var(--mx, 50%) var(--my, 50%),
+            rgba(255,255,255,0.15) 0%,
+            rgba(200,220,255,0.05) 30%,
+            transparent 55%
+        );
+    }
+
+    /* Тонкая радужная дисперсия на краях передней панели */
+    .front-panel-rainbow {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        border-radius: 8px;
+        opacity: 0;
+        transition: opacity 0.4s;
+        background: linear-gradient(
+            var(--angle, 135deg),
+            transparent 20%,
+            rgba(255, 100, 100, 0.06) 35%,
+            rgba(100, 255, 100, 0.06) 45%,
+            rgba(100, 100, 255, 0.08) 55%,
+            rgba(255, 200, 100, 0.06) 65%,
+            transparent 80%
+        );
+    }
+
+    .scene:hover .front-panel-glare,
+    .scene:hover .back-panel-glare {
+        opacity: 1;
+    }
+
+    .scene:hover .front-panel-rainbow {
+        opacity: 1;
+    }
+
+    /* ====== ОТРАЖЕНИЕ НА ПОЛУ ====== */
+    .floor-reflection {
+        position: absolute;
+        bottom: -100px;
+        left: -40px;
+        right: -40px;
+        height: 100px;
+        transform: translateZ(-5px);
+        pointer-events: none;
+        background: radial-gradient(
+            ellipse at 50% 0%,
+            rgba(180, 140, 255, 0.15) 0%,
+            rgba(100, 200, 255, 0.08) 30%,
+            rgba(255, 150, 100, 0.06) 50%,
+            transparent 70%
+        );
+        filter: blur(15px);
+        opacity: 0;
+        transition: opacity 0.5s;
+    }
+
+    .scene:hover .floor-reflection {
+        opacity: 1;
+    }
+
+    /* ====== ГРАНИ ТОЛЩИНЫ (рёбра стекла) ====== */
+    .front-edge-right {
+        position: absolute;
+        top: -8px;
+        right: 8px;
+        width: 4px;
+        bottom: -8px;
+        transform: translateZ(20px) rotateY(90deg);
+        transform-origin: right center;
+        background: linear-gradient(
+            180deg,
+            rgba(255,255,255,0.12) 0%,
+            rgba(255,255,255,0.04) 50%,
+            rgba(255,255,255,0.1) 100%
+        );
+        pointer-events: none;
+    }
+
+    .front-edge-bottom {
+        position: absolute;
+        left: -8px;
+        right: 8px;
+        bottom: -8px;
+        height: 4px;
+        transform: translateZ(20px) rotateX(-90deg);
+        transform-origin: center bottom;
+        background: linear-gradient(
+            90deg,
+            rgba(255,255,255,0.08) 0%,
+            rgba(255,255,255,0.14) 50%,
+            rgba(255,255,255,0.06) 100%
+        );
+        pointer-events: none;
+    }
+</style>
+</head>
+<body>
+
+    <div class="scene">
+        <div class="card-assembly" id="card">
+
+            <!-- Задняя панель -->
+            <div class="back-panel">
+                <div class="back-panel-glare" id="backGlare"></div>
+            </div>
+
+            <!-- Фото -->
+            <div class="card-photo">
+                <img src="david.png" alt="David">
+            </div>
+
+            <!-- Грани толщины передней панели -->
+            <div class="front-edge-right"></div>
+            <div class="front-edge-bottom"></div>
+
+            <!-- Передняя панель -->
+            <div class="front-panel">
+                <div class="front-panel-glare" id="frontGlare"></div>
+                <div class="front-panel-rainbow" id="rainbow"></div>
+            </div>
+
+            <!-- Отражение на полу -->
+            <div class="floor-reflection"></div>
+
+        </div>
+    </div>
+
+    <script>
+        const scene = document.querySelector('.scene');
+        const card = document.getElementById('card');
+        const frontGlare = document.getElementById('frontGlare');
+        const backGlare = document.getElementById('backGlare');
+        const rainbow = document.getElementById('rainbow');
+
+        scene.addEventListener('mousemove', (e) => {
+            const rect = scene.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            // Наклон — умеренный, 10 градусов максимум
+            const rotateX = ((y - centerY) / centerY) * -10;
+            const rotateY = ((x - centerX) / centerX) * 10;
+            card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+
+            // Позиция блика
+            const mx = `${x}px`;
+            const my = `${y}px`;
+            frontGlare.style.setProperty('--mx', mx);
+            frontGlare.style.setProperty('--my', my);
+            backGlare.style.setProperty('--mx', mx);
+            backGlare.style.setProperty('--my', my);
+
+            // Угол радуги
+            const angle = Math.atan2(y - centerY, x - centerX) * (180 / Math.PI) + 90;
+            rainbow.style.setProperty('--angle', `${angle}deg`);
+        });
+
+        scene.addEventListener('mouseleave', () => {
+            card.style.transform = 'rotateX(0deg) rotateY(0deg)';
+        });
+    </script>
+
+</body>
+</html>
