@@ -1161,26 +1161,25 @@
                 bubble.style.height  = size + 'px';
                 bubble.style.opacity = alpha;
 
-                bubble.style.backgroundImage = 'url(' + f.img + ')';
+                               bubble.style.backgroundImage = 'url(' + f.img + ')';
+
+                if (dist === 0) {
+                    var orbitSystem = document.createElement('div');
+                    orbitSystem.className = 'orbit-system';
+                    var rings = [3, 2, 2];
+                    for (var r = 0; r < 3; r++) {
+                        var ring = document.createElement('div');
+                        ring.className = 'orbit-ring';
+                        for (var d = 0; d < rings[r]; d++) {
+                            var dot = document.createElement('div');
+                            dot.className = 'orbit-dot';
+                            ring.appendChild(dot);
+                        }
+                        orbitSystem.appendChild(ring);
+                    }
+                    bubble.appendChild(orbitSystem);
                 }
 
-               if (dist === 0) {
-               var orbitSystem = document.createElement('div');
-               orbitSystem.className = 'orbit-system';
-               var rings = [3, 2, 2]; // точек на каждом кольце
-               for (var r = 0; r < 3; r++) {
-               var ring = document.createElement('div');
-               ring.className = 'orbit-ring';
-               for (var d = 0; d < rings[r]; d++) {
-               var dot = document.createElement('div');
-              dot.className = 'orbit-dot';
-             ring.appendChild(dot);
-        }
-        orbitSystem.appendChild(ring);
-    }
-    bubble.appendChild(orbitSystem);
-}
-           
                 wheel.appendChild(bubble);
             });
 
