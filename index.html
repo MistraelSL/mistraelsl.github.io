@@ -102,6 +102,20 @@
         pointer-events: none;
     }
 
+       /* тёмный градиент сверху и снизу фото */
+    .welcome-image-layer::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+        background: linear-gradient(to bottom,
+            rgba(4,7,10,.85) 0%,
+            transparent 22%,
+            transparent 74%,
+            rgba(4,7,10,.92) 100%);
+    }
+
     .welcome-character {
         position: absolute;
         z-index: 12;
@@ -177,6 +191,73 @@
     }
     .welcome-scene:hover .welcome-glare { opacity: 1; }
 
+       /* состояние "обо мне открыто" — текст уезжает вверх */
+    .welcome-assembly.about-open .welcome-copy {
+        top: 26%;
+        transform: translateY(-50%) translateZ(40px);
+        transition: top .5s ease, transform .5s ease;
+    }
+    .welcome-assembly.about-open .welcome-subtitle,
+    .welcome-assembly.about-open .read-button {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .35s ease;
+    }
+    /* каджитка отъезжает вправо */
+    .welcome-assembly.about-open .welcome-character {
+        transform: translateZ(60px) translateX(45%);
+        opacity: 0;
+        transition: transform .55s ease, opacity .45s ease;
+    }
+    .welcome-character {
+        transition: transform .55s ease, opacity .45s ease;
+    }
+    .welcome-copy {
+        transition: top .5s ease, transform .5s ease;
+    }
+    .welcome-subtitle, .read-button {
+        transition: opacity .35s ease;
+    }
+
+    /* стеклянная панель "обо мне" */
+    .about-panel {
+        position: absolute;
+        z-index: 24;
+        right: 6%;
+        top: 50%;
+        transform: translateY(-50%) translateZ(45px) translateX(40px);
+        width: 38%;
+        max-height: 64%;
+        padding: 34px 38px;
+        border-radius: 18px;
+        overflow-y: auto;
+        opacity: 0;
+        pointer-events: none;
+        background: linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.03) 55%, rgba(170,225,255,.08));
+        border: 1px solid rgba(255,255,255,.30);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.20), 0 20px 50px rgba(0,0,0,.5);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        transition: opacity .5s ease, transform .5s ease;
+    }
+    .welcome-assembly.about-open .about-panel {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(-50%) translateZ(45px) translateX(0);
+    }
+    .about-panel h2 {
+        margin: 0 0 18px;
+        font-size: clamp(28px, 2.4vw, 44px);
+        font-weight: 400;
+        letter-spacing: .02em;
+    }
+    .about-panel p {
+        margin: 0 0 14px;
+        font-size: clamp(16px, 1.2vw, 22px);
+        line-height: 1.55;
+        color: rgba(255,255,255,.88);
+    }
+   
     /* ===== ТЕКСТ ===== */
     .welcome-copy {
         position: absolute;
@@ -292,7 +373,13 @@
                 <div class="welcome-copy">
                     <h1 class="welcome-title">ДОБРО<br>ПОЖАЛОВАТЬ</h1>
                     <div class="welcome-subtitle">немного обо мне, персонажи, темы</div>
-                    <a class="read-button" href="#about">ЧИТАТЬ</a>
+                    <a class="read-button" href="#" id="readBtn">ЧИТАТЬ</a>
+                </div>
+
+                <div class="about-panel" id="aboutPanel">
+                    <h2>немного обо мне</h2>
+                    <p>Здесь текст про автора. Замени на свой.</p>
+                    <p>Вторая строка описания. Тоже замени.</p>
                 </div>
 
             </div>
@@ -341,6 +428,30 @@
 
     scene.addEventListener('mouseleave', () => {
         assembly.style.transform = 'rotateX(0deg) rotateY(0deg)';
+    });
+       // ===== открытие/закрытие "обо мне" =====
+    const readBtn  = document.getElementById('readBtn');
+    const character = document.querySelector('.welcome-character');
+
+    function openAbout(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        assembly.classList.add('about-open');
+    }
+    function closeAbout() {
+        assembly.classList.remove('about-open');
+    }
+
+    readBtn.addEventListener('click', openAbout);
+    character.style.pointerEvents = 'auto';
+    character.addEventListener('click', openAbout);
+
+    // клик по пустому месту панели — закрыть
+    assembly.addEventListener('click', (e) => {
+        if (!assembly.classList.contains('about-open')) return;
+        if (e.target.closest('.about-panel')) return;     // клик внутри текста — не закрываем
+        if (e.target.closest('#readBtn')) return;
+        closeAbout();
     });
 </script>
 
