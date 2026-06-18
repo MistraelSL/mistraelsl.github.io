@@ -338,7 +338,7 @@
         letter-spacing: .015em;
     }
 
-    .shain-panel {
+        .shain-panel {
         position: absolute;
         z-index: 24;
         right: 5%;
@@ -352,11 +352,9 @@
         opacity: 0;
         pointer-events: none;
         text-align: right;
-        background: linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.03) 55%, rgba(170,225,255,.08));
+        background: linear-gradient(135deg, rgba(40,60,80,.55), rgba(20,35,50,.45) 55%, rgba(50,85,120,.50));
         border: 1px solid rgba(255,255,255,.30);
         box-shadow: inset 0 1px 0 rgba(255,255,255,.20), 0 20px 50px rgba(0,0,0,.5);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
         transition: opacity .5s ease, transform .5s ease;
         -webkit-font-smoothing: antialiased;
         backface-visibility: hidden;
@@ -376,6 +374,7 @@
 
     /* стеклянная панель "обо мне" */
     .about-panel {
+           .about-panel {
         position: absolute;
         z-index: 24;
         left: 5%;
@@ -388,11 +387,9 @@
         overflow-y: auto;
         opacity: 0;
         pointer-events: none;
-        background: linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.03) 55%, rgba(170,225,255,.08));
+        background: linear-gradient(135deg, rgba(40,60,80,.55), rgba(20,35,50,.45) 55%, rgba(50,85,120,.50));
         border: 1px solid rgba(255,255,255,.30);
         box-shadow: inset 0 1px 0 rgba(255,255,255,.20), 0 20px 50px rgba(0,0,0,.5);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
         transition: opacity .5s ease, transform .5s ease;
         -webkit-font-smoothing: antialiased;
         backface-visibility: hidden;
@@ -454,11 +451,10 @@
         font-weight: 400;
         letter-spacing: .04em;
         border: 2px solid rgba(255,255,255,.85);
-        border-radius: 999px;
-        background: linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.02) 55%, rgba(170,225,255,.07));
-        backdrop-filter: blur(6px);
-        -webkit-backdrop-filter: blur(6px);
+         border-radius: 999px;
+        background: linear-gradient(135deg, rgba(60,80,100,.35), rgba(30,45,60,.25) 55%, rgba(70,110,150,.30));
         transition: transform .2s, background .2s, box-shadow .2s, border-color .2s, color .2s;
+    }
     }
         .read-button:hover {
         transform: translateY(-2px);
@@ -702,25 +698,31 @@
 
     const MAX_TILT = 6;
 
+        let tiltPending = false;
     scene.addEventListener('mousemove', (e) => {
-        const r = scene.getBoundingClientRect();
-        const x = e.clientX - r.left;
-        const y = e.clientY - r.top;
-        const cx = r.width / 2;
-        const cy = r.height / 2;
+        if (tiltPending) return;
+        tiltPending = true;
+        requestAnimationFrame(() => {
+            const r = scene.getBoundingClientRect();
+            const x = e.clientX - r.left;
+            const y = e.clientY - r.top;
+            const cx = r.width / 2;
+            const cy = r.height / 2;
 
-        const rotateX = ((y - cy) / cy) * -MAX_TILT;
-        const rotateY = ((x - cx) / cx) *  MAX_TILT;
+            const rotateX = ((y - cy) / cy) * -MAX_TILT;
+            const rotateY = ((x - cx) / cx) *  MAX_TILT;
 
-        assembly.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            assembly.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
 
-        const px = (x / r.width) * 100;
-        const py = (y / r.height) * 100;
+            const px = (x / r.width) * 100;
+            const py = (y / r.height) * 100;
 
-        glare.style.setProperty('--mx', `${px}%`);
-        glare.style.setProperty('--my', `${py}%`);
-        frontGlass.style.setProperty('--gx', `${px}%`);
-        frontGlass.style.setProperty('--gy', `${py}%`);
+            glare.style.setProperty('--mx', `${px}%`);
+            glare.style.setProperty('--my', `${py}%`);
+            frontGlass.style.setProperty('--gx', `${px}%`);
+            frontGlass.style.setProperty('--gy', `${py}%`);
+            tiltPending = false;
+        });
     });
 
     scene.addEventListener('mouseleave', () => {
