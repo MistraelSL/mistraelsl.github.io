@@ -39,7 +39,6 @@
         overflow-x: hidden;
     }
 
-       /* фоновое созвездие на canvas */
     #constellation {
         position: fixed;
         inset: 0;
@@ -47,17 +46,13 @@
         pointer-events: none;
         display: block;
     }
-    /* мерцание звёзд внутри панели */
     @keyframes twinkle {
         0%, 100% { opacity: 0; transform: scale(.5); filter: blur(1px); }
         50%      { opacity: 1; transform: scale(1.3); filter: blur(0px); box-shadow: 0 0 10px #fff, 0 0 18px #cfe9ff; }
     }
-   
 
-    /* скрыть системный курсор по всему сайту */
     * { cursor: none !important; }
 
-    /* кастомный курсор */
     .cursor-glow {
         position: fixed;
         top: 0; left: 0;
@@ -100,18 +95,6 @@
         border-bottom: 1px solid rgba(235,250,255,.5);
         z-index: 100;
     }
-    .nav-button {
-        color: rgba(255,255,255,.92);
-        text-decoration: none;
-        font-size: 30px;
-        font-weight: 400;
-        letter-spacing: .01em;
-        transition: color .2s, text-shadow .2s;
-    }
-    .nav-button:hover {
-        color: #fff;
-        text-shadow: 0 0 14px rgba(180,225,255,.5);
-    }
 
     /* ===== ПРИВЕТСТВЕННЫЙ БЛОК ===== */
     .welcome-section {
@@ -124,6 +107,7 @@
     .welcome-scene {
         perspective: 1600px;
         width: 100%;
+        position: relative;
     }
 
     .welcome-assembly {
@@ -135,6 +119,8 @@
         transition: transform .15s ease-out;
         will-change: transform;
     }
+
+    /* --- ВНУТРИ 3D-сцены (наклоняются вместе с панелью, БЕЗ blur) --- */
 
     .welcome-back-glass {
         position: absolute;
@@ -172,8 +158,6 @@
             linear-gradient(to left, rgba(8,14,20,.55) 0%, transparent 45%);
         pointer-events: none;
     }
-
-    /* тёмный градиент сверху и снизу фото */
     .welcome-image-layer::before {
         content: "";
         position: absolute;
@@ -187,7 +171,6 @@
             rgba(4,7,10,.92) 100%);
     }
 
-    /* звёзды внутри панели (поверх фото) */
     .panel-stars {
         position: absolute;
         inset: 0;
@@ -204,7 +187,7 @@
         animation: twinkle var(--dur, 4s) ease-in-out infinite;
         animation-delay: var(--delay, 0s);
     }
-    .welcome-assembly.shain-open .panel-stars {
+    .welcome-scene.shain-open .panel-stars {
         transform: translateX(40%) scale(1.3);
         opacity: 0;
     }
@@ -223,9 +206,9 @@
             drop-shadow(0 18px 30px rgba(0,0,0,.5));
         user-select: none;
         pointer-events: none;
+        transition: transform .55s ease;
     }
 
-    /* переднее стекло — рамка-капсула */
     .welcome-front-glass {
         position: absolute;
         inset: 0;
@@ -245,8 +228,6 @@
         border: 1px solid rgba(255,255,255,.12);
         border-radius: 12px;
     }
-
-    /* радужный блик-перелив по стеклу */
     .welcome-front-glass::before {
         content: "";
         position: absolute;
@@ -269,7 +250,6 @@
     }
     .welcome-scene:hover .welcome-front-glass::before { opacity: 1; }
 
-    /* мягкий блик-свечение за курсором */
     .welcome-glare {
         position: absolute;
         inset: 0;
@@ -284,136 +264,7 @@
     }
     .welcome-scene:hover .welcome-glare { opacity: 1; }
 
-    /* плавность */
-    .welcome-character { transition: transform .55s ease; }
-    .welcome-copy { transition: top .5s ease, transform .5s ease; }
-    .welcome-subtitle, .read-button { transition: opacity .35s ease; }
-
-    /* состояние "обо мне открыто" */
-    .welcome-assembly.about-open .welcome-copy {
-        transform: translateY(-50%) translateZ(40px) translateY(-90px);
-    }
-    .welcome-assembly.about-open .welcome-subtitle,
-    .welcome-assembly.about-open .read-button {
-        opacity: 0;
-        pointer-events: none;
-    }
-    .welcome-assembly.about-open .welcome-character {
-        transform: translateZ(60px) translateX(60%);
-    }
-
-    /* ===== режим "Шейн" ===== */
-    .welcome-assembly.shain-open .welcome-copy {
-        opacity: 0;
-        transform: translateY(-50%) translateZ(40px) translateX(60px);
-        pointer-events: none;
-    }
-    .welcome-assembly.shain-open .welcome-character {
-        transform: translateZ(60px) translateX(-120%);
-    }
-
-    .shain-copy {
-        position: absolute;
-        z-index: 25;
-        right: 6%;
-        top: 50%;
-        transform: translateY(-50%) translateZ(40px) translateX(60px);
-        text-align: right;
-        opacity: 0;
-        pointer-events: none;
-        text-shadow: 0 2px 16px rgba(0,0,0,.5);
-        transition: opacity .5s ease, transform .5s ease;
-    }
-    .welcome-assembly.shain-open .shain-copy {
-        opacity: 1;
-        transform: translateY(-50%) translateZ(40px) translateY(-90px);
-        pointer-events: auto;
-    }
-    .shain-title {
-        margin: 0;
-        font-family: Georgia, "Times New Roman", serif;
-        font-size: clamp(40px, 3.6vw, 68px);
-        line-height: 1.08;
-        font-weight: 400;
-        letter-spacing: .015em;
-    }
-
-        .shain-panel {
-        position: absolute;
-        z-index: 24;
-        right: 5%;
-        top: 48%;
-        transform: translateZ(45px) translateY(20px);
-        width: 60%;
-        max-height: 58%;
-        padding: 34px 38px;
-        border-radius: 18px;
-        overflow-y: auto;
-        opacity: 0;
-        pointer-events: none;
-        text-align: right;
-        background: linear-gradient(135deg, rgba(40,60,80,.55), rgba(20,35,50,.45) 55%, rgba(50,85,120,.50));
-        border: 1px solid rgba(255,255,255,.30);
-        box-shadow: inset 0 1px 0 rgba(255,255,255,.20), 0 20px 50px rgba(0,0,0,.5);
-        transition: opacity .5s ease, transform .5s ease;
-        -webkit-font-smoothing: antialiased;
-        backface-visibility: hidden;
-        will-change: transform;
-    }
-    .welcome-assembly.shain-open .shain-panel {
-        opacity: 1;
-        pointer-events: auto;
-        transform: translateZ(45px) translateY(0);
-    }
-    .shain-panel p {
-        margin: 0 0 14px;
-        font-size: clamp(16px, 1.2vw, 22px);
-        line-height: 1.55;
-        color: rgba(255,255,255,.88);
-    }
-
-    /* стеклянная панель "обо мне" */
-    .about-panel {
-           .about-panel {
-        position: absolute;
-        z-index: 24;
-        left: 5%;
-        top: 48%;
-        transform: translateZ(45px) translateY(20px);
-        width: 50%;
-        max-height: 44%;
-        padding: 34px 38px;
-        border-radius: 18px;
-        overflow-y: auto;
-        opacity: 0;
-        pointer-events: none;
-        background: linear-gradient(135deg, rgba(40,60,80,.55), rgba(20,35,50,.45) 55%, rgba(50,85,120,.50));
-        border: 1px solid rgba(255,255,255,.30);
-        box-shadow: inset 0 1px 0 rgba(255,255,255,.20), 0 20px 50px rgba(0,0,0,.5);
-        transition: opacity .5s ease, transform .5s ease;
-        -webkit-font-smoothing: antialiased;
-        backface-visibility: hidden;
-        will-change: transform;
-    }
-    .welcome-assembly.about-open .about-panel {
-        opacity: 1;
-        pointer-events: auto;
-        transform: translateZ(45px) translateY(0);
-    }
-    .about-panel h2 {
-        margin: 0 0 18px;
-        font-size: clamp(28px, 2.4vw, 44px);
-        font-weight: 400;
-        letter-spacing: .02em;
-    }
-    .about-panel p {
-        margin: 0 0 14px;
-        font-size: clamp(16px, 1.2vw, 22px);
-        line-height: 1.55;
-        color: rgba(255,255,255,.88);
-    }
-
-    /* ===== ТЕКСТ ===== */
+    /* текст внутри assembly */
     .welcome-copy {
         position: absolute;
         z-index: 25;
@@ -421,6 +272,7 @@
         top: 50%;
         transform: translateY(-50%) translateZ(40px);
         text-shadow: 0 2px 16px rgba(0,0,0,.5);
+        transition: top .5s ease, transform .5s ease, opacity .5s ease;
     }
     .welcome-title {
         margin: 0;
@@ -436,6 +288,7 @@
         line-height: 1.3;
         font-weight: 400;
         color: rgba(255,255,255,.9);
+        transition: opacity .35s ease;
     }
     .read-button {
         margin-top: clamp(26px, 3.5vh, 48px);
@@ -451,12 +304,13 @@
         font-weight: 400;
         letter-spacing: .04em;
         border: 2px solid rgba(255,255,255,.85);
-         border-radius: 999px;
-        background: linear-gradient(135deg, rgba(60,80,100,.35), rgba(30,45,60,.25) 55%, rgba(70,110,150,.30));
-        transition: transform .2s, background .2s, box-shadow .2s, border-color .2s, color .2s;
+        border-radius: 999px;
+        background: linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.02) 55%, rgba(170,225,255,.07));
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        transition: transform .2s, background .2s, box-shadow .2s, border-color .2s, color .2s, opacity .35s ease;
     }
-    }
-        .read-button:hover {
+    .read-button:hover {
         transform: translateY(-2px);
         color: #0a0e13;
         border-color: #cfe9ff;
@@ -464,19 +318,44 @@
         box-shadow: 0 0 28px rgba(190,235,255,.5);
     }
 
-    /* ===== СТЕКЛЯННЫЕ ПЛАШКИ "персонажи / темы" ===== */
+    /* --- состояния: about-open / shain-open (класс на .welcome-scene) --- */
+
+    .welcome-scene.about-open .welcome-copy {
+        transform: translateY(-50%) translateZ(40px) translateY(-90px);
+    }
+    .welcome-scene.about-open .welcome-subtitle,
+    .welcome-scene.about-open .read-button {
+        opacity: 0;
+        pointer-events: none;
+    }
+    .welcome-scene.about-open .welcome-character {
+        transform: translateZ(60px) translateX(60%);
+    }
+
+    .welcome-scene.shain-open .welcome-copy {
+        opacity: 0;
+        transform: translateY(-50%) translateZ(40px) translateX(60px);
+        pointer-events: none;
+    }
+    .welcome-scene.shain-open .welcome-character {
+        transform: translateZ(60px) translateX(-120%);
+    }
+
+    /* --- ВНЕ 3D-сцены (blur есть, но НЕ пересчитывается при наклоне) --- */
+
+    /* плашки "персонажи / темы" */
     .welcome-tabs {
         position: absolute;
         z-index: 25;
         right: 5%;
         top: 50%;
-        transform: translateY(-50%) translateZ(45px);
+        transform: translateY(-50%);
         display: flex;
         flex-direction: column;
         gap: 18px;
         transition: opacity .4s ease, transform .5s ease;
     }
-       .glass-tab {
+    .glass-tab {
         display: flex;
         align-items: center;
         gap: 16px;
@@ -495,7 +374,7 @@
         text-shadow: 0 0 3px rgba(0,0,0,.45), 0 0 14px rgba(0,0,0,.40);
         transition: border-color .25s, box-shadow .25s, transform .2s;
     }
-        .glass-tab-icon {
+    .glass-tab-icon {
         width: 65px;
         height: 65px;
         object-fit: contain;
@@ -518,12 +397,113 @@
             0 0 0 2px rgba(207,233,255,.85);
     }
 
-    /* плашки уезжают вправо и тают в обоих режимах */
-    .welcome-assembly.about-open .welcome-tabs,
-    .welcome-assembly.shain-open .welcome-tabs {
+    .welcome-scene.about-open .welcome-tabs,
+    .welcome-scene.shain-open .welcome-tabs {
         opacity: 0;
-        transform: translateY(-50%) translateZ(45px) translateX(80px);
+        transform: translateY(-50%) translateX(80px);
         pointer-events: none;
+    }
+
+    /* панель "обо мне" */
+    .about-panel {
+        position: absolute;
+        z-index: 24;
+        left: 5%;
+        top: 48%;
+        transform: translateY(20px);
+        width: 50%;
+        max-height: 44%;
+        padding: 34px 38px;
+        border-radius: 18px;
+        overflow-y: auto;
+        opacity: 0;
+        pointer-events: none;
+        background: linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.03) 55%, rgba(170,225,255,.08));
+        border: 1px solid rgba(255,255,255,.30);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.20), 0 20px 50px rgba(0,0,0,.5);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        transition: opacity .5s ease, transform .5s ease;
+        -webkit-font-smoothing: antialiased;
+    }
+    .welcome-scene.about-open .about-panel {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+    }
+    .about-panel h2 {
+        margin: 0 0 18px;
+        font-size: clamp(28px, 2.4vw, 44px);
+        font-weight: 400;
+        letter-spacing: .02em;
+    }
+    .about-panel p {
+        margin: 0 0 14px;
+        font-size: clamp(16px, 1.2vw, 22px);
+        line-height: 1.55;
+        color: rgba(255,255,255,.88);
+    }
+
+    /* имя Шайн */
+    .shain-copy {
+        position: absolute;
+        z-index: 25;
+        right: 6%;
+        top: 50%;
+        transform: translateY(-50%) translateX(60px);
+        text-align: right;
+        opacity: 0;
+        pointer-events: none;
+        text-shadow: 0 2px 16px rgba(0,0,0,.5);
+        transition: opacity .5s ease, transform .5s ease;
+    }
+    .welcome-scene.shain-open .shain-copy {
+        opacity: 1;
+        transform: translateY(-50%) translateY(-90px);
+        pointer-events: auto;
+    }
+    .shain-title {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(40px, 3.6vw, 68px);
+        line-height: 1.08;
+        font-weight: 400;
+        letter-spacing: .015em;
+    }
+
+    /* панель Шайн */
+    .shain-panel {
+        position: absolute;
+        z-index: 24;
+        right: 5%;
+        top: 48%;
+        transform: translateY(20px);
+        width: 60%;
+        max-height: 58%;
+        padding: 34px 38px;
+        border-radius: 18px;
+        overflow-y: auto;
+        opacity: 0;
+        pointer-events: none;
+        text-align: right;
+        background: linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.03) 55%, rgba(170,225,255,.08));
+        border: 1px solid rgba(255,255,255,.30);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.20), 0 20px 50px rgba(0,0,0,.5);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        transition: opacity .5s ease, transform .5s ease;
+        -webkit-font-smoothing: antialiased;
+    }
+    .welcome-scene.shain-open .shain-panel {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+    }
+    .shain-panel p {
+        margin: 0 0 14px;
+        font-size: clamp(16px, 1.2vw, 22px);
+        line-height: 1.55;
+        color: rgba(255,255,255,.88);
     }
 
     /* ===== ЗВЁЗДОЧКИ ВНИЗУ ===== */
@@ -537,7 +517,7 @@
         position: relative;
         z-index: 1;
     }
-            .dot {
+    .dot {
         display: inline-block;
         color: #fff;
         line-height: 1;
@@ -561,9 +541,8 @@
 
     .anchor-spacer { min-height: 20vh; }
 
-        @media (max-width: 900px) {
+    @media (max-width: 900px) {
         .navbar { height: 56px; padding: 0 22px; gap: 26px; }
-        .nav-button { font-size: 22px; }
         .welcome-section { padding: 16px 16px 0; }
         .welcome-assembly { height: 56vh; min-height: 440px; }
         .welcome-copy { left: 6%; }
@@ -572,19 +551,13 @@
         .welcome-back-glass { left: 8px; right: -8px; }
     }
 
-    /* ===== НОУТБУКИ: 901–1500px по ширине ===== */
     @media (min-width: 901px) and (max-width: 1500px) {
-        .nav-button { font-size: 24px; }
-
         .welcome-assembly { height: 60vh; min-height: 460px; }
-
         .welcome-title  { font-size: clamp(44px, 4.2vw, 70px); }
         .shain-title    { font-size: clamp(34px, 3vw, 54px); }
         .welcome-subtitle { font-size: clamp(18px, 1.6vw, 26px); }
-
         .welcome-character { right: 24%; }
 
-        /* панель "обо мне" — уже и компактнее */
         .about-panel {
             width: 46%;
             max-height: 50%;
@@ -594,10 +567,9 @@
         .about-panel h2 { font-size: clamp(24px, 2vw, 34px); margin-bottom: 12px; }
         .about-panel p  { font-size: clamp(14px, 1vw, 18px); line-height: 1.45; }
 
-        /* панель Шейн — отодвинуть вниз от имени, дать больше высоты */
         .shain-copy { right: 5%; }
-        .welcome-assembly.shain-open .shain-copy {
-            transform: translateY(-50%) translateZ(40px) translateY(-130px);
+        .welcome-scene.shain-open .shain-copy {
+            transform: translateY(-50%) translateY(-130px);
         }
         .shain-panel {
             width: 56%;
@@ -608,15 +580,13 @@
         .shain-panel p { font-size: clamp(14px, 1vw, 18px); line-height: 1.45; }
     }
 
-    /* ===== НИЗКИЕ ЭКРАНЫ по высоте (ноуты 768px и ниже) ===== */
     @media (max-height: 800px) {
         .welcome-assembly { height: 66vh; min-height: 420px; }
         .welcome-character { bottom: -2%; height: 110%; }
-
         .about-panel  { max-height: 56%; top: 52%; }
         .shain-panel  { max-height: 56%; top: 56%; }
-        .welcome-assembly.shain-open .shain-copy {
-            transform: translateY(-50%) translateZ(40px) translateY(-140px);
+        .welcome-scene.shain-open .shain-copy {
+            transform: translateY(-50%) translateY(-140px);
         }
     }
 </style>
@@ -633,52 +603,52 @@
 <main>
     <section class="welcome-section" id="top">
         <div class="welcome-scene" id="scene">
+
+            <!-- 3D-сцена: наклоняется по курсору -->
             <div class="welcome-assembly" id="assembly">
-
                 <div class="welcome-back-glass"></div>
-
                 <div class="welcome-image-layer">
                     <img class="welcome-bg" src="forgotten.png" alt="">
                 </div>
-
                 <img class="welcome-character" src="shain.png" alt="Шейн">
                 <div class="panel-stars" id="panelStars"></div>
                 <div class="welcome-front-glass" id="frontGlass"></div>
                 <div class="welcome-glare" id="glare"></div>
-
                 <div class="welcome-copy">
                     <h1 class="welcome-title">ДОБРО<br>ПОЖАЛОВАТЬ꧂</h1>
                     <div class="welcome-subtitle">Немного обо мне, персонажи, темы</div>
                     <a class="read-button" href="#" id="readBtn">ЧИТАТЬ</a>
                 </div>
-
-                <div class="welcome-tabs" id="welcomeTabs">
-                    <a class="glass-tab" href="#characters">
-                        <img class="glass-tab-icon" src="character.png" alt="">
-                        <span>ПЕРСОНАЖИ</span>
-                    </a>
-                    <a class="glass-tab" href="#themes">
-                        <img class="glass-tab-icon" src="tema.png" alt="">
-                        <span>ТЕМЫ</span>
-                    </a>
-                </div>
-
-                <div class="about-panel" id="aboutPanel">
-                    <h2> 𓍊𓋼𓍊𓋼𓍊 Ну, привет путник. </h2>
-                    <p>Проходи, садись, на стол ноги не закидывай. Я Мистраэль. Сижу в Silly Tavern. Решила поделиться своими ботами. Специфично их пишу — на вкус и цвет. Учусь писать темы для таверны ТОЛЬКО ДЛЯ ПК. И нет, каджитку рядом зовут не Мистраэль, но это мой любимый ребёнок. За работу ботов не ручаюсь - всё зависит от модели и пресета.</p>
-                </div>
-
-                <div class="shain-copy">
-                    <h1 class="shain-title">ШАЙНЕРЕС<br>САНЛЕСС</h1>
-                </div>
-
-                <div class="shain-panel" id="shainPanel">
-                    <p>Шайнерес Санлесс. Как я сказала - мой любимый ребенок. Ей уже 8 лет. Я создала ее еще в школьные годы, когда попробовала сыграть в Скайрим и вдохновиться одной расой - снежных эльфов, ныне именуемых фалмерами. Она, наверно, среди конкретно МОИХ персонажей прописана лучше и детальнее всех. Знаете историю "Падение снежного принца?" А вот она очень хорошо знает, пережив ту битву при Моэсринге самолично. Ей больше 4000 лет. И, возможно, она знакома с Мираком... А еще она и Гелебор прекрасно друг друга знают. Один испытывает вину спустя столько лет за свое решение. Другая испытывает сплошную ненависть и пустоту. Ну ладно говорить прозами.</p>
-                </div>
             </div>
+
+            <!-- ПОВЕРХ 3D-сцены: НЕ наклоняются, blur дешёвый -->
+            <div class="welcome-tabs" id="welcomeTabs">
+                <a class="glass-tab" href="#characters">
+                    <img class="glass-tab-icon" src="character.png" alt="">
+                    <span>ПЕРСОНАЖИ</span>
+                </a>
+                <a class="glass-tab" href="#themes">
+                    <img class="glass-tab-icon" src="tema.png" alt="">
+                    <span>ТЕМЫ</span>
+                </a>
+            </div>
+
+            <div class="about-panel" id="aboutPanel">
+                <h2> 𓍊𓋼𓍊𓋼𓍊 Ну, привет путник. </h2>
+                <p>Проходи, садись, на стол ноги не закидывай. Я Мистраэль. Сижу в Silly Tavern. Решила поделиться своими ботами. Специфично их пишу — на вкус и цвет. Учусь писать темы для таверны ТОЛЬКО ДЛЯ ПК. И нет, каджитку рядом зовут не Мистраэль, но это мой любимый ребёнок. За работу ботов не ручаюсь - всё зависит от модели и пресета.</p>
+            </div>
+
+            <div class="shain-copy">
+                <h1 class="shain-title">ШАЙНЕРЕС<br>САНЛЕСС</h1>
+            </div>
+
+            <div class="shain-panel" id="shainPanel">
+                <p>Шайнерес Санлесс. Как я сказала - мой любимый ребенок. Ей уже 8 лет. Я создала ее еще в школьные годы, когда попробовала сыграть в Скайрим и вдохновиться одной расой - снежных эльфов, ныне именуемых фалмерами. Она, наверно, среди конкретно МОИХ персонажей прописана лучше и детальнее всех. Знаете историю "Падение снежного принца?" А вот она очень хорошо знает, пережив ту битву при Моэсринге самолично. Ей больше 4000 лет. И, возможно, она знакома с Мираком... А еще она и Гелебор прекрасно друг друга знают. Один испытывает вину спустя столько лет за свое решение. Другая испытывает сплошную ненависть и пустоту. Ну ладно говорить прозами.</p>
+            </div>
+
         </div>
 
-                <div class="welcome-dots" aria-hidden="true">
+        <div class="welcome-dots" aria-hidden="true">
             <span class="dot small"><span class="dot-inner">✦</span></span>
             <span class="dot big"><span class="dot-inner">✦</span></span>
             <span class="dot small"><span class="dot-inner">✦</span></span>
@@ -698,12 +668,13 @@
 
     const MAX_TILT = 6;
 
-        let tiltPending = false;
+    // троттл наклона через rAF
+    let tiltPending = false;
     scene.addEventListener('mousemove', (e) => {
         if (tiltPending) return;
         tiltPending = true;
         requestAnimationFrame(() => {
-            const r = scene.getBoundingClientRect();
+            const r = assembly.getBoundingClientRect();
             const x = e.clientX - r.left;
             const y = e.clientY - r.top;
             const cx = r.width / 2;
@@ -736,37 +707,35 @@
     function openAbout(e) {
         e.preventDefault();
         e.stopPropagation();
-        assembly.classList.remove('shain-open');
-        assembly.classList.add('about-open');
-    }
-    function closeAbout() {
-        assembly.classList.remove('about-open');
+        scene.classList.remove('shain-open');
+        scene.classList.add('about-open');
     }
     function openShain(e) {
         e.preventDefault();
         e.stopPropagation();
-        assembly.classList.remove('about-open');
-        assembly.classList.add('shain-open');
+        scene.classList.remove('about-open');
+        scene.classList.add('shain-open');
     }
-    function closeShain() {
-        assembly.classList.remove('shain-open');
+    function closeAll() {
+        scene.classList.remove('about-open');
+        scene.classList.remove('shain-open');
     }
 
     readBtn.addEventListener('click', openAbout);
     character.style.pointerEvents = 'auto';
     character.addEventListener('click', openShain);
 
-    assembly.addEventListener('click', (e) => {
-        const aboutOpen = assembly.classList.contains('about-open');
-        const shainOpen = assembly.classList.contains('shain-open');
+    scene.addEventListener('click', (e) => {
+        const aboutOpen = scene.classList.contains('about-open');
+        const shainOpen = scene.classList.contains('shain-open');
         if (!aboutOpen && !shainOpen) return;
         if (e.target.closest('.about-panel')) return;
         if (e.target.closest('.shain-panel')) return;
         if (e.target.closest('.shain-copy')) return;
         if (e.target.closest('#readBtn')) return;
         if (e.target.closest('.welcome-character')) return;
-        closeAbout();
-        closeShain();
+        if (e.target.closest('.welcome-tabs')) return;
+        closeAll();
     });
 
     // ===== кастомный курсор =====
@@ -790,7 +759,7 @@
     }
     animateCursor();
 
-        document.addEventListener('mouseover', (e) => {
+    document.addEventListener('mouseover', (e) => {
         if (e.target.closest('a, button, .read-button, .nav-button, .dot, .welcome-character, .about-panel, .glass-tab')) {
             cursorGlow.classList.add('is-hover');
         }
@@ -810,14 +779,14 @@
         cursorGlow.style.opacity = '1';
     });
 
-        // ===== фоновое созвездие (canvas) =====
+    // ===== фоновое созвездие (canvas) =====
     (function () {
         const canvas = document.getElementById('constellation');
         const ctx = canvas.getContext('2d');
 
         let W, H, points;
-        const LINK_DIST = 150;   // макс. дистанция для линии между точками
-        const DENSITY   = 11000; // чем меньше — тем больше звёзд
+        const LINK_DIST = 150;
+        const DENSITY   = 11000;
 
         function resize() {
             W = canvas.width  = window.innerWidth;
@@ -831,8 +800,8 @@
                     vx: (Math.random() - 0.5) * 0.18,
                     vy: (Math.random() - 0.5) * 0.18,
                     r: 0.7 + Math.random() * 1.4,
-                    tw: Math.random() * Math.PI * 2,        // фаза мерцания
-                    tws: 0.008 + Math.random() * 0.02       // скорость мерцания
+                    tw: Math.random() * Math.PI * 2,
+                    tws: 0.008 + Math.random() * 0.02
                 });
             }
         }
@@ -840,7 +809,6 @@
         function draw() {
             ctx.clearRect(0, 0, W, H);
 
-            // линии-созвездия
             for (let i = 0; i < points.length; i++) {
                 for (let j = i + 1; j < points.length; j++) {
                     const dx = points[i].x - points[j].x;
@@ -858,7 +826,6 @@
                 }
             }
 
-            // звёзды (мерцают)
             for (const p of points) {
                 p.x += p.vx;
                 p.y += p.vy;
@@ -866,15 +833,12 @@
                 if (p.y < 0 || p.y > H) p.vy *= -1;
 
                 p.tw += p.tws;
-                const flick = 0.4 + (Math.sin(p.tw) + 1) / 2 * 0.6; // 0.4..1.0
+                const flick = 0.4 + (Math.sin(p.tw) + 1) / 2 * 0.6;
 
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
                 ctx.fillStyle = `rgba(207,233,255,${flick})`;
-                ctx.shadowBlur = 6;
-                ctx.shadowColor = 'rgba(180,215,255,.8)';
                 ctx.fill();
-                ctx.shadowBlur = 0;
             }
 
             requestAnimationFrame(draw);
