@@ -694,73 +694,29 @@
             inset 0 0 30px rgba(60, 200, 240, .20);
     }
 
-   .fandom-bubble.active::after { display: none; }
-
-   /* призматическая поверхность под активным пузырём */
-.prism-glow {
+   /* водное отражение под активным пузырём */
+.bubble-reflection {
     position: absolute;
-    pointer-events: none;
-    z-index: 0;
-    transform: perspective(160px) rotateX(48deg);
+    border-radius: 50%;
+    background: #111 center / cover no-repeat;
+    transform: translate(-50%, 0) scaleY(-1);
     transform-origin: top center;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.18;
+    filter: blur(8px) brightness(.7);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,.55) 0%, transparent 75%);
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,.55) 0%, transparent 75%);
 }
-/* горизонтальный штрих света */
-.prism-ray {
-    position: absolute;
-    height: 3px;
-    border-radius: 3px;
-}
-   
-    /* --- ОРБИТАЛЬНЫЕ КОЛЬЦА --- */
-    .orbit-system {
-        position: absolute;
-        top: 50%; left: 50%;
-        width: 0; height: 0;
-        transform: translate(-50%, -50%);
-        pointer-events: none;
-        z-index: 2;
-    }
-    .orbit-ring {
-        position: absolute;
-        top: 50%; left: 50%;
-        border-radius: 50%;
-        border: 1px solid rgba(160, 220, 255, .15);
-        transform: translate(-50%, -50%);
-    }
-    .orbit-ring:nth-child(1) {
-    width: 340px; height: 340px;
-    border-color: rgba(160, 220, 255, .18);
-    animation: orbitSpin 30s linear infinite;
-}
-.orbit-ring:nth-child(2) {
-    width: 430px; height: 430px;
-    border-color: rgba(140, 210, 255, .12);
-    animation: orbitSpin 45s linear infinite reverse;
-}
-.orbit-ring:nth-child(3) {
-    width: 520px; height: 520px;
-    border-color: rgba(120, 200, 255, .07);
-    animation: orbitSpin 60s linear infinite;
-}
-    .orbit-dot {
-        position: absolute;
-        width: 5px; height: 5px;
-        background: rgba(180, 230, 255, .6);
-        border-radius: 50%;
-        box-shadow: 0 0 6px rgba(160, 220, 255, .5);
-    }
-    .orbit-ring:nth-child(1) .orbit-dot:nth-child(1) { top: 0; left: 50%; transform: translate(-50%, -50%); }
-    .orbit-ring:nth-child(1) .orbit-dot:nth-child(2) { bottom: 0; left: 50%; transform: translate(-50%, 50%); }
-    .orbit-ring:nth-child(1) .orbit-dot:nth-child(3) { top: 50%; right: 0; transform: translate(50%, -50%); }
-    .orbit-ring:nth-child(2) .orbit-dot:nth-child(1) { top: 15%; left: 3%; transform: translate(-50%, -50%); }
-    .orbit-ring:nth-child(2) .orbit-dot:nth-child(2) { bottom: 10%; right: 8%; transform: translate(50%, 50%); }
-    .orbit-ring:nth-child(3) .orbit-dot:nth-child(1) { top: 8%; right: 15%; transform: translate(50%, -50%); }
-    .orbit-ring:nth-child(3) .orbit-dot:nth-child(2) { bottom: 20%; left: 5%; transform: translate(-50%, 50%); }
 
-    @keyframes orbitSpin {
-        from { transform: translate(-50%, -50%) rotate(0deg); }
-        to   { transform: translate(-50%, -50%) rotate(360deg); }
-    }
+/* контейнер орбит */
+.orbit-system {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    overflow: visible;
+}
 
     .anchor-spacer { min-height: 20vh; }
 
@@ -1112,7 +1068,7 @@
             var P1 = { x: cx, y: controlY };
             var P2 = { x: W,  y: edgeY };
 
-            wheel.querySelectorAll('.fandom-bubble, .prism-glow').forEach(function (b) { b.remove(); });
+            wheel.querySelectorAll('.fandom-bubble, .bubble-reflection').forEach(function (b) { b.remove(); });
 
             FANDOMS.forEach(function (f, i) {
                 var offset = i - activeIndex;
@@ -1137,67 +1093,94 @@
                 bubble.style.opacity = alpha;
                 bubble.style.backgroundImage = 'url(' + f.img + ')';
 
-                if (dist === 0) {
-                    var orbitSystem = document.createElement('div');
-                    orbitSystem.className = 'orbit-system';
-                    var rings = [3, 2, 2];
-                    for (var r = 0; r < 3; r++) {
-                        var ring = document.createElement('div');
-                        ring.className = 'orbit-ring';
-                        for (var d = 0; d < rings[r]; d++) {
-                            var dot = document.createElement('div');
-                            dot.className = 'orbit-dot';
-                            ring.appendChild(dot);
-                        }
-                        orbitSystem.appendChild(ring);
-                    }
-                    bubble.appendChild(orbitSystem);
-                }
+                                if (dist === 0) {
+                    // --- SVG орбиты (Checkpoint style) ---
+                    var orbitWrap = document.createElement('div');
+                    orbitWrap.className = 'orbit-system';
 
-                                               if (dist === 0) {
-                    var prism = document.createElement('div');
-                    prism.className = 'prism-glow';
-                    var pw = size * 2.4;
-                    var ph = size * 0.8;
-                    prism.style.width = pw + 'px';
-                    prism.style.height = ph + 'px';
-                    prism.style.left = (pos.x - pw / 2) + 'px';
-                    prism.style.top = (pos.y + size * 0.46) + 'px';
+                    var svgNS = 'http://www.w3.org/2000/svg';
+                    var oSvg = document.createElementNS(svgNS, 'svg');
+                    oSvg.setAttribute('width', '560');
+                    oSvg.setAttribute('height', '560');
+                    oSvg.setAttribute('viewBox', '-280 -280 560 560');
+                    oSvg.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);overflow:visible;pointer-events:none;';
 
-                    var rays = [
-                        { x:12, y:8,  w:75,  c:'255,50,120',  o:.9,  b:1.5 },
-                        { x:28, y:16, w:55,  c:'255,80,180',  o:.7,  b:1   },
-                        { x:18, y:25, w:100, c:'190,50,255',  o:.85, b:2   },
-                        { x:40, y:12, w:60,  c:'130,60,255',  o:.75, b:1.5 },
-                        { x:30, y:36, w:120, c:'60,130,255',  o:.9,  b:2.5 },
-                        { x:50, y:22, w:50,  c:'40,200,255',  o:.8,  b:1.5 },
-                        { x:22, y:45, w:90,  c:'50,230,220',  o:.85, b:2   },
-                        { x:55, y:38, w:70,  c:'80,255,150',  o:.8,  b:2   },
-                        { x:35, y:55, w:55,  c:'180,255,60',  o:.7,  b:1.5 },
-                        { x:60, y:50, w:80,  c:'255,220,40',  o:.8,  b:2   },
-                        { x:15, y:60, w:65,  c:'255,160,40',  o:.75, b:1.5 },
-                        { x:45, y:65, w:50,  c:'255,80,40',   o:.7,  b:1.5 },
-                        { x:25, y:70, w:85,  c:'255,50,100',  o:.6,  b:2   },
-                        { x:55, y:58, w:40,  c:'140,70,255',  o:.65, b:1   },
-                        { x:38, y:48, w:110, c:'70,180,255',  o:.85, b:2.5 }
-                    ];
+                    var oc = '100,210,240';
 
-                    rays.forEach(function(r) {
-                        var el = document.createElement('div');
-                        el.className = 'prism-ray';
-                        el.style.left = r.x + '%';
-                        el.style.top = r.y + '%';
-                        el.style.width = r.w + 'px';
-                        el.style.background = 'rgba(' + r.c + ',' + r.o + ')';
-                        el.style.filter = 'blur(' + r.b + 'px)';
-                        el.style.boxShadow = '0 0 ' + (r.b * 4) + 'px rgba(' + r.c + ',.6), 0 0 ' + (r.b * 8) + 'px rgba(' + r.c + ',.25)';
-                        prism.appendChild(el);
+                    // спицы
+                    [20, 80, 140, 200, 260, 320].forEach(function(a) {
+                        var rad = a * Math.PI / 180;
+                        var ln = document.createElementNS(svgNS, 'line');
+                        ln.setAttribute('x1', String(Math.cos(rad) * 148));
+                        ln.setAttribute('y1', String(Math.sin(rad) * 148));
+                        ln.setAttribute('x2', String(Math.cos(rad) * 245));
+                        ln.setAttribute('y2', String(Math.sin(rad) * 245));
+                        ln.setAttribute('stroke', 'rgba(' + oc + ',0.06)');
+                        ln.setAttribute('stroke-width', '0.5');
+                        oSvg.appendChild(ln);
                     });
 
-                    wheel.appendChild(prism);
+                    // кольца
+                    var ringDefs = [
+                        { r:138, sw:0.5, dash:'2 5',   op:0.18, spd:70,  moons:null },
+                        { r:155, sw:0.8, dash:null,     op:0.25, spd:40,  moons:[{a:0,s:5},{a:120,s:3},{a:250,s:4}] },
+                        { r:180, sw:0.7, dash:'4 14',   op:0.16, spd:-55, moons:[{a:55,s:3},{a:200,s:4}] },
+                        { r:210, sw:0.5, dash:'1.5 8',  op:0.10, spd:65,  moons:null },
+                        { r:245, sw:0.4, dash:null,      op:0.07, spd:-80, moons:[{a:30,s:3},{a:150,s:3},{a:290,s:3}] }
+                    ];
+
+                    ringDefs.forEach(function(rd) {
+                        var g = document.createElementNS(svgNS, 'g');
+                        var an = document.createElementNS(svgNS, 'animateTransform');
+                        an.setAttribute('attributeName', 'transform');
+                        an.setAttribute('type', 'rotate');
+                        an.setAttribute('from', '0');
+                        an.setAttribute('to', rd.spd > 0 ? '360' : '-360');
+                        an.setAttribute('dur', Math.abs(rd.spd) + 's');
+                        an.setAttribute('repeatCount', 'indefinite');
+                        g.appendChild(an);
+
+                        var cr = document.createElementNS(svgNS, 'circle');
+                        cr.setAttribute('cx', '0');
+                        cr.setAttribute('cy', '0');
+                        cr.setAttribute('r', String(rd.r));
+                        cr.setAttribute('fill', 'none');
+                        cr.setAttribute('stroke', 'rgba(' + oc + ',' + rd.op + ')');
+                        cr.setAttribute('stroke-width', String(rd.sw));
+                        if (rd.dash) cr.setAttribute('stroke-dasharray', rd.dash);
+                        g.appendChild(cr);
+
+                        if (rd.moons) {
+                            rd.moons.forEach(function(m) {
+                                var mr = m.a * Math.PI / 180;
+                                var mc = document.createElementNS(svgNS, 'circle');
+                                mc.setAttribute('cx', String(Math.cos(mr) * rd.r));
+                                mc.setAttribute('cy', String(Math.sin(mr) * rd.r));
+                                mc.setAttribute('r', String(m.s));
+                                mc.setAttribute('fill', 'rgba(' + oc + ',0.25)');
+                                mc.setAttribute('stroke', 'rgba(' + oc + ',0.45)');
+                                mc.setAttribute('stroke-width', '0.5');
+                                g.appendChild(mc);
+                            });
+                        }
+                        oSvg.appendChild(g);
+                    });
+
+                    orbitWrap.appendChild(oSvg);
+                    bubble.appendChild(orbitWrap);
+
+                    // --- водное отражение ---
+                    var refl = document.createElement('div');
+                    refl.className = 'bubble-reflection';
+                    refl.style.left = pos.x + 'px';
+                    refl.style.top = (pos.y + size * 0.48) + 'px';
+                    refl.style.width = (size * 0.85) + 'px';
+                    refl.style.height = (size * 0.55) + 'px';
+                    refl.style.backgroundImage = 'url(' + f.img + ')';
+                    wheel.appendChild(refl);
                 }
 
-                wheel.appendChild(bubble);;
+                wheel.appendChild(bubble);
             });
 
             arcSvg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
