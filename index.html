@@ -503,7 +503,7 @@
 
     .anchor-spacer { min-height: 20vh; }
 
-    @media (max-width: 900px) {
+        @media (max-width: 900px) {
         .navbar { height: 56px; padding: 0 22px; gap: 26px; }
         .nav-button { font-size: 22px; }
         .welcome-section { padding: 16px 16px 0; }
@@ -512,6 +512,54 @@
         .welcome-title { font-size: 44px; }
         .welcome-character { right: -10px; height: 100%; opacity: .92; }
         .welcome-back-glass { left: 8px; right: -8px; }
+    }
+
+    /* ===== НОУТБУКИ: 901–1500px по ширине ===== */
+    @media (min-width: 901px) and (max-width: 1500px) {
+        .nav-button { font-size: 24px; }
+
+        .welcome-assembly { height: 60vh; min-height: 460px; }
+
+        .welcome-title  { font-size: clamp(44px, 4.2vw, 70px); }
+        .shain-title    { font-size: clamp(34px, 3vw, 54px); }
+        .welcome-subtitle { font-size: clamp(18px, 1.6vw, 26px); }
+
+        .welcome-character { right: 24%; }
+
+        /* панель "обо мне" — уже и компактнее */
+        .about-panel {
+            width: 46%;
+            max-height: 50%;
+            padding: 22px 26px;
+            top: 52%;
+        }
+        .about-panel h2 { font-size: clamp(24px, 2vw, 34px); margin-bottom: 12px; }
+        .about-panel p  { font-size: clamp(14px, 1vw, 18px); line-height: 1.45; }
+
+        /* панель Шейн — отодвинуть вниз от имени, дать больше высоты */
+        .shain-copy { right: 5%; }
+        .welcome-assembly.shain-open .shain-copy {
+            transform: translateY(-50%) translateZ(40px) translateY(-130px);
+        }
+        .shain-panel {
+            width: 56%;
+            max-height: 52%;
+            padding: 22px 26px;
+            top: 54%;
+        }
+        .shain-panel p { font-size: clamp(14px, 1vw, 18px); line-height: 1.45; }
+    }
+
+    /* ===== НИЗКИЕ ЭКРАНЫ по высоте (ноуты 768px и ниже) ===== */
+    @media (max-height: 800px) {
+        .welcome-assembly { height: 66vh; min-height: 420px; }
+        .welcome-character { bottom: -2%; height: 110%; }
+
+        .about-panel  { max-height: 56%; top: 52%; }
+        .shain-panel  { max-height: 56%; top: 56%; }
+        .welcome-assembly.shain-open .shain-copy {
+            transform: translateY(-50%) translateZ(40px) translateY(-140px);
+        }
     }
 </style>
 </head>
