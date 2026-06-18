@@ -210,7 +210,7 @@
         transform: translateZ(60px) translateX(60%);
     }
 
-    /* стеклянная панель "обо мне" */
+       /* стеклянная панель "обо мне" */
     .about-panel {
         position: absolute;
         z-index: 24;
@@ -230,19 +230,20 @@
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
         transition: opacity .5s ease, transform .5s ease;
+        -webkit-font-smoothing: antialiased;
+        backface-visibility: hidden;
+        will-change: transform;
     }
     .welcome-assembly.about-open .about-panel {
         opacity: 1;
         pointer-events: auto;
-        transform: translateY(-50%) translateZ(45px) translateX(0);
-        -webkit-font-smoothing: antialiased;
-        transform-style: flat;
-        backface-visibility: hidden;
-    }
-        .welcome-assembly.about-open .about-panel {
-        opacity: 1;
-        pointer-events: auto;
         transform: translateZ(45px) translateY(0);
+    }
+    .about-panel h2 {
+        margin: 0 0 18px;
+        font-size: clamp(28px, 2.4vw, 44px);
+        font-weight: 400;
+        letter-spacing: .02em;
     }
     .about-panel p {
         margin: 0 0 14px;
