@@ -696,24 +696,19 @@
 
    .fandom-bubble.active::after { display: none; }
 
-   /* призматическое отражение — контейнер */
+   /* призматическая поверхность под активным пузырём */
 .prism-glow {
     position: absolute;
     pointer-events: none;
     z-index: 0;
+    transform: perspective(160px) rotateX(48deg);
+    transform-origin: top center;
 }
-/* луч */
+/* горизонтальный штрих света */
 .prism-ray {
     position: absolute;
-    top: 0;
-    left: 0;
-    transform-origin: top center;
-    border-radius: 0 0 2px 2px;
-}
-/* осколок-блик */
-.prism-spark {
-    position: absolute;
-    border-radius: 50%;
+    height: 3px;
+    border-radius: 3px;
 }
    
     /* --- ОРБИТАЛЬНЫЕ КОЛЬЦА --- */
@@ -1159,63 +1154,43 @@
                     bubble.appendChild(orbitSystem);
                 }
 
-                                if (dist === 0) {
+                                               if (dist === 0) {
                     var prism = document.createElement('div');
                     prism.className = 'prism-glow';
-                    prism.style.left = pos.x + 'px';
-                    prism.style.top = (pos.y + size * 0.44) + 'px';
+                    var pw = size * 2.4;
+                    var ph = size * 0.8;
+                    prism.style.width = pw + 'px';
+                    prism.style.height = ph + 'px';
+                    prism.style.left = (pos.x - pw / 2) + 'px';
+                    prism.style.top = (pos.y + size * 0.46) + 'px';
 
                     var rays = [
-                        { a:-40, c:'255,50,100',  w:2.5, h:95,  b:1.5, o:.9  },
-                        { a:-33, c:'255,70,170',  w:1.5, h:65,  b:1,   o:.7  },
-                        { a:-25, c:'190,50,255',  w:3,   h:135, b:2,   o:.85 },
-                        { a:-17, c:'120,70,255',  w:2,   h:105, b:1.5, o:.8  },
-                        { a:-9,  c:'55,130,255',  w:3,   h:160, b:2,   o:.9  },
-                        { a:-3,  c:'40,200,255',  w:2,   h:115, b:1,   o:.85 },
-                        { a:4,   c:'45,235,210',  w:2.5, h:145, b:2,   o:.85 },
-                        { a:11,  c:'70,255,140',  w:2,   h:95,  b:1.5, o:.75 },
-                        { a:19,  c:'170,255,55',  w:3,   h:125, b:2,   o:.8  },
-                        { a:27,  c:'255,215,35',  w:1.5, h:80,  b:1,   o:.7  },
-                        { a:34,  c:'255,145,35',  w:2.5, h:110, b:1.5, o:.85 },
-                        { a:41,  c:'255,75,45',   w:2,   h:70,  b:1,   o:.7  }
+                        { x:12, y:8,  w:75,  c:'255,50,120',  o:.9,  b:1.5 },
+                        { x:28, y:16, w:55,  c:'255,80,180',  o:.7,  b:1   },
+                        { x:18, y:25, w:100, c:'190,50,255',  o:.85, b:2   },
+                        { x:40, y:12, w:60,  c:'130,60,255',  o:.75, b:1.5 },
+                        { x:30, y:36, w:120, c:'60,130,255',  o:.9,  b:2.5 },
+                        { x:50, y:22, w:50,  c:'40,200,255',  o:.8,  b:1.5 },
+                        { x:22, y:45, w:90,  c:'50,230,220',  o:.85, b:2   },
+                        { x:55, y:38, w:70,  c:'80,255,150',  o:.8,  b:2   },
+                        { x:35, y:55, w:55,  c:'180,255,60',  o:.7,  b:1.5 },
+                        { x:60, y:50, w:80,  c:'255,220,40',  o:.8,  b:2   },
+                        { x:15, y:60, w:65,  c:'255,160,40',  o:.75, b:1.5 },
+                        { x:45, y:65, w:50,  c:'255,80,40',   o:.7,  b:1.5 },
+                        { x:25, y:70, w:85,  c:'255,50,100',  o:.6,  b:2   },
+                        { x:55, y:58, w:40,  c:'140,70,255',  o:.65, b:1   },
+                        { x:38, y:48, w:110, c:'70,180,255',  o:.85, b:2.5 }
                     ];
 
                     rays.forEach(function(r) {
                         var el = document.createElement('div');
                         el.className = 'prism-ray';
+                        el.style.left = r.x + '%';
+                        el.style.top = r.y + '%';
                         el.style.width = r.w + 'px';
-                        el.style.height = r.h + 'px';
-                        el.style.transform = 'rotate(' + r.a + 'deg)';
-                        el.style.background = 'linear-gradient(to bottom, rgba(' + r.c + ',' + r.o + ') 0%, rgba(' + r.c + ',.2) 45%, transparent 100%)';
+                        el.style.background = 'rgba(' + r.c + ',' + r.o + ')';
                         el.style.filter = 'blur(' + r.b + 'px)';
-                        el.style.boxShadow = '0 0 ' + (r.w + 3) + 'px rgba(' + r.c + ',.5)';
-                        prism.appendChild(el);
-                    });
-
-                    var sparks = [
-                        { a:-32, d:80,  c:'255,80,200',  s:5, o:.9  },
-                        { a:-18, d:120, c:'140,80,255',   s:4, o:.8  },
-                        { a:-7,  d:100, c:'60,160,255',   s:6, o:.9  },
-                        { a:6,   d:130, c:'50,240,210',   s:5, o:.85 },
-                        { a:16,  d:85,  c:'100,255,120',  s:4, o:.8  },
-                        { a:29,  d:105, c:'255,200,40',   s:5, o:.85 },
-                        { a:-25, d:55,  c:'180,50,255',   s:3, o:.75 },
-                        { a:38,  d:60,  c:'255,120,50',   s:3, o:.7  }
-                    ];
-
-                    sparks.forEach(function(s) {
-                        var el = document.createElement('div');
-                        el.className = 'prism-spark';
-                        var rad = s.a * Math.PI / 180;
-                        var sx = Math.sin(rad) * s.d;
-                        var sy = Math.cos(rad) * s.d;
-                        el.style.left = sx + 'px';
-                        el.style.top = sy + 'px';
-                        el.style.width = s.s + 'px';
-                        el.style.height = s.s + 'px';
-                        el.style.background = 'rgba(' + s.c + ',' + s.o + ')';
-                        el.style.boxShadow = '0 0 ' + (s.s * 2) + 'px rgba(' + s.c + ',.8), 0 0 ' + (s.s * 4) + 'px rgba(' + s.c + ',.4)';
-                        el.style.transform = 'translate(-50%, -50%)';
+                        el.style.boxShadow = '0 0 ' + (r.b * 4) + 'px rgba(' + r.c + ',.6), 0 0 ' + (r.b * 8) + 'px rgba(' + r.c + ',.25)';
                         prism.appendChild(el);
                     });
 
