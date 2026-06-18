@@ -1094,42 +1094,43 @@
                 bubble.style.backgroundImage = 'url(' + f.img + ')';
 
                                 if (dist === 0) {
-                    // --- SVG орбиты (Checkpoint style) ---
+                                        // --- SVG орбиты ---
                     var orbitWrap = document.createElement('div');
                     orbitWrap.className = 'orbit-system';
 
                     var svgNS = 'http://www.w3.org/2000/svg';
                     var oSvg = document.createElementNS(svgNS, 'svg');
-                    oSvg.setAttribute('width', '560');
-                    oSvg.setAttribute('height', '560');
-                    oSvg.setAttribute('viewBox', '-280 -280 560 560');
+                    oSvg.setAttribute('width', '900');
+                    oSvg.setAttribute('height', '900');
+                    oSvg.setAttribute('viewBox', '-450 -450 900 900');
                     oSvg.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);overflow:visible;pointer-events:none;';
 
-                    var oc = '100,210,240';
+                    var oc = '120,225,245';
+                    var runes = 'ᚠ ᚢ ᚦ ᚨ ᚱ ᚲ ᚷ ᚹ ᚺ ᚾ ᛁ ᛃ ᛇ ᛈ ᛉ ᛊ ᛏ ᛒ ᛖ ᛗ ᛚ ᛝ ᛞ ᛟ ᚠ ᚢ ᚦ ᚨ ᚱ ᚲ ᚷ ᚹ ᚺ ᚾ ᛁ ᛃ ᛇ ᛈ ᛉ ᛊ ᛏ ᛒ ᛖ ᛗ ᛚ ᛝ ᛞ ᛟ';
 
                     // спицы
-                    [20, 80, 140, 200, 260, 320].forEach(function(a) {
+                    [0, 45, 90, 135, 180, 225, 270, 315].forEach(function(a) {
                         var rad = a * Math.PI / 180;
                         var ln = document.createElementNS(svgNS, 'line');
                         ln.setAttribute('x1', String(Math.cos(rad) * 148));
                         ln.setAttribute('y1', String(Math.sin(rad) * 148));
-                        ln.setAttribute('x2', String(Math.cos(rad) * 245));
-                        ln.setAttribute('y2', String(Math.sin(rad) * 245));
+                        ln.setAttribute('x2', String(Math.cos(rad) * 420));
+                        ln.setAttribute('y2', String(Math.sin(rad) * 420));
                         ln.setAttribute('stroke', 'rgba(' + oc + ',0.06)');
                         ln.setAttribute('stroke-width', '0.5');
                         oSvg.appendChild(ln);
                     });
 
-                    // кольца
                     var ringDefs = [
-                        { r:138, sw:0.5, dash:'2 5',   op:0.18, spd:70,  moons:null },
-                        { r:155, sw:0.8, dash:null,     op:0.25, spd:40,  moons:[{a:0,s:5},{a:120,s:3},{a:250,s:4}] },
-                        { r:180, sw:0.7, dash:'4 14',   op:0.16, spd:-55, moons:[{a:55,s:3},{a:200,s:4}] },
-                        { r:210, sw:0.5, dash:'1.5 8',  op:0.10, spd:65,  moons:null },
-                        { r:245, sw:0.4, dash:null,      op:0.07, spd:-80, moons:[{a:30,s:3},{a:150,s:3},{a:290,s:3}] }
+                        { r:148, sw:0.8, dash:'3 6',   op:0.25, spd:80,  moons:null,                                        runeRing:false },
+                        { r:185, sw:1.0, dash:null,     op:0.30, spd:50,  moons:[{a:0,s:8},{a:110,s:5},{a:230,s:6}],         runeRing:false },
+                        { r:235, sw:0.6, dash:null,     op:0.12, spd:-70, moons:null,                                        runeRing:true  },
+                        { r:295, sw:0.8, dash:'5 16',   op:0.22, spd:60,  moons:[{a:40,s:7},{a:160,s:9},{a:280,s:5}],        runeRing:false },
+                        { r:360, sw:0.5, dash:'2 10',   op:0.14, spd:-90, moons:[{a:70,s:5},{a:200,s:5}],                    runeRing:false },
+                        { r:420, sw:0.4, dash:null,     op:0.08, spd:100, moons:[{a:20,s:4},{a:130,s:4},{a:260,s:4}],        runeRing:false }
                     ];
 
-                    ringDefs.forEach(function(rd) {
+                    ringDefs.forEach(function(rd, ri) {
                         var g = document.createElementNS(svgNS, 'g');
                         var an = document.createElementNS(svgNS, 'animateTransform');
                         an.setAttribute('attributeName', 'transform');
@@ -1150,6 +1151,30 @@
                         if (rd.dash) cr.setAttribute('stroke-dasharray', rd.dash);
                         g.appendChild(cr);
 
+                        // руны
+                        if (rd.runeRing) {
+                            var defEl = document.createElementNS(svgNS, 'defs');
+                            var pathId = 'runePath' + ri;
+                            var rp = document.createElementNS(svgNS, 'path');
+                            rp.setAttribute('id', pathId);
+                            rp.setAttribute('d', 'M -' + rd.r + ',0 A ' + rd.r + ',' + rd.r + ' 0 1,1 -' + rd.r + ',-0.01');
+                            rp.setAttribute('fill', 'none');
+                            defEl.appendChild(rp);
+                            g.appendChild(defEl);
+
+                            var txt = document.createElementNS(svgNS, 'text');
+                            txt.setAttribute('fill', 'rgba(' + oc + ',0.18)');
+                            txt.setAttribute('font-size', '11');
+                            txt.setAttribute('font-family', 'serif');
+                            txt.setAttribute('letter-spacing', '6');
+                            var tp = document.createElementNS(svgNS, 'textPath');
+                            tp.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + pathId);
+                            tp.textContent = runes;
+                            txt.appendChild(tp);
+                            g.appendChild(txt);
+                        }
+
+                        // луны
                         if (rd.moons) {
                             rd.moons.forEach(function(m) {
                                 var mr = m.a * Math.PI / 180;
@@ -1157,9 +1182,9 @@
                                 mc.setAttribute('cx', String(Math.cos(mr) * rd.r));
                                 mc.setAttribute('cy', String(Math.sin(mr) * rd.r));
                                 mc.setAttribute('r', String(m.s));
-                                mc.setAttribute('fill', 'rgba(' + oc + ',0.25)');
+                                mc.setAttribute('fill', 'rgba(' + oc + ',0.20)');
                                 mc.setAttribute('stroke', 'rgba(' + oc + ',0.45)');
-                                mc.setAttribute('stroke-width', '0.5');
+                                mc.setAttribute('stroke-width', '0.8');
                                 g.appendChild(mc);
                             });
                         }
