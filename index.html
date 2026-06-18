@@ -623,7 +623,10 @@
         letter-spacing: .06em;
         margin-top: clamp(18px, 2.5vh, 42px);
         text-shadow: 0 0 4px rgba(0,0,0,.6), 0 0 20px rgba(0,0,0,.55);
+        opacity: 1;
+        transition: opacity .3s ease;
     }
+    .fandom-name.fade { opacity: 0; }
 
     .fandom-wheel {
         position: relative;
@@ -631,11 +634,8 @@
         width: 100%;
         height: clamp(300px, 40vh, 480px);
         margin-top: 10px;
+        touch-action: pan-y;
     }
-
-    .fandom-arc {
-    display: none;
-}
 
     /* --- ПУЗЫРИ --- */
     .fandom-bubble {
@@ -643,19 +643,18 @@
         border-radius: 50%;
         background: #111 center / cover no-repeat;
         transform: translate(-50%, -50%);
-        transition: all .5s ease;
         border: 1px solid rgba(180, 225, 255, .25);
         box-shadow:
             0 0 20px rgba(180, 220, 255, .30),
             0 0 50px rgba(150, 200, 255, .12);
+        will-change: left, top, width, height;
     }
 
-    /* неактивные — обрезаем содержимое кругом */
     .fandom-bubble:not(.active) {
         overflow: hidden;
+        cursor: none;
     }
 
-    /* стеклянная дымка поверх неактивных */
     .fandom-bubble:not(.active)::before {
         content: "";
         position: absolute;
@@ -668,7 +667,6 @@
         pointer-events: none;
     }
 
-    /* стеклянный блик сверху на неактивных */
     .fandom-bubble:not(.active)::after {
         content: "";
         position: absolute;
@@ -680,9 +678,7 @@
         pointer-events: none;
     }
 
-    /* активный пузырь — мощная бирюзовая аура */
     .fandom-bubble.active {
-        background: #111 center / cover no-repeat;
         border-color: rgba(100, 220, 240, .50);
         box-shadow:
             0 0 20px rgba(80, 210, 235, .70),
@@ -694,29 +690,28 @@
             inset 0 0 30px rgba(60, 200, 240, .20);
     }
 
-   /* водное отражение под активным пузырём */
-.bubble-reflection {
-    position: absolute;
-    border-radius: 50%;
-    background: #111 center / cover no-repeat;
-    transform: translate(-50%, 0) scaleY(-1);
-    transform-origin: top center;
-    pointer-events: none;
-    z-index: 1;
-    opacity: 0.18;
-    filter: blur(8px) brightness(.7);
-    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,.55) 0%, transparent 75%);
-    mask-image: linear-gradient(to bottom, rgba(0,0,0,.55) 0%, transparent 75%);
-}
+    .bubble-reflection {
+        position: absolute;
+        border-radius: 50%;
+        background: #111 center / cover no-repeat;
+        transform: translate(-50%, 0) scaleY(-1);
+        transform-origin: top center;
+        pointer-events: none;
+        z-index: 1;
+        opacity: 0;
+        filter: blur(8px) brightness(.7);
+        will-change: left, top, width, height, opacity;
+        -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,.55) 0%, transparent 75%);
+        mask-image: linear-gradient(to bottom, rgba(0,0,0,.55) 0%, transparent 75%);
+    }
 
-/* контейнер орбит */
-.orbit-system {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 2;
-    overflow: visible;
-}
+    .orbit-system {
+        position: absolute;
+        pointer-events: none;
+        z-index: 2;
+        overflow: visible;
+        will-change: left, top;
+    }
 
     .anchor-spacer { min-height: 20vh; }
 
@@ -839,9 +834,7 @@
             <div class="fandom-bg-wrap" id="fandomBgWrap"></div>
             <h2 class="fandom-heading">КРУТИ И ВЫБИРАЙ<br>ФАНДОМ</h2>
             <div class="fandom-name" id="fandomName">ПРОМЕТЕЙ</div>
-            <div class="fandom-wheel" id="fandomWheel">
-                <svg class="fandom-arc" id="fandomArc"></svg>
-            </div>
+            <div class="fandom-wheel" id="fandomWheel"></div>
         </div>
         <div class="welcome-dots" aria-hidden="true">
             <span class="dot small"><span class="dot-inner">✦</span></span>
@@ -954,12 +947,12 @@
     animateCursor();
 
     document.addEventListener('mouseover', (e) => {
-        if (e.target.closest('a, button, .read-button, .nav-button, .dot, .welcome-character, .about-panel, .glass-tab')) {
+        if (e.target.closest('a, button, .read-button, .nav-button, .dot, .welcome-character, .about-panel, .glass-tab, .fandom-bubble')) {
             cursorGlow.classList.add('is-hover');
         }
     });
     document.addEventListener('mouseout', (e) => {
-        if (e.target.closest('a, button, .read-button, .nav-button, .dot, .welcome-character, .about-panel, .glass-tab')) {
+        if (e.target.closest('a, button, .read-button, .nav-button, .dot, .welcome-character, .about-panel, .glass-tab, .fandom-bubble')) {
             cursorGlow.classList.remove('is-hover');
         }
     });
@@ -1020,7 +1013,7 @@
         draw();
     })();
 
-    // ===== полуколесо фандомов =====
+    // ===== полуколесо фандомов (lerp-движок) =====
     (function () {
         const FANDOMS = [
             { name: 'ПРОМЕТЕЙ',               img: 'Prometheus.png' },
@@ -1031,13 +1024,16 @@
 
         const STEP_T    = 0.17;
         const BASE_SIZE = 250;
+        const LERP      = 0.14; // скорость плавности (0.08 медленнее, 0.20 быстрее)
         let activeIndex = 0;
 
         const wheel  = document.getElementById('fandomWheel');
         const nameEl = document.getElementById('fandomName');
-        const arcSvg = document.getElementById('fandomArc');
         const bgWrap = document.getElementById('fandomBgWrap');
 
+        const svgNS = 'http://www.w3.org/2000/svg';
+
+        // --- фоны ---
         FANDOMS.forEach(function (f, i) {
             var img = document.createElement('img');
             img.className = 'fandom-bg' + (i === activeIndex ? ' active' : '');
@@ -1047,6 +1043,152 @@
             bgWrap.appendChild(img);
         });
 
+        // --- орбита (строится один раз, следует за активным через lerp) ---
+        var orbitSystem = document.createElement('div');
+        orbitSystem.className = 'orbit-system';
+        orbitSystem.style.width = '0';
+        orbitSystem.style.height = '0';
+
+        var oSvg = document.createElementNS(svgNS, 'svg');
+        oSvg.setAttribute('width', '900');
+        oSvg.setAttribute('height', '900');
+        oSvg.setAttribute('viewBox', '-450 -450 900 900');
+        oSvg.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);overflow:visible;pointer-events:none;';
+
+        var oc = '120,225,245';
+        var runes = 'ᚠ ᚢ ᚦ ᚨ ᚱ ᚲ ᚷ ᚹ ᚺ ᚾ ᛁ ᛃ ᛇ ᛈ ᛉ ᛊ ᛏ ᛒ ᛖ ᛗ ᛚ ᛝ ᛞ ᛟ ᚠ ᚢ ᚦ ᚨ ᚱ ᚲ ᚷ ᚹ ᚺ ᚾ ᛁ ᛃ ᛇ ᛈ ᛉ ᛊ ᛏ ᛒ ᛖ ᛗ ᛚ ᛝ ᛞ ᛟ';
+
+        // спицы
+        [0, 45, 90, 135, 180, 225, 270, 315].forEach(function(a) {
+            var rad = a * Math.PI / 180;
+            var ln = document.createElementNS(svgNS, 'line');
+            ln.setAttribute('x1', String(Math.cos(rad) * 148));
+            ln.setAttribute('y1', String(Math.sin(rad) * 148));
+            ln.setAttribute('x2', String(Math.cos(rad) * 420));
+            ln.setAttribute('y2', String(Math.sin(rad) * 420));
+            ln.setAttribute('stroke', 'rgba(' + oc + ',0.06)');
+            ln.setAttribute('stroke-width', '0.5');
+            oSvg.appendChild(ln);
+        });
+
+        var ringDefs = [
+            { r:148, sw:0.8, dash:'3 6',   op:0.25, spd:80,  moons:null,                                 runeRing:false },
+            { r:185, sw:1.0, dash:null,     op:0.30, spd:50,  moons:[{a:0,s:8},{a:110,s:5},{a:230,s:6}],  runeRing:false },
+            { r:235, sw:0.6, dash:null,     op:0.12, spd:-70, moons:null,                                 runeRing:true  },
+            { r:295, sw:0.8, dash:'5 16',   op:0.22, spd:60,  moons:[{a:40,s:7},{a:160,s:9},{a:280,s:5}], runeRing:false },
+            { r:360, sw:0.5, dash:'2 10',   op:0.14, spd:-90, moons:[{a:70,s:5},{a:200,s:5}],             runeRing:false },
+            { r:420, sw:0.4, dash:null,     op:0.08, spd:100, moons:[{a:20,s:4},{a:130,s:4},{a:260,s:4}], runeRing:false }
+        ];
+
+        ringDefs.forEach(function(rd, ri) {
+            var g = document.createElementNS(svgNS, 'g');
+            var an = document.createElementNS(svgNS, 'animateTransform');
+            an.setAttribute('attributeName', 'transform');
+            an.setAttribute('type', 'rotate');
+            an.setAttribute('from', '0');
+            an.setAttribute('to', rd.spd > 0 ? '360' : '-360');
+            an.setAttribute('dur', Math.abs(rd.spd) + 's');
+            an.setAttribute('repeatCount', 'indefinite');
+            g.appendChild(an);
+
+            var cr = document.createElementNS(svgNS, 'circle');
+            cr.setAttribute('cx', '0');
+            cr.setAttribute('cy', '0');
+            cr.setAttribute('r', String(rd.r));
+            cr.setAttribute('fill', 'none');
+            cr.setAttribute('stroke', 'rgba(' + oc + ',' + rd.op + ')');
+            cr.setAttribute('stroke-width', String(rd.sw));
+            if (rd.dash) cr.setAttribute('stroke-dasharray', rd.dash);
+            g.appendChild(cr);
+
+            if (rd.runeRing) {
+                var defEl = document.createElementNS(svgNS, 'defs');
+                var pathId = 'runePath' + ri;
+                var rp = document.createElementNS(svgNS, 'path');
+                rp.setAttribute('id', pathId);
+                rp.setAttribute('d', 'M -' + rd.r + ',0 A ' + rd.r + ',' + rd.r + ' 0 1,1 -' + rd.r + ',-0.01');
+                rp.setAttribute('fill', 'none');
+                defEl.appendChild(rp);
+                g.appendChild(defEl);
+
+                var txt = document.createElementNS(svgNS, 'text');
+                txt.setAttribute('fill', 'rgba(' + oc + ',0.18)');
+                txt.setAttribute('font-size', '11');
+                txt.setAttribute('font-family', 'serif');
+                txt.setAttribute('letter-spacing', '6');
+                var tp = document.createElementNS(svgNS, 'textPath');
+                tp.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + pathId);
+                tp.textContent = runes;
+                txt.appendChild(tp);
+                g.appendChild(txt);
+            }
+
+            if (rd.moons) {
+                rd.moons.forEach(function(m) {
+                    var mr = m.a * Math.PI / 180;
+                    var mc = document.createElementNS(svgNS, 'circle');
+                    mc.setAttribute('cx', String(Math.cos(mr) * rd.r));
+                    mc.setAttribute('cy', String(Math.sin(mr) * rd.r));
+                    mc.setAttribute('r', String(m.s));
+                    mc.setAttribute('fill', 'rgba(' + oc + ',0.20)');
+                    mc.setAttribute('stroke', 'rgba(' + oc + ',0.45)');
+                    mc.setAttribute('stroke-width', '0.8');
+                    g.appendChild(mc);
+                });
+            }
+            oSvg.appendChild(g);
+        });
+
+        orbitSystem.appendChild(oSvg);
+        wheel.appendChild(orbitSystem);
+
+        // --- отражение ---
+        var refl = document.createElement('div');
+        refl.className = 'bubble-reflection';
+        refl.style.backgroundImage = 'url(' + FANDOMS[0].img + ')';
+        wheel.appendChild(refl);
+
+        // --- пузыри (создаются один раз) ---
+        var bubbleData = []; // {el, x, y, tx, ty, size, tSize, opacity, tOpacity, isActive}
+
+        FANDOMS.forEach(function (f, i) {
+            var el = document.createElement('div');
+            el.className = 'fandom-bubble';
+            el.style.backgroundImage = 'url(' + f.img + ')';
+            el.style.left = '50%';
+            el.style.top = '50%';
+            el.style.width = '0px';
+            el.style.height = '0px';
+            el.style.opacity = '0';
+            wheel.appendChild(el);
+
+            bubbleData.push({
+                el: el,
+                x: 0, y: 0,           // текущая позиция (центр)
+                tx: 0, ty: 0,         // целевая позиция
+                size: 0, tSize: 0,    // текущий/целевой размер
+                opacity: 0, tOpacity: 0,
+                active: false
+            });
+
+            el.addEventListener('click', function (e) {
+                e.stopPropagation();
+                if (wasDragging) return;
+                if (i === activeIndex) return;
+                var N = FANDOMS.length;
+                var diff = i - activeIndex;
+                if (diff > N / 2)  diff -= N;
+                if (diff < -N / 2) diff += N;
+                // едем по шагам — одно нажатие = один сдвиг
+                go(diff > 0 ? 1 : -1);
+                if (Math.abs(diff) > 1) {
+                    pendingSteps = Math.abs(diff) - 1;
+                    pendingDir = diff > 0 ? 1 : -1;
+                }
+            });
+        });
+
+        // --- вычисление целевых позиций ---
         function bezier(t, P0, P1, P2) {
             var mt = 1 - t;
             return {
@@ -1055,7 +1197,7 @@
             };
         }
 
-        function renderWheel() {
+        function computeTargets() {
             var W = wheel.offsetWidth;
             var H = wheel.offsetHeight;
             var cx = W / 2;
@@ -1068,165 +1210,180 @@
             var P1 = { x: cx, y: controlY };
             var P2 = { x: W,  y: edgeY };
 
-            wheel.querySelectorAll('.fandom-bubble, .bubble-reflection').forEach(function (b) { b.remove(); });
-
-            FANDOMS.forEach(function (f, i) {
+            bubbleData.forEach(function (b, i) {
                 var offset = i - activeIndex;
                 if (offset > N / 2)  offset -= N;
                 if (offset < -N / 2) offset += N;
 
                 var t = 0.5 + offset * STEP_T;
-                if (t < -0.05 || t > 1.05) return;
+                var dist = Math.abs(offset);
+                var visible = (t >= -0.05 && t <= 1.05);
+
+                if (!visible) {
+                    b.tx = cx;
+                    b.ty = H / 2;
+                    b.tSize = 0;
+                    b.tOpacity = 0;
+                    b.active = false;
+                    return;
+                }
 
                 var clamped = Math.max(0, Math.min(1, t));
                 var pos  = bezier(clamped, P0, P1, P2);
-                var dist = Math.abs(offset);
                 var size = dist === 0 ? BASE_SIZE : Math.max(55, BASE_SIZE - dist * 65);
                 var alpha = dist === 0 ? 1 : Math.max(0.18, 1 - dist * 0.30);
 
-                var bubble = document.createElement('div');
-                bubble.className = 'fandom-bubble' + (dist === 0 ? ' active' : '');
-                bubble.style.left    = pos.x + 'px';
-                bubble.style.top     = pos.y + 'px';
-                bubble.style.width   = size + 'px';
-                bubble.style.height  = size + 'px';
-                bubble.style.opacity = alpha;
-                bubble.style.backgroundImage = 'url(' + f.img + ')';
-
-                                if (dist === 0) {
-                                        // --- SVG орбиты ---
-                    var orbitWrap = document.createElement('div');
-                    orbitWrap.className = 'orbit-system';
-
-                    var svgNS = 'http://www.w3.org/2000/svg';
-                    var oSvg = document.createElementNS(svgNS, 'svg');
-                    oSvg.setAttribute('width', '900');
-                    oSvg.setAttribute('height', '900');
-                    oSvg.setAttribute('viewBox', '-450 -450 900 900');
-                    oSvg.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);overflow:visible;pointer-events:none;';
-
-                    var oc = '120,225,245';
-                    var runes = 'ᚠ ᚢ ᚦ ᚨ ᚱ ᚲ ᚷ ᚹ ᚺ ᚾ ᛁ ᛃ ᛇ ᛈ ᛉ ᛊ ᛏ ᛒ ᛖ ᛗ ᛚ ᛝ ᛞ ᛟ ᚠ ᚢ ᚦ ᚨ ᚱ ᚲ ᚷ ᚹ ᚺ ᚾ ᛁ ᛃ ᛇ ᛈ ᛉ ᛊ ᛏ ᛒ ᛖ ᛗ ᛚ ᛝ ᛞ ᛟ';
-
-                    // спицы
-                    [0, 45, 90, 135, 180, 225, 270, 315].forEach(function(a) {
-                        var rad = a * Math.PI / 180;
-                        var ln = document.createElementNS(svgNS, 'line');
-                        ln.setAttribute('x1', String(Math.cos(rad) * 148));
-                        ln.setAttribute('y1', String(Math.sin(rad) * 148));
-                        ln.setAttribute('x2', String(Math.cos(rad) * 420));
-                        ln.setAttribute('y2', String(Math.sin(rad) * 420));
-                        ln.setAttribute('stroke', 'rgba(' + oc + ',0.06)');
-                        ln.setAttribute('stroke-width', '0.5');
-                        oSvg.appendChild(ln);
-                    });
-
-                    var ringDefs = [
-                        { r:148, sw:0.8, dash:'3 6',   op:0.25, spd:80,  moons:null,                                        runeRing:false },
-                        { r:185, sw:1.0, dash:null,     op:0.30, spd:50,  moons:[{a:0,s:8},{a:110,s:5},{a:230,s:6}],         runeRing:false },
-                        { r:235, sw:0.6, dash:null,     op:0.12, spd:-70, moons:null,                                        runeRing:true  },
-                        { r:295, sw:0.8, dash:'5 16',   op:0.22, spd:60,  moons:[{a:40,s:7},{a:160,s:9},{a:280,s:5}],        runeRing:false },
-                        { r:360, sw:0.5, dash:'2 10',   op:0.14, spd:-90, moons:[{a:70,s:5},{a:200,s:5}],                    runeRing:false },
-                        { r:420, sw:0.4, dash:null,     op:0.08, spd:100, moons:[{a:20,s:4},{a:130,s:4},{a:260,s:4}],        runeRing:false }
-                    ];
-
-                    ringDefs.forEach(function(rd, ri) {
-                        var g = document.createElementNS(svgNS, 'g');
-                        var an = document.createElementNS(svgNS, 'animateTransform');
-                        an.setAttribute('attributeName', 'transform');
-                        an.setAttribute('type', 'rotate');
-                        an.setAttribute('from', '0');
-                        an.setAttribute('to', rd.spd > 0 ? '360' : '-360');
-                        an.setAttribute('dur', Math.abs(rd.spd) + 's');
-                        an.setAttribute('repeatCount', 'indefinite');
-                        g.appendChild(an);
-
-                        var cr = document.createElementNS(svgNS, 'circle');
-                        cr.setAttribute('cx', '0');
-                        cr.setAttribute('cy', '0');
-                        cr.setAttribute('r', String(rd.r));
-                        cr.setAttribute('fill', 'none');
-                        cr.setAttribute('stroke', 'rgba(' + oc + ',' + rd.op + ')');
-                        cr.setAttribute('stroke-width', String(rd.sw));
-                        if (rd.dash) cr.setAttribute('stroke-dasharray', rd.dash);
-                        g.appendChild(cr);
-
-                        // руны
-                        if (rd.runeRing) {
-                            var defEl = document.createElementNS(svgNS, 'defs');
-                            var pathId = 'runePath' + ri;
-                            var rp = document.createElementNS(svgNS, 'path');
-                            rp.setAttribute('id', pathId);
-                            rp.setAttribute('d', 'M -' + rd.r + ',0 A ' + rd.r + ',' + rd.r + ' 0 1,1 -' + rd.r + ',-0.01');
-                            rp.setAttribute('fill', 'none');
-                            defEl.appendChild(rp);
-                            g.appendChild(defEl);
-
-                            var txt = document.createElementNS(svgNS, 'text');
-                            txt.setAttribute('fill', 'rgba(' + oc + ',0.18)');
-                            txt.setAttribute('font-size', '11');
-                            txt.setAttribute('font-family', 'serif');
-                            txt.setAttribute('letter-spacing', '6');
-                            var tp = document.createElementNS(svgNS, 'textPath');
-                            tp.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + pathId);
-                            tp.textContent = runes;
-                            txt.appendChild(tp);
-                            g.appendChild(txt);
-                        }
-
-                        // луны
-                        if (rd.moons) {
-                            rd.moons.forEach(function(m) {
-                                var mr = m.a * Math.PI / 180;
-                                var mc = document.createElementNS(svgNS, 'circle');
-                                mc.setAttribute('cx', String(Math.cos(mr) * rd.r));
-                                mc.setAttribute('cy', String(Math.sin(mr) * rd.r));
-                                mc.setAttribute('r', String(m.s));
-                                mc.setAttribute('fill', 'rgba(' + oc + ',0.20)');
-                                mc.setAttribute('stroke', 'rgba(' + oc + ',0.45)');
-                                mc.setAttribute('stroke-width', '0.8');
-                                g.appendChild(mc);
-                            });
-                        }
-                        oSvg.appendChild(g);
-                    });
-
-                    orbitWrap.appendChild(oSvg);
-                    bubble.appendChild(orbitWrap);
-
-                    // --- водное отражение ---
-                    var refl = document.createElement('div');
-                    refl.className = 'bubble-reflection';
-                    refl.style.left = pos.x + 'px';
-                    refl.style.top = (pos.y + size * 0.48) + 'px';
-                    refl.style.width = (size * 0.85) + 'px';
-                    refl.style.height = (size * 0.55) + 'px';
-                    refl.style.backgroundImage = 'url(' + f.img + ')';
-                    wheel.appendChild(refl);
-                }
-
-                wheel.appendChild(bubble);
-            });
-
-            arcSvg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
-            arcSvg.innerHTML =
-                '<path d="M 0,' + edgeY +
-                ' Q ' + cx + ',' + controlY +
-                ' ' + W + ',' + edgeY + '"' +
-                ' fill="none"' +
-                ' stroke="rgba(255,255,255,.40)"' +
-                ' stroke-width="2.5"' +
-                ' stroke-dasharray="2 9"' +
-                ' stroke-linecap="round" />';
-
-            nameEl.textContent = FANDOMS[activeIndex].name;
-            bgWrap.querySelectorAll('.fandom-bg').forEach(function (bg, i) {
-                bg.classList.toggle('active', i === activeIndex);
+                b.tx = pos.x;
+                b.ty = pos.y;
+                b.tSize = size;
+                b.tOpacity = alpha;
+                b.active = (dist === 0);
             });
         }
 
-        renderWheel();
-        window.addEventListener('resize', renderWheel);
+        // --- lerp-движок ---
+        var pendingSteps = 0;
+        var pendingDir = 0;
+        var stepTimer = 0;
+
+        function tick() {
+            // мультишаговый переход (если кликнули через 2-3 позиции)
+            if (pendingSteps > 0) {
+                stepTimer++;
+                if (stepTimer > 8) { // каждые ~8 кадров (~130мс при 60fps) — шаг
+                    go(pendingDir);
+                    pendingSteps--;
+                    stepTimer = 0;
+                }
+            }
+
+            // интерполяция пузырей
+            bubbleData.forEach(function (b) {
+                b.x      += (b.tx      - b.x)      * LERP;
+                b.y      += (b.ty      - b.y)      * LERP;
+                b.size   += (b.tSize   - b.size)   * LERP;
+                b.opacity+= (b.tOpacity- b.opacity)* LERP;
+
+                b.el.style.left    = b.x + 'px';
+                b.el.style.top     = b.y + 'px';
+                b.el.style.width   = b.size + 'px';
+                b.el.style.height  = b.size + 'px';
+                b.el.style.opacity = b.opacity;
+
+                if (b.active) {
+                    b.el.classList.add('active');
+                } else {
+                    b.el.classList.remove('active');
+                }
+            });
+
+            // орбита следует за активным пузырём (через lerp — не улетает)
+            var active = bubbleData[activeIndex];
+            if (active) {
+                var ox = parseFloat(orbitSystem.style.left) || 0;
+                var oy = parseFloat(orbitSystem.style.top) || 0;
+                ox += (active.x - ox) * LERP;
+                oy += (active.y - oy) * LERP;
+                orbitSystem.style.left = ox + 'px';
+                orbitSystem.style.top  = oy + 'px';
+
+                // отражение следует за активным
+                var reflX = parseFloat(refl.style.left) || 0;
+                var reflY = parseFloat(refl.style.top) || 0;
+                var reflS = parseFloat(refl.style.width) || 0;
+                reflX += (active.x - reflX) * LERP;
+                reflY += ((active.y + active.size * 0.48) - reflY) * LERP;
+                reflS += ((active.size * 0.85) - reflS) * LERP;
+                refl.style.left   = reflX + 'px';
+                refl.style.top    = reflY + 'px';
+                refl.style.width  = reflS + 'px';
+                refl.style.height = (reflS * 0.65) + 'px';
+                refl.style.opacity = 0.18;
+            }
+
+            requestAnimationFrame(tick);
+        }
+
+        // --- переключение ---
+        function go(dir) {
+            var N = FANDOMS.length;
+            activeIndex = (activeIndex + dir + N) % N;
+
+            // название — плавная смена
+            nameEl.classList.add('fade');
+            setTimeout(function () {
+                nameEl.textContent = FANDOMS[activeIndex].name;
+                nameEl.classList.remove('fade');
+            }, 200);
+
+            // фон — crossfade
+            bgWrap.querySelectorAll('.fandom-bg').forEach(function (bg, i) {
+                bg.classList.toggle('active', i === activeIndex);
+            });
+
+            // отражение — картинка активного
+            refl.style.backgroundImage = 'url(' + FANDOMS[activeIndex].img + ')';
+
+            computeTargets();
+        }
+
+        // --- DRAG (зажать и тянуть) ---
+        var dragStartX = null;
+        var wasDragging = false;
+        var dragMoved = 0;
+
+        wheel.addEventListener('pointerdown', function (e) {
+            dragStartX = e.clientX;
+            wasDragging = false;
+            dragMoved = 0;
+        });
+
+        window.addEventListener('pointermove', function (e) {
+            if (dragStartX === null) return;
+            var dx = e.clientX - dragStartX;
+            dragMoved = dx;
+            if (Math.abs(dx) > 50) {
+                wasDragging = true;
+            }
+        });
+
+        window.addEventListener('pointerup', function (e) {
+            if (dragStartX === null) return;
+            var dx = dragMoved;
+            if (Math.abs(dx) > 60) {
+                go(dx < 0 ? 1 : -1);
+            }
+            dragStartX = null;
+            // сброс wasDragging через таймер — чтобы click не сработал
+            setTimeout(function () { wasDragging = false; }, 50);
+        });
+
+        // --- инициализация ---
+        // ставим пузыри сразу в целевые позиции (без анимации при загрузке)
+        computeTargets();
+        bubbleData.forEach(function (b) {
+            b.x = b.tx; b.y = b.ty;
+            b.size = b.tSize;
+            b.opacity = b.tOpacity;
+        });
+        orbitSystem.style.left = bubbleData[activeIndex].x + 'px';
+        orbitSystem.style.top  = bubbleData[activeIndex].y + 'px';
+        refl.style.left   = bubbleData[activeIndex].x + 'px';
+        refl.style.top    = (bubbleData[activeIndex].y + bubbleData[activeIndex].size * 0.48) + 'px';
+        refl.style.width  = (bubbleData[activeIndex].size * 0.85) + 'px';
+        refl.style.height = (bubbleData[activeIndex].size * 0.55) + 'px';
+
+        window.addEventListener('resize', function () {
+            computeTargets();
+            // при ресайзе — мгновенно, без анимации
+            bubbleData.forEach(function (b) {
+                b.x = b.tx; b.y = b.ty;
+                b.size = b.tSize;
+                b.opacity = b.tOpacity;
+            });
+        });
+
+        tick();
     })();
 
     (function () {
