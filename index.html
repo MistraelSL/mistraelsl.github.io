@@ -1,332 +1,567 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mistrael — Каталог</title>
+
 <style>
+    :root {
+        --nav-height: 86px;
+        --white: rgba(255,255,255,.92);
+        --ice: rgba(185,225,255,.42);
+        --glass-border: rgba(255,255,255,.34);
+        --glass-soft: rgba(255,255,255,.10);
+        --black: #020507;
+    }
+
     * {
-        margin: 0;
-        padding: 0;
         box-sizing: border-box;
     }
 
+    html {
+        scroll-behavior: smooth;
+    }
+
     body {
-        background: #0a0a0a;
-        color: #fff;
-        font-family: 'Segoe UI', Arial, sans-serif;
+        margin: 0;
         min-height: 100vh;
+        background:
+            radial-gradient(circle at 50% 18%, rgba(76,130,160,.13), transparent 34%),
+            linear-gradient(to bottom, #020507 0%, #05090c 45%, #000 100%);
+        color: white;
+        font-family: Georgia, "Times New Roman", serif;
         overflow-x: hidden;
     }
 
-    /* ====== НАВБАР ====== */
+    /* =========================
+       НАВБАР
+    ========================= */
+
     .navbar {
         position: fixed;
         top: 0;
         left: 0;
-        right: 0;
-        height: 50px;
-        background: rgba(0, 0, 0, 0.95);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        width: 100%;
+        height: var(--nav-height);
+        z-index: 100;
+
         display: flex;
         align-items: center;
         justify-content: flex-end;
-        padding: 0 40px;
-        z-index: 100;
-        backdrop-filter: blur(10px);
+
+        padding: 0 clamp(32px, 7vw, 150px);
+
+        background:
+            linear-gradient(to bottom, rgba(0,0,0,.98) 0%, rgba(0,0,0,.92) 72%, rgba(0,0,0,.70) 100%);
+        border-bottom: 1px solid rgba(235,250,255,.52);
+        box-shadow:
+            0 12px 34px rgba(0,0,0,.72),
+            inset 0 -1px 0 rgba(255,255,255,.12);
     }
 
-    .nav-btn {
-        display: inline-block;
-        padding: 8px 24px;
-        margin-left: 16px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 20px;
-        background: rgba(255, 255, 255, 0.04);
-        color: rgba(255, 255, 255, 0.7);
+    .nav-buttons {
+        display: flex;
+        align-items: center;
+        gap: clamp(28px, 4vw, 78px);
+    }
+
+    .nav-button {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 10px 28px 13px;
+        min-width: 180px;
+
+        color: var(--white);
         text-decoration: none;
-        font-size: 14px;
-        letter-spacing: 1px;
-        transition: all 0.3s;
-        backdrop-filter: blur(6px);
+        font-size: clamp(34px, 2.5vw, 58px);
+        line-height: 1;
+        font-weight: 400;
+        font-style: normal;
+        letter-spacing: .01em;
+
+        border: 1px solid rgba(255,255,255,.22);
+        border-radius: 999px;
+
+        background:
+            linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.025) 48%, rgba(170,220,255,.07));
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.18),
+            inset 0 -1px 0 rgba(255,255,255,.05),
+            0 0 24px rgba(130,190,220,.09);
+
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+
+        transition:
+            transform .22s ease,
+            border-color .22s ease,
+            box-shadow .22s ease,
+            background .22s ease;
     }
 
-    .nav-btn:hover {
-        background: rgba(255, 255, 255, 0.1);
-        border-color: rgba(255, 255, 255, 0.5);
-        color: #fff;
+    .nav-button:hover {
+        transform: translateY(-1px);
+        border-color: rgba(255,255,255,.48);
+        background:
+            linear-gradient(135deg, rgba(255,255,255,.16), rgba(255,255,255,.04) 48%, rgba(180,225,255,.12));
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.28),
+            0 0 30px rgba(170,225,255,.18);
     }
 
-    /* ====== ПРИВЕТСТВЕННАЯ СЕКЦИЯ ====== */
+    /* =========================
+       ПЕРВЫЙ ЭКРАН
+    ========================= */
+
     .welcome-section {
         position: relative;
-        width: 100%;
-        padding-top: 62px;
-        padding-left: 20px;
-        padding-right: 20px;
+        padding-top: var(--nav-height);
+        min-height: 100vh;
+        background: #020507;
     }
 
-    /* ====== СТЕКЛЯННАЯ СБОРКА ====== */
     .welcome-assembly {
         position: relative;
-        width: 100%;
-        height: 60vh;
-        min-height: 420px;
-        transform-style: preserve-3d;
-        perspective: 1200px;
+        width: 100vw;
+        height: clamp(540px, 60vh, 760px);
         overflow: visible;
+        isolation: isolate;
     }
 
-    /* Задняя стеклянная стенка */
-    .panel-back {
+    /* заднее стекло */
+    .welcome-back-glass {
         position: absolute;
-        top: -6px; left: 8px; right: -8px; bottom: -6px;
-        border-radius: 14px;
-        transform: translateZ(-20px);
-        background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.04) 100%);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+        inset: 0;
+        z-index: 1;
+
+        background:
+            linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.018) 45%, rgba(165,220,255,.06));
+        border-top: 1px solid rgba(255,255,255,.32);
+        border-bottom: 1px solid rgba(255,255,255,.22);
+
+        box-shadow:
+            0 28px 70px rgba(0,0,0,.72),
+            inset 0 1px 0 rgba(255,255,255,.18),
+            inset 0 -1px 0 rgba(255,255,255,.10);
     }
 
-    /* Фон внутри */
-    .panel-bg {
+    /* слой с фоном */
+    .welcome-image-layer {
         position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        border-radius: 12px;
+        inset: 0;
+        z-index: 2;
         overflow: hidden;
-        transform: translateZ(0);
     }
 
-    .panel-bg img {
+    .welcome-bg {
+        position: absolute;
+        inset: 0;
         width: 100%;
         height: 100%;
         object-fit: cover;
-        object-position: center 20%;
+        object-position: center center;
+
+        filter:
+            saturate(.86)
+            contrast(1.04)
+            brightness(.86);
     }
 
-    /* Затемнение сверху и снизу */
-    .panel-bg-gradient {
+    /* холодное осветление по центру, без бокового сильного виньетирования */
+    .welcome-image-layer::before {
+        content: "";
         position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+
         background:
-            linear-gradient(to bottom, rgba(10,10,10,0.5) 0%, transparent 20%),
-            linear-gradient(to top, rgba(10,10,10,0.7) 0%, transparent 25%);
-        z-index: 1;
+            radial-gradient(circle at 44% 46%, rgba(205,235,255,.18), transparent 36%),
+            linear-gradient(to right, rgba(80,160,205,.16), transparent 36%, transparent 72%, rgba(15,25,32,.08));
+        mix-blend-mode: screen;
     }
 
-    /* Передняя стеклянная стенка */
-    .panel-front {
+    /* верхний и нижний градиент — именно сверху/снизу */
+    .welcome-fade {
         position: absolute;
-        top: -6px; left: -8px; right: 8px; bottom: -6px;
-        border-radius: 14px;
-        transform: translateZ(30px);
-        background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 40%, rgba(255,255,255,0.03) 100%);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 8px 25px rgba(0, 0, 0, 0.3);
+        inset: 0;
+        z-index: 15;
+        pointer-events: none;
+
+        background:
+            linear-gradient(to bottom,
+                rgba(0,0,0,.88) 0%,
+                rgba(0,0,0,.58) 8%,
+                rgba(0,0,0,.16) 22%,
+                transparent 34%
+            ),
+            linear-gradient(to top,
+                rgba(0,0,0,.96) 0%,
+                rgba(0,0,0,.78) 11%,
+                rgba(0,0,0,.28) 27%,
+                transparent 43%
+            );
+    }
+
+    /* переднее стекло: контур выше градиента, чтобы рамка не исчезала */
+    .welcome-front-glass {
+        position: absolute;
+        inset: 0;
+        z-index: 18;
+        pointer-events: none;
+
+        border-top: 1px solid rgba(255,255,255,.48);
+        border-bottom: 1px solid rgba(255,255,255,.24);
+
+        background:
+            linear-gradient(145deg,
+                rgba(255,255,255,.075) 0%,
+                rgba(255,255,255,.018) 34%,
+                rgba(255,255,255,.045) 100%
+            );
+
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.22),
+            inset 0 -1px 0 rgba(255,255,255,.12);
+    }
+
+    .welcome-front-glass::before {
+        content: "";
+        position: absolute;
+        left: 6vw;
+        right: 6vw;
+        top: 18%;
+        height: 1px;
+
+        background: linear-gradient(to right, transparent, rgba(255,255,255,.46), transparent);
+        opacity: .55;
+    }
+
+    .welcome-front-glass::after {
+        content: "";
+        position: absolute;
+        inset: 18px 22px;
+
+        border: 1px solid rgba(255,255,255,.14);
+        box-shadow: inset 0 0 24px rgba(190,230,255,.035);
         pointer-events: none;
     }
 
-    .panel-front::after {
-        content: '';
-        position: absolute;
-        top: 12px; left: 12px; right: 12px; bottom: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        border-radius: 8px;
-    }
-
-    .panel-front-glare {
-        position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        border-radius: 14px;
-        opacity: 0;
-        transition: opacity 0.3s;
-        background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,0.12) 0%, rgba(200,220,255,0.04) 30%, transparent 55%);
-        pointer-events: none;
-    }
-
-    .welcome-assembly:hover .panel-front-glare {
-        opacity: 1;
-    }
-
-    /* Грани */
-    .edge-right {
-        position: absolute;
-        top: -6px; right: 8px; width: 4px; bottom: -6px;
-        transform: translateZ(15px) rotateY(90deg);
-        transform-origin: right center;
-        background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.03) 50%, rgba(255,255,255,0.08) 100%);
-        pointer-events: none;
-    }
-
-    .edge-bottom {
-        position: absolute;
-        left: -8px; right: 8px; bottom: -6px; height: 4px;
-        transform: translateZ(15px) rotateX(-90deg);
-        transform-origin: center bottom;
-        background: linear-gradient(90deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.04) 100%);
-        pointer-events: none;
-    }
-
-    /* ====== КАДЖИТКА ====== */
+    /* каджитка поверх стекла и фона */
     .welcome-character {
         position: absolute;
-        right: 6%;
-        bottom: 0;
-        height: 130%;
-        z-index: 10;
-        pointer-events: none;
-    }
+        z-index: 12;
 
-    .welcome-character img {
-        height: 100%;
+        right: clamp(120px, 20vw, 480px);
+        bottom: -9%;
+
+        height: 128%;
+        max-height: none;
         width: auto;
-        object-fit: contain;
-        display: block;
+
+        filter:
+            drop-shadow(0 0 2px rgba(255,255,255,.95))
+            drop-shadow(0 0 18px rgba(155,220,255,.32))
+            drop-shadow(0 20px 34px rgba(0,0,0,.52));
+
+        user-select: none;
+        pointer-events: auto;
     }
 
-    /* ====== ТЕКСТ ====== */
-    .welcome-text {
+    /* текст */
+    .welcome-copy {
         position: absolute;
-        top: 0; left: 0; bottom: 0;
-        z-index: 9;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        padding: 40px 60px;
+        z-index: 25;
+
+        left: clamp(70px, 8vw, 190px);
+        top: 22%;
+
+        color: white;
+        text-shadow:
+            0 2px 18px rgba(0,0,0,.44),
+            0 0 20px rgba(200,235,255,.12);
     }
 
     .welcome-title {
-        font-size: 64px;
-        font-weight: 700;
-        line-height: 1.05;
-        letter-spacing: 3px;
-        text-transform: uppercase;
-        text-shadow: 0 2px 25px rgba(0, 0, 0, 0.9);
-        margin-bottom: 20px;
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(68px, 5.25vw, 126px);
+        line-height: 1.08;
+        font-weight: 400;
+        font-style: normal;
+        letter-spacing: .018em;
     }
 
     .welcome-subtitle {
-        font-size: 15px;
-        font-weight: 300;
-        color: rgba(255, 255, 255, 0.55);
-        text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9);
-        margin-bottom: 30px;
-        max-width: 300px;
+        margin-top: clamp(42px, 5vh, 76px);
+        font-size: clamp(34px, 2.75vw, 62px);
+        line-height: 1.35;
+        font-weight: 400;
+        font-style: normal;
+        letter-spacing: .01em;
     }
 
-    .welcome-btn {
-        display: inline-block;
-        padding: 14px 50px;
-        border: 1px solid rgba(255, 255, 255, 0.5);
-        border-radius: 30px;
-        color: #fff;
-        font-size: 16px;
-        letter-spacing: 4px;
-        text-transform: uppercase;
+    .read-button {
+        margin-top: clamp(46px, 6vh, 82px);
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-width: clamp(430px, 26vw, 620px);
+        padding: clamp(16px, 1.55vw, 28px) clamp(64px, 5vw, 110px);
+
+        color: white;
         text-decoration: none;
-        cursor: pointer;
-        transition: all 0.3s;
-        background: rgba(255, 255, 255, 0.05);
-        width: fit-content;
+
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(48px, 3.8vw, 86px);
+        line-height: 1;
+        font-weight: 400;
+        font-style: normal;
+        letter-spacing: .035em;
+
+        border: 4px solid rgba(255,255,255,.88);
+        border-radius: 34px;
+
+        background:
+            linear-gradient(135deg, rgba(255,255,255,.105), rgba(255,255,255,.018) 55%, rgba(170,225,255,.07));
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.20),
+            0 0 26px rgba(175,225,255,.12),
+            0 12px 28px rgba(0,0,0,.32);
+
+        backdrop-filter: blur(7px);
+        -webkit-backdrop-filter: blur(7px);
+
+        transition:
+            transform .22s ease,
+            background .22s ease,
+            box-shadow .22s ease,
+            border-color .22s ease;
     }
 
-    .welcome-btn:hover {
-        background: rgba(255, 255, 255, 0.12);
-        border-color: rgba(255, 255, 255, 0.8);
+    .read-button:hover {
+        transform: translateY(-2px);
+        border-color: white;
+        background:
+            linear-gradient(135deg, rgba(255,255,255,.17), rgba(255,255,255,.035) 55%, rgba(180,230,255,.12));
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.32),
+            0 0 34px rgba(190,235,255,.24),
+            0 16px 34px rgba(0,0,0,.38);
     }
 
-    /* ====== ТОЧКИ-РАЗДЕЛИТЕЛИ ====== */
-    .dots-divider {
+    /* точки под приветствием */
+    .welcome-dots {
+        position: relative;
+        z-index: 5;
+
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 14px;
-        padding: 80px 0;
+        gap: 26px;
+
+        height: 110px;
+        background:
+            linear-gradient(to bottom, rgba(0,0,0,.92), #020507 72%);
     }
 
     .dot {
-        width: 5px;
-        height: 5px;
+        display: block;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.35);
-        transition: transform 0.3s, background 0.3s;
-        cursor: default;
+        background: rgba(255,255,255,.96);
+
+        box-shadow:
+            0 0 14px rgba(255,255,255,.35),
+            0 0 26px rgba(180,225,255,.14);
+
+        transition:
+            transform .18s ease,
+            box-shadow .18s ease,
+            opacity .18s ease;
     }
 
-    .dot-center {
-        width: 8px;
-        height: 8px;
-        background: rgba(255, 255, 255, 0.55);
+    .dot.small {
+        width: 18px;
+        height: 18px;
+    }
+
+    .dot.big {
+        width: 48px;
+        height: 48px;
     }
 
     .dot:hover {
-        transform: scale(1.8);
-        background: rgba(255, 255, 255, 0.9);
+        transform: scale(1.22);
+        box-shadow:
+            0 0 18px rgba(255,255,255,.55),
+            0 0 34px rgba(190,230,255,.28);
     }
 
-    /* ====== ЗАГЛУШКА ====== */
-    .next-section-placeholder {
-        height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: rgba(255, 255, 255, 0.12);
-        font-size: 16px;
-        letter-spacing: 2px;
+    /* временные якоря, без визуального колеса */
+    .anchor-spacer {
+        min-height: 20vh;
+        background: #020507;
+    }
+
+    /* =========================
+       АДАПТИВ
+    ========================= */
+
+    @media (max-width: 1200px) {
+        :root {
+            --nav-height: 78px;
+        }
+
+        .nav-button {
+            min-width: 140px;
+            padding-left: 22px;
+            padding-right: 22px;
+        }
+
+        .welcome-assembly {
+            height: clamp(500px, 60vh, 680px);
+        }
+
+        .welcome-copy {
+            left: 6vw;
+            top: 23%;
+        }
+
+        .welcome-character {
+            right: 7vw;
+            height: 122%;
+        }
+
+        .read-button {
+            min-width: 360px;
+        }
+    }
+
+    @media (max-width: 820px) {
+        :root {
+            --nav-height: 68px;
+        }
+
+        .navbar {
+            padding: 0 18px;
+        }
+
+        .nav-buttons {
+            gap: 14px;
+        }
+
+        .nav-button {
+            min-width: auto;
+            padding: 9px 16px 11px;
+            font-size: 28px;
+        }
+
+        .welcome-assembly {
+            height: 560px;
+        }
+
+        .welcome-copy {
+            left: 28px;
+            top: 20%;
+        }
+
+        .welcome-title {
+            font-size: 52px;
+        }
+
+        .welcome-subtitle {
+            margin-top: 32px;
+            font-size: 30px;
+        }
+
+        .read-button {
+            margin-top: 42px;
+            min-width: 270px;
+            padding: 14px 38px;
+            font-size: 42px;
+            border-width: 3px;
+            border-radius: 28px;
+        }
+
+        .welcome-character {
+            right: -32px;
+            bottom: -6%;
+            height: 94%;
+            opacity: .92;
+        }
+
+        .welcome-dots {
+            height: 92px;
+        }
+
+        .dot.big {
+            width: 42px;
+            height: 42px;
+        }
     }
 </style>
 </head>
+
 <body>
 
-    <nav class="navbar">
-        <a href="#characters" class="nav-btn">персонажи</a>
-        <a href="#themes" class="nav-btn">темы</a>
+<header class="navbar">
+    <nav class="nav-buttons" aria-label="Главная навигация">
+        <a class="nav-button" href="#characters">персонажи</a>
+        <a class="nav-button" href="#themes">темы</a>
     </nav>
+</header>
 
-    <section class="welcome-section">
-        <div class="welcome-assembly" id="welcomePanel">
-            <div class="panel-back"></div>
-            <div class="panel-bg">
-                <img src="forgotten.png" alt="Background">
-                <div class="panel-bg-gradient"></div>
+<main>
+
+    <section class="welcome-section" id="top">
+        <div class="welcome-assembly">
+
+            <div class="welcome-back-glass"></div>
+
+            <div class="welcome-image-layer">
+                <img class="welcome-bg" src="forgotten.png" alt="">
             </div>
-            <div class="welcome-text">
-                <div class="welcome-title">ДОБРО<br>ПОЖАЛОВАТЬ</div>
-                <div class="welcome-subtitle">немного обо мне, персонажи, темы</div>
-                <div class="welcome-btn" id="readBtn">ЧИТАТЬ</div>
+
+            <img class="welcome-character" src="shain.png" alt="Шейн">
+
+            <div class="welcome-fade"></div>
+            <div class="welcome-front-glass"></div>
+
+            <div class="welcome-copy">
+                <h1 class="welcome-title">
+                    ДОБРО<br>
+                    ПОЖАЛОВАТЬ
+                </h1>
+
+                <div class="welcome-subtitle">
+                    немного обо мне, персонажи,<br>
+                    темы
+                </div>
+
+                <a class="read-button" href="#about">ЧИТАТЬ</a>
             </div>
-            <div class="welcome-character">
-                <img src="shain.png" alt="Shain">
-            </div>
-            <div class="edge-right"></div>
-            <div class="edge-bottom"></div>
-            <div class="panel-front">
-                <div class="panel-front-glare" id="panelGlare"></div>
-            </div>
+
+        </div>
+
+        <div class="welcome-dots" aria-hidden="true">
+            <span class="dot small"></span>
+            <span class="dot big"></span>
+            <span class="dot small"></span>
         </div>
     </section>
 
-    <div class="dots-divider">
-        <div class="dot"></div>
-        <div class="dot dot-center"></div>
-        <div class="dot"></div>
-    </div>
+    <!-- Пока только якоря. Колёса и каталоги не добавлены намеренно. -->
+    <section id="about" class="anchor-spacer"></section>
+    <section id="characters" class="anchor-spacer"></section>
+    <section id="themes" class="anchor-spacer"></section>
 
-    <div class="next-section-placeholder" id="characters">
-        — здесь будет колесо фандомов —
-    </div>
-
-    <script>
-        const panel = document.getElementById('welcomePanel');
-        const glare = document.getElementById('panelGlare');
-
-        panel.addEventListener('mousemove', (e) => {
-            const rect = panel.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            glare.style.setProperty('--mx', `${x}px`);
-            glare.style.setProperty('--my', `${y}px`);
-        });
-    </script>
+</main>
 
 </body>
 </html>
