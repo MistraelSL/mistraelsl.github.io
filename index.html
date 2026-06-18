@@ -2,74 +2,106 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<title>Mistrael — каталог</title>
+<title>Mistrael — Каталог</title>
 <style>
-    /* Базовые настройки страницы */
     body {
         margin: 0;
-        background-color: #0a0a0a; /* Очень тёмный фон */
-        color: #eee;
-        font-family: sans-serif;
+        background-color: #0a0a0a;
         min-height: 100vh;
         display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
-        overflow-x: hidden;
+        font-family: sans-serif;
     }
 
-    /* Магия фонарика */
-    #flashlight {
-        position: fixed;
+    /* Контейнер карточки, даёт перспективу (3D-пространство) */
+    .card-wrapper {
+        perspective: 1000px;
+        width: 300px; /* Ширина карточки */
+        height: 450px; /* Высота карточки */
+    }
+
+    /* Сама карточка, которая будет крутиться */
+    .hsr-card {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        border-radius: 12px;
+        transform-style: preserve-3d;
+        transition: transform 0.1s ease-out; /* Плавность возврата */
+        box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Картинка Дэвида */
+    .hsr-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+
+    /* Тот самый стеклянный блик (Glare), бегающий за мышью */
+    .glare {
+        position: absolute;
         top: 0;
         left: 0;
-        width: 100vw;
-        height: 100vh;
-        pointer-events: none; /* Чтоб клики проходили сквозь фонарь */
+        width: 100%;
+        height: 100%;
+        border-radius: 10px;
         background: radial-gradient(
-            600px circle at var(--x, 50%) var(--y, 50%), 
-            rgba(255, 255, 255, 0.06), /* Яркость центра */
-            transparent 40%
+            circle at var(--mouseX) var(--mouseY), 
+            rgba(255, 255, 255, 0.4) 0%, 
+            rgba(255, 255, 255, 0) 60%
         );
-        z-index: 1;
+        mix-blend-mode: overlay; /* Эффект наложения света */
+        pointer-events: none; /* Чтоб не мешал мышке */
+        opacity: 0;
+        transition: opacity 0.3s;
     }
 
-    /* Наша стеклянная кнопка */
-    .glass-btn {
-        position: relative;
-        z-index: 2; /* Кнопка поверх фонарика */
-        padding: 15px 40px;
-        font-size: 18px;
-        color: white;
-        background: rgba(255, 255, 255, 0.03); /* Чуть прозрачный белый */
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-        backdrop-filter: blur(10px); /* Эффект стекла */
-        cursor: pointer;
-        transition: all 0.3s ease; /* Плавность анимации */
-    }
-
-    /* Анимация при наведении мыши */
-    .glass-btn:hover {
-        transform: translateY(-5px); /* Поднимается вверх на 5 пикселей */
-        background: rgba(255, 255, 255, 0.08); /* Становится светлее */
-        border-color: rgba(255, 255, 255, 0.3);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); /* Падает тень */
+    .card-wrapper:hover .glare {
+        opacity: 1;
     }
 </style>
 </head>
 <body>
 
-    <div id="flashlight"></div>
-
-    <h1>Mistrael</h1>
-    <div class="glass-btn">Я стеклянная кнопка</div>
+    <div class="card-wrapper">
+        <div class="hsr-card" id="card">
+            <!-- ВПИШИ ИМЯ СВОЕГО ФАЙЛА НИЖЕ -->
+            <img src="david.png" alt="David">
+            <div class="glare" id="glare"></div>
+        </div>
+    </div>
 
     <script>
-        /* Скрипт, который заставляет фонарик летать за мышью */
-        document.addEventListener('mousemove', function(e) {
-            document.documentElement.style.setProperty('--x', e.clientX + 'px');
-            document.documentElement.style.setProperty('--y', e.clientY + 'px');
+        const wrapper = document.querySelector('.card-wrapper');
+        const card = document.getElementById('card');
+        const glare = document.getElementById('glare');
+
+        wrapper.addEventListener('mousemove', (e) => {
+            const rect = wrapper.getBoundingClientRect();
+            const x = e.clientX - rect.left; // Позиция мыши X внутри карточки
+            const y = e.clientY - rect.top;  // Позиция мыши Y внутри карточки
+            
+            // Вычисляем угол наклона (макс 15 градусов)
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = ((y - centerY) / centerY) * -15; 
+            const rotateY = ((x - centerX) / centerX) * 15;
+
+            // Крутим карточку
+            card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            
+            // Двигаем блик
+            glare.style.setProperty('--mouseX', `${x}px`);
+            glare.style.setProperty('--mouseY', `${y}px`);
+        });
+
+        // Возвращаем в нули, когда мышь уходит
+        wrapper.addEventListener('mouseleave', () => {
+            card.style.transform = `rotateX(0deg) rotateY(0deg)`;
         });
     </script>
 
