@@ -7,6 +7,27 @@
 
 <style>
     * { box-sizing: border-box; }
+    .welcome-title,
+    .welcome-subtitle,
+    .shain-title,
+    .nav-button,
+    .read-button,
+    .about-panel h2,
+    .about-panel p,
+    .shain-panel p {
+        text-shadow:
+            0 0 3px rgba(0,0,0,.45),
+            0 0 14px rgba(0,0,0,.40),
+            0 2px 5px rgba(0,0,0,.45);
+    }
+    .welcome-title,
+    .shain-title {
+        text-shadow:
+            0 0 4px rgba(0,0,0,.6),
+            0 0 20px rgba(0,0,0,.55),
+            0 2px 6px rgba(0,0,0,.6);
+    }
+
     html { scroll-behavior: smooth; }
 
     body {
@@ -18,7 +39,30 @@
         overflow-x: hidden;
     }
 
-       /* скрыть системный курсор по всему сайту */
+    /* живые звёзды на заднем фоне */
+    .stars-bg {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
+        pointer-events: none;
+    }
+    .star {
+        position: absolute;
+        width: 3px;
+        height: 3px;
+        background: #fff;
+        border-radius: 50%;
+        opacity: 0;
+        animation: twinkle var(--dur, 4s) ease-in-out infinite;
+        animation-delay: var(--delay, 0s);
+    }
+    @keyframes twinkle {
+        0%, 100% { opacity: 0; transform: scale(.5); }
+        50%      { opacity: .9; transform: scale(1.2); box-shadow: 0 0 8px #cfe9ff; }
+    }
+
+    /* скрыть системный курсор по всему сайту */
     * { cursor: none !important; }
 
     /* кастомный курсор */
@@ -45,8 +89,7 @@
         will-change: transform;
         filter: drop-shadow(0 0 6px rgba(156,220,255,.45));
     }
-    /* увеличение свечения над кликабельным */
-        .cursor-glow.is-hover {
+    .cursor-glow.is-hover {
         width: 230px;
         height: 230px;
     }
@@ -83,6 +126,7 @@
         position: relative;
         width: 100%;
         padding: 26px 26px 0;
+        z-index: 1;
     }
 
     .welcome-scene {
@@ -131,11 +175,13 @@
         content: "";
         position: absolute;
         inset: 0;
-        background: linear-gradient(to right, rgba(8,14,20,.62) 0%, rgba(8,14,20,.22) 32%, transparent 55%);
+        background:
+            linear-gradient(to right, rgba(8,14,20,.62) 0%, rgba(8,14,20,.22) 32%, transparent 55%),
+            linear-gradient(to left, rgba(8,14,20,.55) 0%, transparent 45%);
         pointer-events: none;
     }
 
-       /* тёмный градиент сверху и снизу фото */
+    /* тёмный градиент сверху и снизу фото */
     .welcome-image-layer::before {
         content: "";
         position: absolute;
@@ -147,6 +193,28 @@
             transparent 22%,
             transparent 74%,
             rgba(4,7,10,.92) 100%);
+    }
+
+    /* звёзды внутри панели (поверх фото) */
+    .panel-stars {
+        position: absolute;
+        inset: 0;
+        z-index: 13;
+        pointer-events: none;
+        transition: transform .6s ease, opacity .5s ease;
+    }
+    .panel-star {
+        position: absolute;
+        width: 3px; height: 3px;
+        background: #fff;
+        border-radius: 50%;
+        opacity: 0;
+        animation: twinkle var(--dur, 4s) ease-in-out infinite;
+        animation-delay: var(--delay, 0s);
+    }
+    .welcome-assembly.shain-open .panel-stars {
+        transform: translateX(40%) scale(1.3);
+        opacity: 0;
     }
 
     .welcome-character {
@@ -186,7 +254,7 @@
         border-radius: 12px;
     }
 
-    /* радужный блик-перелив по стеклу (как у Дэвида) */
+    /* радужный блик-перелив по стеклу */
     .welcome-front-glass::before {
         content: "";
         position: absolute;
@@ -224,26 +292,97 @@
     }
     .welcome-scene:hover .welcome-glare { opacity: 1; }
 
-          /* плавность */
+    /* плавность */
     .welcome-character { transition: transform .55s ease; }
     .welcome-copy { transition: top .5s ease, transform .5s ease; }
     .welcome-subtitle, .read-button { transition: opacity .35s ease; }
 
     /* состояние "обо мне открыто" */
     .welcome-assembly.about-open .welcome-copy {
-    transform: translateY(-50%) translateZ(40px) translateY(-90px);
+        transform: translateY(-50%) translateZ(40px) translateY(-90px);
     }
     .welcome-assembly.about-open .welcome-subtitle,
     .welcome-assembly.about-open .read-button {
         opacity: 0;
         pointer-events: none;
     }
-    /* каджитка просто отъезжает вправо, остаётся видимой */
     .welcome-assembly.about-open .welcome-character {
         transform: translateZ(60px) translateX(60%);
     }
 
-       /* стеклянная панель "обо мне" */
+    /* ===== режим "Шейн" ===== */
+    .welcome-assembly.shain-open .welcome-copy {
+        opacity: 0;
+        transform: translateY(-50%) translateZ(40px) translateX(60px);
+        pointer-events: none;
+    }
+    .welcome-assembly.shain-open .welcome-character {
+        transform: translateZ(60px) translateX(-120%);
+    }
+
+    .shain-copy {
+        position: absolute;
+        z-index: 25;
+        right: 6%;
+        top: 50%;
+        transform: translateY(-50%) translateZ(40px) translateX(60px);
+        text-align: right;
+        opacity: 0;
+        pointer-events: none;
+        text-shadow: 0 2px 16px rgba(0,0,0,.5);
+        transition: opacity .5s ease, transform .5s ease;
+    }
+    .welcome-assembly.shain-open .shain-copy {
+        opacity: 1;
+        transform: translateY(-50%) translateZ(40px) translateY(-90px);
+        pointer-events: auto;
+    }
+    .shain-title {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(40px, 3.6vw, 68px);
+        line-height: 1.08;
+        font-weight: 400;
+        letter-spacing: .015em;
+    }
+
+    .shain-panel {
+        position: absolute;
+        z-index: 24;
+        right: 5%;
+        top: 48%;
+        transform: translateZ(45px) translateY(20px);
+        width: 60%;
+        max-height: 58%;
+        padding: 34px 38px;
+        border-radius: 18px;
+        overflow-y: auto;
+        opacity: 0;
+        pointer-events: none;
+        text-align: right;
+        background: linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.03) 55%, rgba(170,225,255,.08));
+        border: 1px solid rgba(255,255,255,.30);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.20), 0 20px 50px rgba(0,0,0,.5);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        transition: opacity .5s ease, transform .5s ease;
+        -webkit-font-smoothing: antialiased;
+        backface-visibility: hidden;
+        will-change: transform;
+    }
+    .welcome-assembly.shain-open .shain-panel {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateZ(45px) translateY(0);
+    }
+    .shain-panel p {
+        margin: 0 0 14px;
+        font-size: clamp(16px, 1.2vw, 22px);
+        line-height: 1.55;
+        color: rgba(255,255,255,.88);
+    }
+
+    /* стеклянная панель "обо мне" */
     .about-panel {
         position: absolute;
         z-index: 24;
@@ -284,7 +423,7 @@
         line-height: 1.55;
         color: rgba(255,255,255,.88);
     }
-   
+
     /* ===== ТЕКСТ ===== */
     .welcome-copy {
         position: absolute;
@@ -327,36 +466,44 @@
         background: linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.02) 55%, rgba(170,225,255,.07));
         backdrop-filter: blur(6px);
         -webkit-backdrop-filter: blur(6px);
-        transition: transform .2s, background .2s, box-shadow .2s, border-color .2s;
+        transition: transform .2s, background .2s, box-shadow .2s, border-color .2s, color .2s;
     }
     .read-button:hover {
         transform: translateY(-2px);
-        border-color: #fff;
-        background: linear-gradient(135deg, rgba(255,255,255,.18), rgba(255,255,255,.04) 55%, rgba(180,230,255,.12));
-        box-shadow: 0 0 28px rgba(190,235,255,.22);
+        color: #0a0e13;
+        border-color: #cfe9ff;
+        background: linear-gradient(135deg, #eaf6ff, #bfe3ff 60%, #9cdcff);
+        box-shadow: 0 0 28px rgba(190,235,255,.5);
     }
 
-    /* ===== ТОЧКИ ===== */
+    /* ===== ЗВЁЗДОЧКИ ВНИЗУ ===== */
     .welcome-dots {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 26px;
+        gap: 30px;
         height: 96px;
         margin-top: 24px;
+        position: relative;
+        z-index: 1;
     }
     .dot {
-        display: block;
-        border-radius: 50%;
-        background: rgba(255,255,255,.95);
-        box-shadow: 0 0 12px rgba(255,255,255,.3), 0 0 22px rgba(180,225,255,.14);
-        transition: transform .18s, box-shadow .18s;
+        display: inline-block;
+        color: #fff;
+        line-height: 1;
+        text-shadow: 0 0 10px rgba(207,233,255,.6);
+        animation: spinSlow 10s linear infinite;
+        transition: transform .25s, text-shadow .25s;
     }
-    .dot.small { width: 14px; height: 14px; }
-    .dot.big   { width: 30px; height: 30px; }
+    .dot.small { font-size: 18px; }
+    .dot.big   { font-size: 34px; }
     .dot:hover {
-        transform: scale(1.25);
-        box-shadow: 0 0 16px rgba(255,255,255,.5), 0 0 30px rgba(190,230,255,.28);
+        transform: scale(1.4);
+        text-shadow: 0 0 18px rgba(207,233,255,.9);
+    }
+    @keyframes spinSlow {
+        from { transform: rotate(0deg); }
+        to   { transform: rotate(360deg); }
     }
 
     .anchor-spacer { min-height: 20vh; }
@@ -375,9 +522,11 @@
 </head>
 
 <body>
+<div class="stars-bg" id="starsBg"></div>
+
 <div class="cursor-glow" id="cursorGlow"></div>
 <img class="cursor-img" id="cursorImg" src="mouse.png" alt="">
-   
+
 <header class="navbar">
     <a class="nav-button" href="#characters">персонажи</a>
     <a class="nav-button" href="#themes">темы</a>
@@ -395,7 +544,7 @@
                 </div>
 
                 <img class="welcome-character" src="shain.png" alt="Шейн">
-
+                <div class="panel-stars" id="panelStars"></div>
                 <div class="welcome-front-glass" id="frontGlass"></div>
                 <div class="welcome-glare" id="glare"></div>
 
@@ -410,13 +559,20 @@
                     <p>Проходи, садись, на стол ноги не закидывай. Я Мистраэль. Сижу в Silly Tavern. Решила поделиться своими ботами. Специфично их пишу — на вкус и цвет. Учусь писать темы для таверны ТОЛЬКО ДЛЯ ПК. И нет, каджитку рядом зовут не Мистраэль, но это мой любимый ребёнок. За работу ботов не ручаюсь - всё зависит от модели и пресета.</p>
                 </div>
 
+                <div class="shain-copy">
+                    <h1 class="shain-title">ШАЙНЕРЕС<br>САНЛЕСС</h1>
+                </div>
+
+                <div class="shain-panel" id="shainPanel">
+                    <p>Шайнерес Санлесс. Как я сказала - мой любимый ребенок. Ей уже 8 лет. Я создала ее еще в школьные годы, когда попробовала сыграть в Скайрим и вдохновиться одной расой - снежных эльфов, ныне именуемых фалмерами. Она, наверно, среди конкретно МОИХ персонажей прописана лучше и детальнее всех. Знаете историю "Падение снежного принца?" А вот она очень хорошо знает, пережив ту битву при Моэсринге самолично. Ей больше 4000 лет. И, возможно, она знакома с Мираком... А еще она и Гелебор прекрасно друг друга знают. Один испытывает вину спустя столько лет за свое решение. Другая испытывает сплошную ненависть и пустоту. Ну ладно говорить прозами.</p>
+                </div>
             </div>
         </div>
 
         <div class="welcome-dots" aria-hidden="true">
-            <span class="dot small"></span>
-            <span class="dot big"></span>
-            <span class="dot small"></span>
+            <span class="dot small">✦</span>
+            <span class="dot big">✦</span>
+            <span class="dot small">✦</span>
         </div>
     </section>
 
@@ -457,46 +613,60 @@
     scene.addEventListener('mouseleave', () => {
         assembly.style.transform = 'rotateX(0deg) rotateY(0deg)';
     });
-       // ===== открытие/закрытие "обо мне" =====
-    const readBtn  = document.getElementById('readBtn');
+
+    // ===== открытие/закрытие "обо мне" / "Шейн" =====
+    const readBtn   = document.getElementById('readBtn');
     const character = document.querySelector('.welcome-character');
 
     function openAbout(e) {
         e.preventDefault();
         e.stopPropagation();
+        assembly.classList.remove('shain-open');
         assembly.classList.add('about-open');
     }
     function closeAbout() {
         assembly.classList.remove('about-open');
     }
+    function openShain(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        assembly.classList.remove('about-open');
+        assembly.classList.add('shain-open');
+    }
+    function closeShain() {
+        assembly.classList.remove('shain-open');
+    }
 
     readBtn.addEventListener('click', openAbout);
     character.style.pointerEvents = 'auto';
-    character.addEventListener('click', openAbout);
+    character.addEventListener('click', openShain);
 
-    // клик по пустому месту панели — закрыть
     assembly.addEventListener('click', (e) => {
-        if (!assembly.classList.contains('about-open')) return;
-        if (e.target.closest('.about-panel')) return;     // клик внутри текста — не закрываем
+        const aboutOpen = assembly.classList.contains('about-open');
+        const shainOpen = assembly.classList.contains('shain-open');
+        if (!aboutOpen && !shainOpen) return;
+        if (e.target.closest('.about-panel')) return;
+        if (e.target.closest('.shain-panel')) return;
+        if (e.target.closest('.shain-copy')) return;
         if (e.target.closest('#readBtn')) return;
+        if (e.target.closest('.welcome-character')) return;
         closeAbout();
+        closeShain();
     });
 
-       // ===== кастомный курсор =====
+    // ===== кастомный курсор =====
     const cursorImg  = document.getElementById('cursorImg');
     const cursorGlow = document.getElementById('cursorGlow');
 
-    let mx = 0, my = 0;          // позиция мыши
-    let gx = 0, gy = 0;          // позиция свечения (с задержкой)
+    let mx = 0, my = 0;
+    let gx = 0, gy = 0;
 
     document.addEventListener('mousemove', (e) => {
         mx = e.clientX;
         my = e.clientY;
-        // картинка-курсор: остриё в точке мыши (привязка к левому верхнему углу)
         cursorImg.style.transform = `translate(${mx}px, ${my}px)`;
     });
 
-    // плавное «догоняющее» свечение
     function animateCursor() {
         gx += (mx - gx) * 0.18;
         gy += (my - gy) * 0.18;
@@ -505,7 +675,6 @@
     }
     animateCursor();
 
-    // усиление свечения над кликабельным
     document.addEventListener('mouseover', (e) => {
         if (e.target.closest('a, button, .read-button, .nav-button, .dot, .welcome-character, .about-panel')) {
             cursorGlow.classList.add('is-hover');
@@ -517,7 +686,6 @@
         }
     });
 
-    // курсор пропадает при уходе со страницы
     document.addEventListener('mouseleave', () => {
         cursorImg.style.opacity = '0';
         cursorGlow.style.opacity = '0';
@@ -526,7 +694,39 @@
         cursorImg.style.opacity = '1';
         cursorGlow.style.opacity = '1';
     });
-   
+
+    // ===== генерация звёзд на фоне =====
+    (function () {
+        const box = document.getElementById('starsBg');
+        const COUNT = 90;
+        for (let i = 0; i < COUNT; i++) {
+            const s = document.createElement('span');
+            s.className = 'star';
+            s.style.left = Math.random() * 100 + '%';
+            s.style.top  = Math.random() * 100 + '%';
+            s.style.setProperty('--dur', (2 + Math.random() * 4) + 's');
+            s.style.setProperty('--delay', (Math.random() * 4) + 's');
+            const sz = 1 + Math.random() * 2;
+            s.style.width = sz + 'px';
+            s.style.height = sz + 'px';
+            box.appendChild(s);
+        }
+    })();
+
+    // ===== звёзды внутри панели =====
+    (function () {
+        const box = document.getElementById('panelStars');
+        const COUNT = 40;
+        for (let i = 0; i < COUNT; i++) {
+            const s = document.createElement('span');
+            s.className = 'panel-star';
+            s.style.left = (42 + Math.random() * 56) + '%';
+            s.style.top  = (Math.random() * 100) + '%';
+            s.style.setProperty('--dur', (2 + Math.random() * 4) + 's');
+            s.style.setProperty('--delay', (Math.random() * 4) + 's');
+            box.appendChild(s);
+        }
+    })();
 </script>
 
 </body>
