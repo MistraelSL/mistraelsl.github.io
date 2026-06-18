@@ -25,8 +25,8 @@
         left: 0;
         right: 0;
         height: 48px;
-        background: rgba(0, 0, 0, 0.85);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.9);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         display: flex;
         align-items: center;
         justify-content: flex-end;
@@ -52,22 +52,19 @@
     .welcome-section {
         position: relative;
         width: 100%;
-        height: 100vh;
+        min-height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
         padding-top: 48px;
-        overflow: hidden;
     }
 
-    /* ====== СТЕКЛЯННАЯ ПАНЕЛЬ ====== */
-    .welcome-panel {
+    /* ====== СТЕКЛЯННАЯ СБОРКА ====== */
+    .welcome-assembly {
         position: relative;
-        width: 90%;
-        max-width: 1200px;
-        height: 70vh;
-        border-radius: 12px;
-        overflow: hidden;
+        width: 92%;
+        max-width: 1400px;
+        height: 380px;
         transform-style: preserve-3d;
         perspective: 1200px;
     }
@@ -75,87 +72,102 @@
     /* Задняя стеклянная стенка */
     .panel-back {
         position: absolute;
-        top: -6px; left: 6px; right: -6px; bottom: -6px;
-        border-radius: 12px;
+        top: -6px; left: 8px; right: -8px; bottom: -6px;
+        border-radius: 14px;
+        transform: translateZ(-20px);
         background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 50%, rgba(255,255,255,0.04) 100%);
-        border: 1px solid rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
-        z-index: 1;
     }
 
-    /* Фоновое изображение */
+    /* Фон внутри */
     .panel-bg {
         position: absolute;
         top: 0; left: 0; right: 0; bottom: 0;
         border-radius: 12px;
-        z-index: 2;
         overflow: hidden;
+        transform: translateZ(0);
     }
 
     .panel-bg img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        object-position: center top;
+        object-position: center 30%;
+    }
+
+    /* Затемнение сверху и снизу ВНУТРИ панели — не трогает стеклянные рамки */
+    .panel-bg-gradient {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background:
+            linear-gradient(to bottom, rgba(10,10,10,0.6) 0%, transparent 25%),
+            linear-gradient(to top, rgba(10,10,10,0.8) 0%, transparent 30%);
+        z-index: 1;
     }
 
     /* Передняя стеклянная стенка */
     .panel-front {
         position: absolute;
-        top: -6px; left: -6px; right: 6px; bottom: -6px;
-        border-radius: 12px;
+        top: -6px; left: -8px; right: 8px; bottom: -6px;
+        border-radius: 14px;
+        transform: translateZ(30px);
         background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 40%, rgba(255,255,255,0.03) 100%);
         border: 1px solid rgba(255, 255, 255, 0.2);
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 10px 30px rgba(0, 0, 0, 0.3);
-        z-index: 4;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 8px 25px rgba(0, 0, 0, 0.3);
         pointer-events: none;
     }
 
-    /* Внутренняя рамка на передней стенке */
+    /* Внутренняя рамка */
     .panel-front::after {
         content: '';
         position: absolute;
-        top: 14px; left: 14px; right: 14px; bottom: 14px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 6px;
+        top: 12px; left: 12px; right: 12px; bottom: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 8px;
     }
 
-    /* Блик на передней стенке */
+    /* Блик */
     .panel-front-glare {
         position: absolute;
         top: 0; left: 0; right: 0; bottom: 0;
-        border-radius: 12px;
+        border-radius: 14px;
         opacity: 0;
         transition: opacity 0.3s;
         background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,0.12) 0%, rgba(200,220,255,0.04) 30%, transparent 55%);
-        z-index: 5;
         pointer-events: none;
     }
 
-    .welcome-panel:hover .panel-front-glare {
+    .welcome-assembly:hover .panel-front-glare {
         opacity: 1;
     }
 
-    /* Градиент по краям — поверх всего включая каджитку */
-    .panel-edge-gradient {
+    /* Грани стекла */
+    .edge-right {
         position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        border-radius: 12px;
-        background:
-            linear-gradient(to right, #0a0a0a 0%, transparent 15%, transparent 85%, #0a0a0a 100%),
-            linear-gradient(to bottom, transparent 0%, transparent 70%, #0a0a0a 100%),
-            linear-gradient(to bottom, #0a0a0a 0%, transparent 8%);
-        z-index: 7;
+        top: -6px; right: 8px; width: 4px; bottom: -6px;
+        transform: translateZ(15px) rotateY(90deg);
+        transform-origin: right center;
+        background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.03) 50%, rgba(255,255,255,0.08) 100%);
+        pointer-events: none;
+    }
+
+    .edge-bottom {
+        position: absolute;
+        left: -8px; right: 8px; bottom: -6px; height: 4px;
+        transform: translateZ(15px) rotateX(-90deg);
+        transform-origin: center bottom;
+        background: linear-gradient(90deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.04) 100%);
         pointer-events: none;
     }
 
     /* ====== КАДЖИТКА ====== */
     .welcome-character {
         position: absolute;
-        right: 5%;
-        bottom: 0;
-        height: 95%;
-        z-index: 6;
+        right: 8%;
+        bottom: -20px;
+        height: 110%;
+        z-index: 10;
         pointer-events: none;
     }
 
@@ -165,49 +177,48 @@
         object-fit: contain;
     }
 
-    /* ====== ТЕКСТ ПОВЕРХ ПАНЕЛИ ====== */
+    /* ====== ТЕКСТ ====== */
     .welcome-text {
         position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        z-index: 5;
+        top: 0; left: 0; bottom: 0;
+        z-index: 9;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        padding: 60px;
-        pointer-events: none;
+        padding: 50px 60px;
     }
 
     .welcome-title {
-        font-size: 52px;
+        font-size: 48px;
         font-weight: 700;
+        font-style: italic;
         line-height: 1.1;
         letter-spacing: 2px;
         text-transform: uppercase;
-        text-shadow: 0 2px 20px rgba(0, 0, 0, 0.8);
-        margin-bottom: 20px;
+        text-shadow: 0 2px 20px rgba(0, 0, 0, 0.9);
+        margin-bottom: 18px;
     }
 
     .welcome-subtitle {
-        font-size: 15px;
+        font-size: 14px;
         font-weight: 300;
-        color: rgba(255, 255, 255, 0.7);
-        text-shadow: 0 1px 10px rgba(0, 0, 0, 0.8);
-        margin-bottom: 30px;
-        max-width: 350px;
+        color: rgba(255, 255, 255, 0.6);
+        text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9);
+        margin-bottom: 28px;
+        max-width: 300px;
     }
 
     .welcome-btn {
         display: inline-block;
-        padding: 12px 36px;
+        padding: 12px 40px;
         border: 1px solid rgba(255, 255, 255, 0.5);
-        border-radius: 4px;
+        border-radius: 30px;
         color: #fff;
-        font-size: 15px;
+        font-size: 14px;
         letter-spacing: 3px;
         text-transform: uppercase;
         text-decoration: none;
         cursor: pointer;
-        pointer-events: all;
         transition: all 0.3s;
         background: rgba(255, 255, 255, 0.05);
         width: fit-content;
@@ -223,23 +234,23 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 16px;
-        padding: 30px 0;
+        gap: 14px;
+        padding: 40px 0;
     }
 
     .dot {
-        width: 6px;
-        height: 6px;
+        width: 5px;
+        height: 5px;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.4);
+        background: rgba(255, 255, 255, 0.35);
         transition: transform 0.3s, background 0.3s;
         cursor: default;
     }
 
     .dot-center {
-        width: 10px;
-        height: 10px;
-        background: rgba(255, 255, 255, 0.6);
+        width: 8px;
+        height: 8px;
+        background: rgba(255, 255, 255, 0.55);
     }
 
     .dot:hover {
@@ -247,14 +258,14 @@
         background: rgba(255, 255, 255, 0.9);
     }
 
-    /* ====== ЗАГЛУШКА ДЛЯ СЛЕДУЮЩЕЙ СЕКЦИИ ====== */
+    /* ====== ЗАГЛУШКА ====== */
     .next-section-placeholder {
         height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: rgba(255, 255, 255, 0.15);
-        font-size: 18px;
+        color: rgba(255, 255, 255, 0.12);
+        font-size: 16px;
         letter-spacing: 2px;
     }
 </style>
@@ -269,13 +280,14 @@
 
     <!-- ПРИВЕТСТВЕННАЯ СЕКЦИЯ -->
     <section class="welcome-section">
-        <div class="welcome-panel" id="welcomePanel">
+        <div class="welcome-assembly" id="welcomePanel">
             <!-- Задняя стенка -->
             <div class="panel-back"></div>
 
             <!-- Фон -->
             <div class="panel-bg">
                 <img src="forgotten.png" alt="Background">
+                <div class="panel-bg-gradient"></div>
             </div>
 
             <!-- Текст -->
@@ -285,35 +297,35 @@
                 <div class="welcome-btn" id="readBtn">ЧИТАТЬ</div>
             </div>
 
-            <!-- Каджитка — поверх панели -->
+            <!-- Каджитка -->
             <div class="welcome-character">
                 <img src="shain.png" alt="Shain">
             </div>
+
+            <!-- Грани -->
+            <div class="edge-right"></div>
+            <div class="edge-bottom"></div>
 
             <!-- Передняя стенка -->
             <div class="panel-front">
                 <div class="panel-front-glare" id="panelGlare"></div>
             </div>
-
-            <!-- Градиент по краям -->
-            <div class="panel-edge-gradient"></div>
         </div>
     </section>
 
-    <!-- ТОЧКИ-РАЗДЕЛИТЕЛИ -->
+    <!-- ТОЧКИ -->
     <div class="dots-divider">
         <div class="dot"></div>
         <div class="dot dot-center"></div>
         <div class="dot"></div>
     </div>
 
-    <!-- ЗАГЛУШКА СЛЕДУЮЩЕЙ СЕКЦИИ -->
+    <!-- ЗАГЛУШКА -->
     <div class="next-section-placeholder" id="characters">
         — здесь будет колесо фандомов —
     </div>
 
     <script>
-        // Блик на панели по курсору
         const panel = document.getElementById('welcomePanel');
         const glare = document.getElementById('panelGlare');
 
