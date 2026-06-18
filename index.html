@@ -479,20 +479,22 @@
         position: relative;
         z-index: 1;
     }
-        .dot {
+            .dot {
         display: inline-block;
         color: #fff;
         line-height: 1;
-        text-shadow: 0 0 10px rgba(207,233,255,.6);
         animation: spinSlow 10s linear infinite;
+    }
+    .dot-inner {
+        display: inline-block;
+        text-shadow: 0 0 10px rgba(207,233,255,.6);
         transition: transform .25s, text-shadow .25s;
     }
     .dot.small { font-size: 18px; }
     .dot.big   { font-size: 34px; }
-    .dot:hover {
-        transform: scale(1.7);
+    .dot:hover .dot-inner {
+        transform: scale(1.8);
         text-shadow: 0 0 22px rgba(207,233,255,1), 0 0 40px rgba(180,225,255,.6);
-        animation-play-state: paused;
     }
     @keyframes spinSlow {
         from { transform: rotate(0deg); }
@@ -562,10 +564,10 @@
             </div>
         </div>
 
-        <div class="welcome-dots" aria-hidden="true">
-            <span class="dot small">✦</span>
-            <span class="dot big">✦</span>
-            <span class="dot small">✦</span>
+                <div class="welcome-dots" aria-hidden="true">
+            <span class="dot small"><span class="dot-inner">✦</span></span>
+            <span class="dot big"><span class="dot-inner">✦</span></span>
+            <span class="dot small"><span class="dot-inner">✦</span></span>
         </div>
     </section>
 
