@@ -18,6 +18,39 @@
         overflow-x: hidden;
     }
 
+       /* скрыть системный курсор по всему сайту */
+    * { cursor: none !important; }
+
+    /* кастомный курсор */
+    .cursor-glow {
+        position: fixed;
+        top: 0; left: 0;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(156,220,255,.55) 0%, rgba(120,180,255,.22) 40%, transparent 70%);
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        z-index: 99998;
+        will-change: transform;
+        transition: width .2s, height .2s, opacity .2s;
+    }
+    .cursor-img {
+        position: fixed;
+        top: 0; left: 0;
+        width: 38px;
+        height: auto;
+        pointer-events: none;
+        z-index: 99999;
+        will-change: transform;
+        filter: drop-shadow(0 0 6px rgba(156,220,255,.45));
+    }
+    /* увеличение свечения над кликабельным */
+    .cursor-glow.is-hover {
+        width: 90px;
+        height: 90px;
+    }
+
     /* ===== НАВБАР ===== */
     .navbar {
         position: relative;
@@ -342,7 +375,9 @@
 </head>
 
 <body>
-
+<div class="cursor-glow" id="cursorGlow"></div>
+<img class="cursor-img" id="cursorImg" src="mouse.png" alt="">
+   
 <header class="navbar">
     <a class="nav-button" href="#characters">персонажи</a>
     <a class="nav-button" href="#themes">темы</a>
@@ -446,6 +481,52 @@
         if (e.target.closest('#readBtn')) return;
         closeAbout();
     });
+
+       // ===== кастомный курсор =====
+    const cursorImg  = document.getElementById('cursorImg');
+    const cursorGlow = document.getElementById('cursorGlow');
+
+    let mx = 0, my = 0;          // позиция мыши
+    let gx = 0, gy = 0;          // позиция свечения (с задержкой)
+
+    document.addEventListener('mousemove', (e) => {
+        mx = e.clientX;
+        my = e.clientY;
+        // картинка-курсор: остриё в точке мыши (привязка к левому верхнему углу)
+        cursorImg.style.transform = `translate(${mx}px, ${my}px)`;
+    });
+
+    // плавное «догоняющее» свечение
+    function animateCursor() {
+        gx += (mx - gx) * 0.18;
+        gy += (my - gy) * 0.18;
+        cursorGlow.style.transform = `translate(${gx}px, ${gy}px) translate(-50%, -50%)`;
+        requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+
+    // усиление свечения над кликабельным
+    document.addEventListener('mouseover', (e) => {
+        if (e.target.closest('a, button, .read-button, .nav-button, .dot, .welcome-character, .about-panel')) {
+            cursorGlow.classList.add('is-hover');
+        }
+    });
+    document.addEventListener('mouseout', (e) => {
+        if (e.target.closest('a, button, .read-button, .nav-button, .dot, .welcome-character, .about-panel')) {
+            cursorGlow.classList.remove('is-hover');
+        }
+    });
+
+    // курсор пропадает при уходе со страницы
+    document.addEventListener('mouseleave', () => {
+        cursorImg.style.opacity = '0';
+        cursorGlow.style.opacity = '0';
+    });
+    document.addEventListener('mouseenter', () => {
+        cursorImg.style.opacity = '1';
+        cursorGlow.style.opacity = '1';
+    });
+   
 </script>
 
 </body>
