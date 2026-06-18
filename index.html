@@ -814,8 +814,7 @@
         const ctx = canvas.getContext('2d');
 
         let W, H, points;
-        const LINK_DIST = 150;   // макс. дистанция для линии между точками
-        const DENSITY   = 11000; // чем меньше — тем больше звёзд
+        const DENSITY   = 22000; // чем меньше — тем больше звёзд
 
         function resize() {
             W = canvas.width  = window.innerWidth;
@@ -835,28 +834,9 @@
             }
         }
 
-        function draw() {
+                function draw() {
             ctx.clearRect(0, 0, W, H);
 
-            // линии-созвездия
-            for (let i = 0; i < points.length; i++) {
-                for (let j = i + 1; j < points.length; j++) {
-                    const dx = points[i].x - points[j].x;
-                    const dy = points[i].y - points[j].y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < LINK_DIST) {
-                        const a = (1 - dist / LINK_DIST) * 0.22;
-                        ctx.strokeStyle = `rgba(150,185,235,${a})`;
-                        ctx.lineWidth = 0.6;
-                        ctx.beginPath();
-                        ctx.moveTo(points[i].x, points[i].y);
-                        ctx.lineTo(points[j].x, points[j].y);
-                        ctx.stroke();
-                    }
-                }
-            }
-
-            // звёзды (мерцают)
             for (const p of points) {
                 p.x += p.vx;
                 p.y += p.vy;
@@ -864,15 +844,12 @@
                 if (p.y < 0 || p.y > H) p.vy *= -1;
 
                 p.tw += p.tws;
-                const flick = 0.4 + (Math.sin(p.tw) + 1) / 2 * 0.6; // 0.4..1.0
+                const flick = 0.4 + (Math.sin(p.tw) + 1) / 2 * 0.6;
 
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
                 ctx.fillStyle = `rgba(207,233,255,${flick})`;
-                ctx.shadowBlur = 6;
-                ctx.shadowColor = 'rgba(180,215,255,.8)';
                 ctx.fill();
-                ctx.shadowBlur = 0;
             }
 
             requestAnimationFrame(draw);
