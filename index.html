@@ -7,27 +7,6 @@
 
 <style>
     * { box-sizing: border-box; }
-    .welcome-title,
-    .welcome-subtitle,
-    .shain-title,
-    .nav-button,
-    .read-button,
-    .about-panel h2,
-    .about-panel p,
-    .shain-panel p {
-        text-shadow:
-            0 0 3px rgba(0,0,0,.45),
-            0 0 14px rgba(0,0,0,.40),
-            0 2px 5px rgba(0,0,0,.45);
-    }
-       .welcome-title,
-    .shain-title {
-        text-shadow:
-            0 0 4px rgba(0,0,0,.6),
-            0 0 20px rgba(0,0,0,.55),
-            0 2px 6px rgba(0,0,0,.6);
-    }
-   
     html { scroll-behavior: smooth; }
 
     body {
@@ -152,9 +131,7 @@
         content: "";
         position: absolute;
         inset: 0;
-                background:
-            linear-gradient(to right, rgba(8,14,20,.62) 0%, rgba(8,14,20,.22) 32%, transparent 55%),
-            linear-gradient(to left, rgba(8,14,20,.55) 0%, transparent 45%);
+        background: linear-gradient(to right, rgba(8,14,20,.62) 0%, rgba(8,14,20,.22) 32%, transparent 55%);
         pointer-events: none;
     }
 
@@ -266,82 +243,6 @@
         transform: translateZ(60px) translateX(60%);
     }
 
-       /* ===== режим "Шейн" (клик по каджитке) ===== */
-    /* текст приветствия уезжает вправо и тает */
-    .welcome-assembly.shain-open .welcome-copy {
-        opacity: 0;
-        transform: translateY(-50%) translateZ(40px) translateX(60px);
-        pointer-events: none;
-    }
-    /* каджитка уезжает влево */
-        .welcome-assembly.shain-open .welcome-character {
-        transform: translateZ(60px) translateX(-120%);
-    }
-
-    /* блок с именем Шейн (появляется справа сверху) */
-    .shain-copy {
-        position: absolute;
-        z-index: 25;
-        right: 6%;
-        top: 50%;
-        transform: translateY(-50%) translateZ(40px) translateX(60px);
-        text-align: right;
-        opacity: 0;
-        pointer-events: none;
-        text-shadow: 0 2px 16px rgba(0,0,0,.5);
-        transition: opacity .5s ease, transform .5s ease;
-    }
-       .welcome-assembly.shain-open .shain-copy {
-        opacity: 1;
-        transform: translateY(-50%) translateZ(40px) translateY(-90px);
-        pointer-events: auto;
-    }
-    .shain-title {
-        margin: 0;
-        font-family: Georgia, "Times New Roman", serif;
-        font-size: clamp(40px, 3.6vw, 68px);
-        line-height: 1.08;
-        font-weight: 400;
-        letter-spacing: .015em;
-    }
-
-    /* стеклянная панель про Шейн (справа, под именем) */
-    .shain-panel {
-        position: absolute;
-        z-index: 24;
-        right: 5%;
-        top: 48%;
-        transform: translateZ(45px) translateY(20px);
-        width: 60%;
-        max-height: 58%;
-        padding: 34px 38px;
-        border-radius: 18px;
-        overflow-y: auto;
-        opacity: 0;
-        pointer-events: none;
-        text-align: right;
-        background: linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.03) 55%, rgba(170,225,255,.08));
-        border: 1px solid rgba(255,255,255,.30);
-        box-shadow: inset 0 1px 0 rgba(255,255,255,.20), 0 20px 50px rgba(0,0,0,.5);
-        backdrop-filter: blur(8px);
-        -webkit-backdrop-filter: blur(8px);
-        transition: opacity .5s ease, transform .5s ease;
-        -webkit-font-smoothing: antialiased;
-        backface-visibility: hidden;
-        will-change: transform;
-    }
-    .welcome-assembly.shain-open .shain-panel {
-        opacity: 1;
-        pointer-events: auto;
-        transform: translateZ(45px) translateY(0);
-    }
-    .shain-panel p {
-        margin: 0 0 14px;
-        font-size: clamp(16px, 1.2vw, 22px);
-        line-height: 1.55;
-        color: rgba(255,255,255,.88);
-    }
-   
        /* стеклянная панель "обо мне" */
     .about-panel {
         position: absolute;
@@ -508,13 +409,7 @@
                     <h2> 𓍊𓋼𓍊𓋼𓍊 Ну, привет путник. </h2>
                     <p>Проходи, садись, на стол ноги не закидывай. Я Мистраэль. Сижу в Silly Tavern. Решила поделиться своими ботами. Специфично их пишу — на вкус и цвет. Учусь писать темы для таверны ТОЛЬКО ДЛЯ ПК. И нет, каджитку рядом зовут не Мистраэль, но это мой любимый ребёнок. За работу ботов не ручаюсь - всё зависит от модели и пресета.</p>
                 </div>
-                <div class="shain-copy">
-                    <h1 class="shain-title">ШАЙНЕРЕС<br>САНЛЕСС</h1>
-                </div>
 
-                <div class="shain-panel" id="shainPanel">
-                    <p>Шайнерес Санлесс. Как я сказала - мой любимый ребенок. Ей уже 8 лет. Я создала ее еще в школьные годы, когда попробовала сыграть в Скайрим и вдохновиться одной расой - снежных эльфов, ныне именуемых фалмерами. Она, наверно, среди конкретно МОИХ персонажей прописана лучше и детальнее всех. Знаете историю "Падение снежного принца?" А вот она очень хорошо знает, пережив ту битву при Моэсринге самолично. Ей больше 4000 лет. И, возможно, она знакома с Мираком... А еще она и Гелебор прекрасно друг друга знают. Один испытывает вину спустя столько лет за свое решение. Другая испытывает сплошную ненависть и пустоту. Ну ладно говорить прозами.</p>
-                </div>
             </div>
         </div>
 
@@ -566,42 +461,25 @@
     const readBtn  = document.getElementById('readBtn');
     const character = document.querySelector('.welcome-character');
 
-        function openAbout(e) {
+    function openAbout(e) {
         e.preventDefault();
         e.stopPropagation();
-        assembly.classList.remove('shain-open');
         assembly.classList.add('about-open');
     }
     function closeAbout() {
         assembly.classList.remove('about-open');
     }
 
-       function openShain(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        assembly.classList.remove('about-open');
-        assembly.classList.add('shain-open');
-    }
-    function closeShain() {
-        assembly.classList.remove('shain-open');
-    }
-
     readBtn.addEventListener('click', openAbout);
     character.style.pointerEvents = 'auto';
-    character.addEventListener('click', openShain);
+    character.addEventListener('click', openAbout);
 
     // клик по пустому месту панели — закрыть
-        assembly.addEventListener('click', (e) => {
-        const aboutOpen = assembly.classList.contains('about-open');
-        const shainOpen = assembly.classList.contains('shain-open');
-        if (!aboutOpen && !shainOpen) return;
-        if (e.target.closest('.about-panel')) return;
-        if (e.target.closest('.shain-panel')) return;
-        if (e.target.closest('.shain-copy')) return;
+    assembly.addEventListener('click', (e) => {
+        if (!assembly.classList.contains('about-open')) return;
+        if (e.target.closest('.about-panel')) return;     // клик внутри текста — не закрываем
         if (e.target.closest('#readBtn')) return;
-        if (e.target.closest('.welcome-character')) return;
         closeAbout();
-        closeShain();
     });
 
        // ===== кастомный курсор =====
