@@ -460,12 +460,76 @@
         -webkit-backdrop-filter: blur(6px);
         transition: transform .2s, background .2s, box-shadow .2s, border-color .2s, color .2s;
     }
-    .read-button:hover {
+        .read-button:hover {
         transform: translateY(-2px);
         color: #0a0e13;
         border-color: #cfe9ff;
         background: linear-gradient(135deg, #eaf6ff, #bfe3ff 60%, #9cdcff);
         box-shadow: 0 0 28px rgba(190,235,255,.5);
+    }
+
+    /* ===== СТЕКЛЯННЫЕ ПЛАШКИ "персонажи / темы" ===== */
+    .welcome-tabs {
+        position: absolute;
+        z-index: 25;
+        right: 5%;
+        top: 50%;
+        transform: translateY(-50%) translateZ(45px);
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        transition: opacity .4s ease, transform .5s ease;
+    }
+    .glass-tab {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        min-width: 260px;
+        padding: 16px 28px;
+        color: #fff;
+        text-decoration: none;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(22px, 1.7vw, 32px);
+        line-height: 1;
+        letter-spacing: .03em;
+        border: 1px solid rgba(255,255,255,.30);
+        border-radius: 999px;
+        background: linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.02) 55%, rgba(170,225,255,.07));
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.18);
+        text-shadow: 0 0 3px rgba(0,0,0,.45), 0 0 14px rgba(0,0,0,.40);
+        transition: border-color .25s, box-shadow .25s, transform .2s;
+    }
+    .glass-tab-icon {
+        width: 34px;
+        height: 34px;
+        object-fit: contain;
+        filter: drop-shadow(0 0 4px rgba(156,220,255,.4));
+        flex-shrink: 0;
+    }
+    .glass-tab:hover {
+        border-color: rgba(207,233,255,.9);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.18),
+            0 0 22px rgba(190,235,255,.45),
+            0 0 0 1px rgba(207,233,255,.6);
+        transform: translateY(-1px);
+    }
+    .glass-tab:active {
+        border-color: #cfe9ff;
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.18),
+            0 0 30px rgba(190,235,255,.7),
+            0 0 0 2px rgba(207,233,255,.85);
+    }
+
+    /* плашки уезжают вправо и тают в обоих режимах */
+    .welcome-assembly.about-open .welcome-tabs,
+    .welcome-assembly.shain-open .welcome-tabs {
+        opacity: 0;
+        transform: translateY(-50%) translateZ(45px) translateX(80px);
+        pointer-events: none;
     }
 
     /* ===== ЗВЁЗДОЧКИ ВНИЗУ ===== */
@@ -570,10 +634,7 @@
 <div class="cursor-glow" id="cursorGlow"></div>
 <img class="cursor-img" id="cursorImg" src="mouse.png" alt="">
 
-<header class="navbar">
-    <a class="nav-button" href="#characters">персонажи</a>
-    <a class="nav-button" href="#themes">темы</a>
-</header>
+<header class="navbar"></header>
 
 <main>
     <section class="welcome-section" id="top">
@@ -595,6 +656,17 @@
                     <h1 class="welcome-title">ДОБРО<br>ПОЖАЛОВАТЬ꧂</h1>
                     <div class="welcome-subtitle">Немного обо мне, персонажи, темы</div>
                     <a class="read-button" href="#" id="readBtn">ЧИТАТЬ</a>
+                </div>
+
+                <div class="welcome-tabs" id="welcomeTabs">
+                    <a class="glass-tab" href="#characters">
+                        <img class="glass-tab-icon" src="icon-characters.png" alt="">
+                        <span>ПЕРСОНАЖИ</span>
+                    </a>
+                    <a class="glass-tab" href="#themes">
+                        <img class="glass-tab-icon" src="icon-themes.png" alt="">
+                        <span>ТЕМЫ</span>
+                    </a>
                 </div>
 
                 <div class="about-panel" id="aboutPanel">
@@ -718,13 +790,13 @@
     }
     animateCursor();
 
-    document.addEventListener('mouseover', (e) => {
-        if (e.target.closest('a, button, .read-button, .nav-button, .dot, .welcome-character, .about-panel')) {
+        document.addEventListener('mouseover', (e) => {
+        if (e.target.closest('a, button, .read-button, .nav-button, .dot, .welcome-character, .about-panel, .glass-tab')) {
             cursorGlow.classList.add('is-hover');
         }
     });
     document.addEventListener('mouseout', (e) => {
-        if (e.target.closest('a, button, .read-button, .nav-button, .dot, .welcome-character, .about-panel')) {
+        if (e.target.closest('a, button, .read-button, .nav-button, .dot, .welcome-character, .about-panel, .glass-tab')) {
             cursorGlow.classList.remove('is-hover');
         }
     });
