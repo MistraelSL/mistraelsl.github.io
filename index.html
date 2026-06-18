@@ -197,9 +197,8 @@
     .welcome-subtitle, .read-button { transition: opacity .35s ease; }
 
     /* состояние "обо мне открыто" */
-        .welcome-assembly.about-open .welcome-copy {
-        top: 48%;
-        transform: translateY(-100%) translateZ(40px);
+    .welcome-assembly.about-open .welcome-copy {
+    transform: translateY(-50%) translateZ(40px) translateY(-90px);
     }
     .welcome-assembly.about-open .welcome-subtitle,
     .welcome-assembly.about-open .read-button {
@@ -236,6 +235,9 @@
         opacity: 1;
         pointer-events: auto;
         transform: translateY(-50%) translateZ(45px) translateX(0);
+        -webkit-font-smoothing: antialiased;
+        transform-style: flat;
+        backface-visibility: hidden;
     }
         .welcome-assembly.about-open .about-panel {
         opacity: 1;
