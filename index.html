@@ -25,10 +25,10 @@
     .cursor-glow {
         position: fixed;
         top: 0; left: 0;
-        width: 60px;
-        height: 60px;
+        width: 160px;
+        height: 160px;
         border-radius: 50%;
-        background: radial-gradient(circle, rgba(156,220,255,.55) 0%, rgba(120,180,255,.22) 40%, transparent 70%);
+        background: radial-gradient(circle, rgba(156,220,255,.18) 0%, rgba(120,180,255,.08) 45%, transparent 72%);
         transform: translate(-50%, -50%);
         pointer-events: none;
         z-index: 99998;
@@ -38,7 +38,7 @@
     .cursor-img {
         position: fixed;
         top: 0; left: 0;
-        width: 38px;
+        width: 64px;
         height: auto;
         pointer-events: none;
         z-index: 99999;
@@ -46,9 +46,9 @@
         filter: drop-shadow(0 0 6px rgba(156,220,255,.45));
     }
     /* увеличение свечения над кликабельным */
-    .cursor-glow.is-hover {
-        width: 90px;
-        height: 90px;
+        .cursor-glow.is-hover {
+        width: 230px;
+        height: 230px;
     }
 
     /* ===== НАВБАР ===== */
