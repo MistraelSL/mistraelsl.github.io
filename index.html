@@ -55,7 +55,8 @@
    
 
     /* скрыть системный курсор по всему сайту */
-    *{ cursor: none !important; user-select: none; }
+    * { cursor: none !important; user-select: none; -webkit-user-drag: none; }
+    img { pointer-events: none; -webkit-user-drag: none; draggable: false; }
 
     /* кастомный курсор */
     .cursor-glow {
@@ -645,7 +646,7 @@
                     <img class="welcome-bg" src="forgotten.png" alt="">
                 </div>
 
-                <img class="welcome-character" src="shain.png" alt="Шейн">
+                <img class="welcome-character" src="shain.png" alt="Шейн" draggable="false">
                 <div class="panel-stars" id="panelStars"></div>
                 <div class="welcome-front-glass" id="frontGlass"></div>
                 <div class="welcome-glare" id="glare"></div>
