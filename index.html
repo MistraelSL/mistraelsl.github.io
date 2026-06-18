@@ -119,7 +119,7 @@
     .welcome-character {
         position: absolute;
         z-index: 12;
-        right: 8%;
+        right: 14%;
         bottom: -2%;
         height: 116%;
         width: auto;
@@ -191,43 +191,34 @@
     }
     .welcome-scene:hover .welcome-glare { opacity: 1; }
 
-       /* состояние "обо мне открыто" — текст уезжает вверх */
+          /* плавность */
+    .welcome-character { transition: transform .55s ease; }
+    .welcome-copy { transition: top .5s ease, transform .5s ease; }
+    .welcome-subtitle, .read-button { transition: opacity .35s ease; }
+
+    /* состояние "обо мне открыто" */
     .welcome-assembly.about-open .welcome-copy {
-        top: 26%;
-        transform: translateY(-50%) translateZ(40px);
-        transition: top .5s ease, transform .5s ease;
+        top: 22%;
     }
     .welcome-assembly.about-open .welcome-subtitle,
     .welcome-assembly.about-open .read-button {
         opacity: 0;
         pointer-events: none;
-        transition: opacity .35s ease;
     }
-    /* каджитка отъезжает вправо */
+    /* каджитка просто отъезжает вправо, остаётся видимой */
     .welcome-assembly.about-open .welcome-character {
-        transform: translateZ(60px) translateX(45%);
-        opacity: 0;
-        transition: transform .55s ease, opacity .45s ease;
-    }
-    .welcome-character {
-        transition: transform .55s ease, opacity .45s ease;
-    }
-    .welcome-copy {
-        transition: top .5s ease, transform .5s ease;
-    }
-    .welcome-subtitle, .read-button {
-        transition: opacity .35s ease;
+        transform: translateZ(60px) translateX(22%);
     }
 
     /* стеклянная панель "обо мне" */
     .about-panel {
         position: absolute;
         z-index: 24;
-        right: 6%;
-        top: 50%;
-        transform: translateY(-50%) translateZ(45px) translateX(40px);
-        width: 38%;
-        max-height: 64%;
+        left: 5%;
+        top: 44%;
+        transform: translateZ(45px) translateY(20px);
+        width: 42%;
+        max-height: 46%;
         padding: 34px 38px;
         border-radius: 18px;
         overflow-y: auto;
@@ -245,11 +236,10 @@
         pointer-events: auto;
         transform: translateY(-50%) translateZ(45px) translateX(0);
     }
-    .about-panel h2 {
-        margin: 0 0 18px;
-        font-size: clamp(28px, 2.4vw, 44px);
-        font-weight: 400;
-        letter-spacing: .02em;
+        .welcome-assembly.about-open .about-panel {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateZ(45px) translateY(0);
     }
     .about-panel p {
         margin: 0 0 14px;
