@@ -52,7 +52,6 @@
         padding: 26px 26px 0;
     }
 
-    /* сцена с перспективой для 3D-наклона */
     .welcome-scene {
         perspective: 1600px;
         width: 100%;
@@ -68,7 +67,6 @@
         will-change: transform;
     }
 
-    /* заднее стекло */
     .welcome-back-glass {
         position: absolute;
         top: -10px; left: 14px; right: -14px; bottom: -10px;
@@ -79,7 +77,6 @@
         box-shadow: 0 24px 60px rgba(0,0,0,.6);
     }
 
-    /* фото-слой */
     .welcome-image-layer {
         position: absolute;
         inset: 0;
@@ -105,7 +102,6 @@
         pointer-events: none;
     }
 
-    /* каджитка — отдельный слой, выходит вперёд (parallax) */
     .welcome-character {
         position: absolute;
         z-index: 12;
@@ -143,7 +139,30 @@
         border-radius: 12px;
     }
 
-    /* блик — ТОЛЬКО по стеклу, не по фото */
+    /* радужный блик-перелив по стеклу (как у Дэвида) */
+    .welcome-front-glass::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 18px;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity .35s;
+        mix-blend-mode: screen;
+        background: linear-gradient(
+            115deg,
+            transparent 30%,
+            rgba(255,120,180,.18) 42%,
+            rgba(120,200,255,.20) 50%,
+            rgba(180,255,210,.18) 58%,
+            transparent 70%
+        );
+        background-size: 250% 250%;
+        background-position: var(--gx, 50%) var(--gy, 50%);
+    }
+    .welcome-scene:hover .welcome-front-glass::before { opacity: 1; }
+
+    /* мягкий блик-свечение за курсором */
     .welcome-glare {
         position: absolute;
         inset: 0;
@@ -267,7 +286,7 @@
 
                 <img class="welcome-character" src="shain.png" alt="Шейн">
 
-                <div class="welcome-front-glass"></div>
+                <div class="welcome-front-glass" id="frontGlass"></div>
                 <div class="welcome-glare" id="glare"></div>
 
                 <div class="welcome-copy">
@@ -292,11 +311,11 @@
 </main>
 
 <script>
-    const scene    = document.getElementById('scene');
-    const assembly = document.getElementById('assembly');
-    const glare    = document.getElementById('glare');
+    const scene      = document.getElementById('scene');
+    const assembly   = document.getElementById('assembly');
+    const glare      = document.getElementById('glare');
+    const frontGlass = document.getElementById('frontGlass');
 
-    // широкая панель — наклон мягче, чем у карточки Дэвида (там было 18°)
     const MAX_TILT = 6;
 
     scene.addEventListener('mousemove', (e) => {
@@ -311,8 +330,13 @@
 
         assembly.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
 
-        glare.style.setProperty('--mx', `${(x / r.width) * 100}%`);
-        glare.style.setProperty('--my', `${(y / r.height) * 100}%`);
+        const px = (x / r.width) * 100;
+        const py = (y / r.height) * 100;
+
+        glare.style.setProperty('--mx', `${px}%`);
+        glare.style.setProperty('--my', `${py}%`);
+        frontGlass.style.setProperty('--gx', `${px}%`);
+        frontGlass.style.setProperty('--gy', `${py}%`);
     });
 
     scene.addEventListener('mouseleave', () => {
