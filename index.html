@@ -532,13 +532,14 @@
     }
 
     /* ===== ЗВЁЗДОЧКИ ВНИЗУ ===== */
-    .welcome-dots {
+        .welcome-dots {
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 30px;
         height: 96px;
-        margin-top: 24px;
+        margin-top: 56px;
+        margin-bottom: 56px;
         position: relative;
         z-index: 1;
     }
@@ -564,6 +565,149 @@
         to   { transform: rotate(360deg); }
     }
 
+       /* ===== СЕКЦИЯ ФАНДОМОВ ===== */
+    .fandom-section {
+        position: relative;
+        width: 100%;
+        padding: 0 26px;
+        z-index: 1;
+    }
+
+    .fandom-panel {
+        position: relative;
+        width: 100%;
+        min-height: 72vh;
+        border-radius: 18px;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,.34);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.22),
+            inset 0 -1px 0 rgba(255,255,255,.10),
+            0 18px 46px rgba(0,0,0,.55);
+    }
+    .fandom-panel::after {
+        content: "";
+        position: absolute;
+        inset: 12px;
+        border: 1px solid rgba(255,255,255,.12);
+        border-radius: 12px;
+        z-index: 4;
+        pointer-events: none;
+    }
+    .fandom-panel::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        background:
+            radial-gradient(ellipse at center 65%, transparent 0%, rgba(4,7,10,.78) 65%),
+            linear-gradient(to bottom, rgba(4,7,10,.82) 0%, transparent 26%, transparent 74%, rgba(4,7,10,.88) 100%),
+            linear-gradient(to right, rgba(4,7,10,.72) 0%, transparent 22%, transparent 78%, rgba(4,7,10,.72) 100%);
+    }
+
+    .fandom-bg-wrap {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+    }
+    .fandom-bg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 30%;
+        opacity: 0;
+        transition: opacity .8s ease;
+        filter: saturate(.85) brightness(.75);
+    }
+    .fandom-bg.active { opacity: 1; }
+
+    .fandom-heading {
+        position: relative;
+        z-index: 3;
+        text-align: center;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(34px, 3.4vw, 62px);
+        font-weight: 400;
+        font-style: normal;
+        letter-spacing: .04em;
+        padding-top: clamp(36px, 5vh, 76px);
+        margin: 0;
+        text-shadow: 0 0 4px rgba(0,0,0,.6), 0 0 20px rgba(0,0,0,.55), 0 2px 6px rgba(0,0,0,.6);
+    }
+
+    .fandom-name {
+        position: relative;
+        z-index: 3;
+        text-align: center;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(26px, 2.4vw, 46px);
+        font-weight: 400;
+        letter-spacing: .06em;
+        margin-top: clamp(18px, 2.5vh, 42px);
+        text-shadow: 0 0 4px rgba(0,0,0,.6), 0 0 20px rgba(0,0,0,.55);
+    }
+
+    .fandom-wheel {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        height: clamp(300px, 40vh, 480px);
+        margin-top: 10px;
+    }
+
+    .fandom-arc {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        overflow: visible;
+    }
+
+    .fandom-bubble {
+        position: absolute;
+        border-radius: 50%;
+        background: radial-gradient(circle at 38% 32%, #fff, rgba(220,238,255,.85) 50%, rgba(180,215,255,.45) 80%, rgba(150,195,240,.12));
+        transform: translate(-50%, -50%);
+        transition: all .5s ease;
+        box-shadow:
+            0 0 30px rgba(220,240,255,.50),
+            0 0 60px rgba(180,215,255,.25),
+            0 0 100px rgba(160,200,255,.08);
+    }
+
+    .fandom-bubble.active {
+        background: #111 center / cover no-repeat;
+        box-shadow:
+            0 0 40px rgba(180,220,255,.45),
+            0 0 80px rgba(150,200,255,.18),
+            0 0 0 3px rgba(255,255,255,.18);
+    }
+    .fandom-bubble.active::after {
+        content: "";
+        position: absolute;
+        left: -40%;
+        right: -40%;
+        bottom: -55%;
+        height: 75%;
+        background: linear-gradient(
+            90deg,
+            transparent 5%,
+            rgba(255,100,180,.15) 15%,
+            rgba(160,120,255,.20) 28%,
+            rgba(100,200,255,.22) 42%,
+            rgba(120,255,200,.18) 55%,
+            rgba(255,220,100,.15) 68%,
+            rgba(255,130,100,.12) 82%,
+            transparent 95%
+        );
+        filter: blur(20px);
+        opacity: .65;
+        pointer-events: none;
+    }
+   
     .anchor-spacer { min-height: 20vh; }
 
         @media (max-width: 900px) {
@@ -689,7 +833,23 @@
             <span class="dot small"><span class="dot-inner">✦</span></span>
         </div>
     </section>
-
+   
+    <section class="fandom-section" id="fandomSection">
+        <div class="fandom-panel">
+            <div class="fandom-bg-wrap" id="fandomBgWrap"></div>
+            <h2 class="fandom-heading">КРУТИ И ВЫБИРАЙ<br>ФАНДОМ</h2>
+            <div class="fandom-name" id="fandomName">ПРОМЕТЕЙ</div>
+            <div class="fandom-wheel" id="fandomWheel">
+                <svg class="fandom-arc" id="fandomArc"></svg>
+            </div>
+        </div>
+        <div class="welcome-dots" aria-hidden="true">
+            <span class="dot small"><span class="dot-inner">✦</span></span>
+            <span class="dot big"><span class="dot-inner">✦</span></span>
+            <span class="dot small"><span class="dot-inner">✦</span></span>
+        </div>
+    </section>
+   
     <section id="about" class="anchor-spacer"></section>
     <section id="characters" class="anchor-spacer"></section>
     <section id="themes" class="anchor-spacer"></section>
@@ -703,25 +863,31 @@
 
     const MAX_TILT = 6;
 
+       let tiltPending = false;
     scene.addEventListener('mousemove', (e) => {
-        const r = scene.getBoundingClientRect();
-        const x = e.clientX - r.left;
-        const y = e.clientY - r.top;
-        const cx = r.width / 2;
-        const cy = r.height / 2;
+        if (tiltPending) return;
+        tiltPending = true;
+        requestAnimationFrame(() => {
+            const r = scene.getBoundingClientRect();
+            const x = e.clientX - r.left;
+            const y = e.clientY - r.top;
+            const cx = r.width / 2;
+            const cy = r.height / 2;
 
-        const rotateX = ((y - cy) / cy) * -MAX_TILT;
-        const rotateY = ((x - cx) / cx) *  MAX_TILT;
+            const rotateX = ((y - cy) / cy) * -MAX_TILT;
+            const rotateY = ((x - cx) / cx) *  MAX_TILT;
 
-        assembly.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            assembly.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
 
-        const px = (x / r.width) * 100;
-        const py = (y / r.height) * 100;
+            const px = (x / r.width) * 100;
+            const py = (y / r.height) * 100;
 
-        glare.style.setProperty('--mx', `${px}%`);
-        glare.style.setProperty('--my', `${py}%`);
-        frontGlass.style.setProperty('--gx', `${px}%`);
-        frontGlass.style.setProperty('--gy', `${py}%`);
+            glare.style.setProperty('--mx', `${px}%`);
+            glare.style.setProperty('--my', `${py}%`);
+            frontGlass.style.setProperty('--gx', `${px}%`);
+            frontGlass.style.setProperty('--gy', `${py}%`);
+            tiltPending = false;
+        });
     });
 
     scene.addEventListener('mouseleave', () => {
@@ -861,6 +1027,106 @@
         draw();
     })();
 
+       // ===== полуколесо фандомов (статика) =====
+    (function () {
+        const FANDOMS = [
+            { name: 'ПРОМЕТЕЙ',               img: 'Prometheus.png' },
+            { name: 'ПИРАТЫ КАРИБСКОГО МОРЯ',  img: 'Pirates.png' },
+            { name: 'ВЕДЬМАК',                img: 'Witcher.png' },
+            { name: 'ГЕНШИН',                 img: 'Genshin.png' }
+        ];
+
+        const STEP_T    = 0.17;
+        const BASE_SIZE = 180;
+        let activeIndex = 0;
+
+        const wheel  = document.getElementById('fandomWheel');
+        const nameEl = document.getElementById('fandomName');
+        const arcSvg = document.getElementById('fandomArc');
+        const bgWrap = document.getElementById('fandomBgWrap');
+
+        FANDOMS.forEach(function (f, i) {
+            var img = document.createElement('img');
+            img.className = 'fandom-bg' + (i === activeIndex ? ' active' : '');
+            img.src = f.img;
+            img.alt = '';
+            img.draggable = false;
+            bgWrap.appendChild(img);
+        });
+
+        function bezier(t, P0, P1, P2) {
+            var mt = 1 - t;
+            return {
+                x: mt * mt * P0.x + 2 * mt * t * P1.x + t * t * P2.x,
+                y: mt * mt * P0.y + 2 * mt * t * P1.y + t * t * P2.y
+            };
+        }
+
+        function renderWheel() {
+            var W = wheel.offsetWidth;
+            var H = wheel.offsetHeight;
+            var cx = W / 2;
+            var N  = FANDOMS.length;
+
+            var edgeY    = H * 0.10;
+            var controlY = H * 1.50;
+
+            var P0 = { x: 0,  y: edgeY };
+            var P1 = { x: cx, y: controlY };
+            var P2 = { x: W,  y: edgeY };
+
+            wheel.querySelectorAll('.fandom-bubble').forEach(function (b) { b.remove(); });
+
+            FANDOMS.forEach(function (f, i) {
+                var offset = i - activeIndex;
+                if (offset > N / 2)  offset -= N;
+                if (offset < -N / 2) offset += N;
+
+                var t = 0.5 + offset * STEP_T;
+                if (t < -0.05 || t > 1.05) return;
+
+                var clamped = Math.max(0, Math.min(1, t));
+                var pos  = bezier(clamped, P0, P1, P2);
+                var dist = Math.abs(offset);
+                var size = dist === 0 ? BASE_SIZE : Math.max(55, BASE_SIZE - dist * 48);
+                var alpha = dist === 0 ? 1 : Math.max(0.18, 1 - dist * 0.30);
+
+                var bubble = document.createElement('div');
+                bubble.className = 'fandom-bubble' + (dist === 0 ? ' active' : '');
+                bubble.style.left    = pos.x + 'px';
+                bubble.style.top     = pos.y + 'px';
+                bubble.style.width   = size + 'px';
+                bubble.style.height  = size + 'px';
+                bubble.style.opacity = alpha;
+
+                if (dist === 0) {
+                    bubble.style.backgroundImage = 'url(' + f.img + ')';
+                }
+
+                wheel.appendChild(bubble);
+            });
+
+            arcSvg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+            arcSvg.innerHTML =
+                '<path d="M 0,' + edgeY +
+                ' Q ' + cx + ',' + controlY +
+                ' ' + W + ',' + edgeY + '"' +
+                ' fill="none"' +
+                ' stroke="rgba(255,255,255,.40)"' +
+                ' stroke-width="2.5"' +
+                ' stroke-dasharray="2 9"' +
+                ' stroke-linecap="round" />';
+
+            nameEl.textContent = FANDOMS[activeIndex].name;
+            bgWrap.querySelectorAll('.fandom-bg').forEach(function (bg, i) {
+                bg.classList.toggle('active', i === activeIndex);
+            });
+        }
+
+        renderWheel();
+        window.addEventListener('resize', renderWheel);
+    })();
+   
     // ===== звёзды внутри панели =====
     (function () {
         const box = document.getElementById('panelStars');
