@@ -39,28 +39,20 @@
         overflow-x: hidden;
     }
 
-    /* живые звёзды на заднем фоне */
-    .stars-bg {
+       /* фоновое созвездие на canvas */
+    #constellation {
         position: fixed;
         inset: 0;
         z-index: 0;
-        overflow: hidden;
         pointer-events: none;
+        display: block;
     }
-    .star {
-        position: absolute;
-        width: 3px;
-        height: 3px;
-        background: #fff;
-        border-radius: 50%;
-        opacity: 0;
-        animation: twinkle var(--dur, 4s) ease-in-out infinite;
-        animation-delay: var(--delay, 0s);
-    }
+    /* мерцание звёзд внутри панели */
     @keyframes twinkle {
-        0%, 100% { opacity: 0; transform: scale(.5); }
-        50%      { opacity: .9; transform: scale(1.2); box-shadow: 0 0 8px #cfe9ff; }
+        0%, 100% { opacity: 0; transform: scale(.5); filter: blur(1px); }
+        50%      { opacity: 1; transform: scale(1.3); filter: blur(0px); box-shadow: 0 0 10px #fff, 0 0 18px #cfe9ff; }
     }
+   
 
     /* скрыть системный курсор по всему сайту */
     * { cursor: none !important; }
@@ -522,7 +514,7 @@
 </head>
 
 <body>
-<div class="stars-bg" id="starsBg"></div>
+<canvas id="constellation"></canvas>
 
 <div class="cursor-glow" id="cursorGlow"></div>
 <img class="cursor-img" id="cursorImg" src="mouse.png" alt="">
@@ -695,22 +687,79 @@
         cursorGlow.style.opacity = '1';
     });
 
-    // ===== генерация звёзд на фоне =====
+        // ===== фоновое созвездие (canvas) =====
     (function () {
-        const box = document.getElementById('starsBg');
-        const COUNT = 90;
-        for (let i = 0; i < COUNT; i++) {
-            const s = document.createElement('span');
-            s.className = 'star';
-            s.style.left = Math.random() * 100 + '%';
-            s.style.top  = Math.random() * 100 + '%';
-            s.style.setProperty('--dur', (2 + Math.random() * 4) + 's');
-            s.style.setProperty('--delay', (Math.random() * 4) + 's');
-            const sz = 1 + Math.random() * 2;
-            s.style.width = sz + 'px';
-            s.style.height = sz + 'px';
-            box.appendChild(s);
+        const canvas = document.getElementById('constellation');
+        const ctx = canvas.getContext('2d');
+
+        let W, H, points;
+        const LINK_DIST = 150;   // макс. дистанция для линии между точками
+        const DENSITY   = 11000; // чем меньше — тем больше звёзд
+
+        function resize() {
+            W = canvas.width  = window.innerWidth;
+            H = canvas.height = window.innerHeight;
+            const count = Math.floor((W * H) / DENSITY);
+            points = [];
+            for (let i = 0; i < count; i++) {
+                points.push({
+                    x: Math.random() * W,
+                    y: Math.random() * H,
+                    vx: (Math.random() - 0.5) * 0.18,
+                    vy: (Math.random() - 0.5) * 0.18,
+                    r: 0.7 + Math.random() * 1.4,
+                    tw: Math.random() * Math.PI * 2,        // фаза мерцания
+                    tws: 0.008 + Math.random() * 0.02       // скорость мерцания
+                });
+            }
         }
+
+        function draw() {
+            ctx.clearRect(0, 0, W, H);
+
+            // линии-созвездия
+            for (let i = 0; i < points.length; i++) {
+                for (let j = i + 1; j < points.length; j++) {
+                    const dx = points[i].x - points[j].x;
+                    const dy = points[i].y - points[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < LINK_DIST) {
+                        const a = (1 - dist / LINK_DIST) * 0.22;
+                        ctx.strokeStyle = `rgba(150,185,235,${a})`;
+                        ctx.lineWidth = 0.6;
+                        ctx.beginPath();
+                        ctx.moveTo(points[i].x, points[i].y);
+                        ctx.lineTo(points[j].x, points[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // звёзды (мерцают)
+            for (const p of points) {
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.x < 0 || p.x > W) p.vx *= -1;
+                if (p.y < 0 || p.y > H) p.vy *= -1;
+
+                p.tw += p.tws;
+                const flick = 0.4 + (Math.sin(p.tw) + 1) / 2 * 0.6; // 0.4..1.0
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(207,233,255,${flick})`;
+                ctx.shadowBlur = 6;
+                ctx.shadowColor = 'rgba(180,215,255,.8)';
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+
+            requestAnimationFrame(draw);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+        draw();
     })();
 
     // ===== звёзды внутри панели =====
