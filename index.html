@@ -300,7 +300,8 @@
         pointer-events: none;
     }
     .welcome-assembly.shain-open .welcome-character {
-        transform: translateZ(60px) translateX(-18%);
+        z-index: 26;
+        transform: translateZ(60px) translateX(-26%);
     }
 
     .shain-copy {
@@ -332,11 +333,11 @@
     .shain-panel {
         position: absolute;
         z-index: 24;
-        right: 5%;
+        right: 4%;
         top: 52%;
         bottom: auto;
         transform: translateZ(45px) translateY(20px);
-        width: 52%;
+        width: 44%;
         max-height: 43%;
         padding: 34px 38px;
         border-radius: 18px;
@@ -859,6 +860,11 @@
             padding: 22px 24px;
             text-align: left;
         }
+        .shain-panel {
+            left: 43%;
+            right: 4%;
+            width: auto;
+        }
         .about-panel h2 { font-size: clamp(24px, 4vw, 34px); }
         .about-panel p,
         .shain-panel p { font-size: clamp(15px, 2.2vw, 19px); }
@@ -871,7 +877,7 @@
             transform: translateZ(60px) translateX(85%);
         }
         .welcome-assembly.shain-open .welcome-character {
-            transform: translateZ(60px) translateX(-12%);
+            transform: translateZ(60px) translateX(-20%);
         }
         .welcome-back-glass { left: 8px; right: -8px; }
         .fandom-panel { height: clamp(620px, 78vh, 760px); min-height: 620px; }
@@ -903,7 +909,7 @@
             transform: translateZ(40px);
         }
         .shain-panel {
-            width: 52%;
+            width: 46%;
             top: 48%;
             bottom: auto;
             max-height: 46%;
