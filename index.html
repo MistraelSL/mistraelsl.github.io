@@ -1,105 +1,1367 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#050b12">
-  <title>Mistrael — Каталог</title>
-  <link rel="stylesheet" href="assets/css/styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mistrael — Каталог</title>
+
+<style>
+    * { box-sizing: border-box; }
+    .welcome-title,
+    .welcome-subtitle,
+    .shain-title,
+    .nav-button,
+    .read-button,
+    .about-panel h2,
+    .about-panel p,
+    .shain-panel p {
+        text-shadow:
+            0 0 3px rgba(0,0,0,.45),
+            0 0 14px rgba(0,0,0,.40),
+            0 2px 5px rgba(0,0,0,.45);
+    }
+    .welcome-title,
+    .shain-title {
+        text-shadow:
+            0 0 4px rgba(0,0,0,.6),
+            0 0 20px rgba(0,0,0,.55),
+            0 2px 6px rgba(0,0,0,.6);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        background: linear-gradient(to bottom, #0a0e13 0%, #070a0e 50%, #04070a 100%);
+        color: white;
+        font-family: Georgia, "Times New Roman", serif;
+        overflow-x: hidden;
+    }
+
+    #constellation {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        display: block;
+    }
+    @keyframes twinkle {
+        0%, 100% { opacity: 0; transform: scale(.5); filter: blur(1px); }
+        50%      { opacity: 1; transform: scale(1.3); filter: blur(0px); box-shadow: 0 0 10px #fff, 0 0 18px #cfe9ff; }
+    }
+
+    * { cursor: none !important; user-select: none; -webkit-user-drag: none; }
+    img { pointer-events: none; -webkit-user-drag: none; }
+
+    .cursor-glow {
+        position: fixed;
+        top: 0; left: 0;
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(156,220,255,.18) 0%, rgba(120,180,255,.08) 45%, transparent 72%);
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        z-index: 99998;
+        will-change: transform;
+        transition: width .2s, height .2s, opacity .2s;
+    }
+    .cursor-img {
+        position: fixed;
+        top: 0; left: 0;
+        width: 64px;
+        height: auto;
+        pointer-events: none;
+        z-index: 99999;
+        will-change: transform;
+        filter: drop-shadow(0 0 6px rgba(156,220,255,.45));
+    }
+    .cursor-glow.is-hover {
+        width: 230px;
+        height: 230px;
+    }
+
+    .navbar {
+        display: block;
+        width: 100%;
+        height: 64px;
+        background: transparent;
+        border: none;
+        padding: 0;
+    }
+    .nav-button {
+        color: rgba(255,255,255,.92);
+        text-decoration: none;
+        font-size: 30px;
+        font-weight: 400;
+        letter-spacing: .01em;
+        transition: color .2s, text-shadow .2s;
+    }
+    .nav-button:hover {
+        color: #fff;
+        text-shadow: 0 0 14px rgba(180,225,255,.5);
+    }
+
+    .welcome-section {
+        position: relative;
+        width: 100%;
+        padding: 26px 26px 0;
+        z-index: 1;
+    }
+
+    .welcome-scene {
+        perspective: 1600px;
+        width: 100%;
+    }
+
+    .welcome-assembly {
+        position: relative;
+        width: 100%;
+        height: 64vh;
+        min-height: 540px;
+        transform-style: preserve-3d;
+        transition: transform .15s ease-out;
+        will-change: transform;
+        contain: layout paint;
+    }
+
+    body.is-resizing .welcome-assembly,
+    body.is-resizing .welcome-character,
+    body.is-resizing .welcome-copy,
+    body.is-resizing .shain-copy,
+    body.is-resizing .shain-panel,
+    body.is-resizing .about-panel {
+        transition: none !important;
+    }
+
+    .welcome-back-glass {
+        position: absolute;
+        top: -10px; left: 14px; right: -14px; bottom: -10px;
+        border-radius: 22px;
+        transform: translateZ(-40px);
+        background: linear-gradient(135deg, rgba(255,255,255,.06), rgba(255,255,255,.015) 50%, rgba(165,220,255,.05));
+        border: 1px solid rgba(255,255,255,.16);
+        box-shadow: 0 24px 60px rgba(0,0,0,.6);
+    }
+
+    .welcome-image-layer {
+        position: absolute;
+        inset: 0;
+        border-radius: 18px;
+        overflow: hidden;
+        transform: translateZ(0);
+        box-shadow: 0 18px 46px rgba(0,0,0,.55);
+    }
+    .welcome-bg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 28%;
+        filter: saturate(.9) contrast(1.03) brightness(.92);
+    }
+    .welcome-image-layer::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(to right, rgba(8,14,20,.62) 0%, rgba(8,14,20,.22) 32%, transparent 55%),
+            linear-gradient(to left, rgba(8,14,20,.55) 0%, transparent 45%);
+        pointer-events: none;
+    }
+
+    .welcome-image-layer::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+        background: linear-gradient(to bottom,
+            rgba(4,7,10,.85) 0%,
+            transparent 22%,
+            transparent 74%,
+            rgba(4,7,10,.92) 100%);
+    }
+
+    .panel-stars {
+        position: absolute;
+        inset: 0;
+        z-index: 13;
+        pointer-events: none;
+        transition: transform .6s ease, opacity .5s ease;
+    }
+    .panel-star {
+        position: absolute;
+        width: 3px; height: 3px;
+        background: #fff;
+        border-radius: 50%;
+        opacity: 0;
+        animation: twinkle var(--dur, 4s) ease-in-out infinite;
+        animation-delay: var(--delay, 0s);
+    }
+    .welcome-assembly.shain-open .panel-stars {
+        transform: translateX(40%) scale(1.3);
+        opacity: 0;
+    }
+
+    .welcome-character {
+        position: absolute;
+        z-index: 12;
+        right: 26%;
+        bottom: -2%;
+        height: 116%;
+        width: auto;
+        transform: translateZ(60px);
+        filter:
+            drop-shadow(0 0 2px rgba(255,255,255,.9))
+            drop-shadow(0 0 16px rgba(155,220,255,.28))
+            drop-shadow(0 18px 30px rgba(0,0,0,.5));
+        user-select: none;
+        pointer-events: auto;
+        transition: transform .55s ease;
+    }
+
+    .welcome-front-glass {
+        position: absolute;
+        inset: 0;
+        z-index: 18;
+        border-radius: 18px;
+        transform: translateZ(50px);
+        pointer-events: none;
+        border: 1px solid rgba(255,255,255,.34);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.22),
+            inset 0 -1px 0 rgba(255,255,255,.10);
+    }
+    .welcome-front-glass::after {
+        content: "";
+        position: absolute;
+        inset: 12px;
+        border: 1px solid rgba(255,255,255,.12);
+        border-radius: 12px;
+    }
+
+    .welcome-front-glass::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 18px;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity .35s;
+        mix-blend-mode: screen;
+        background: linear-gradient(
+            115deg,
+            transparent 30%,
+            rgba(255,120,180,.18) 42%,
+            rgba(120,200,255,.20) 50%,
+            rgba(180,255,210,.18) 58%,
+            transparent 70%
+        );
+        background-size: 250% 250%;
+        background-position: var(--gx, 50%) var(--gy, 50%);
+    }
+    .welcome-scene:hover .welcome-front-glass::before { opacity: 1; }
+
+    .welcome-glare {
+        position: absolute;
+        inset: 0;
+        z-index: 19;
+        border-radius: 18px;
+        transform: translateZ(51px);
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity .3s;
+        background: radial-gradient(circle at var(--mx,50%) var(--my,50%),
+            rgba(255,255,255,.16) 0%, rgba(200,225,255,.05) 28%, transparent 52%);
+    }
+    .welcome-scene:hover .welcome-glare { opacity: 1; }
+
+    .welcome-copy { transition: top .5s ease, transform .5s ease; }
+    .welcome-subtitle, .read-button { transition: opacity .35s ease; }
+
+    .welcome-assembly.about-open .welcome-copy {
+        transform: translateY(-50%) translateZ(40px) translateY(-90px);
+    }
+    .welcome-assembly.about-open .welcome-subtitle,
+    .welcome-assembly.about-open .read-button {
+        opacity: 0;
+        pointer-events: none;
+    }
+    .welcome-assembly.about-open .welcome-character {
+        transform: translateZ(60px) translateX(60%);
+    }
+
+    .welcome-assembly.shain-open .welcome-copy {
+        opacity: 0;
+        transform: translateY(-50%) translateZ(40px) translateX(60px);
+        pointer-events: none;
+    }
+    .welcome-assembly.shain-open .welcome-character {
+        transform: translateZ(60px) translateX(-35%);
+    }
+
+    .shain-copy {
+        position: absolute;
+        z-index: 25;
+        right: 6%;
+        top: 10%;
+        transform: translateY(-50%) translateZ(40px) translateX(60px);
+        text-align: right;
+        opacity: 0;
+        pointer-events: none;
+        text-shadow: 0 2px 16px rgba(0,0,0,.5);
+        transition: opacity .5s ease, transform .5s ease;
+    }
+    .welcome-assembly.shain-open .shain-copy {
+        opacity: 1;
+        transform: translateZ(40px);
+        pointer-events: auto;
+    }
+    .shain-title {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(40px, 3.6vw, 68px);
+        line-height: 1.08;
+        font-weight: 400;
+        letter-spacing: .015em;
+    }
+
+    .shain-panel {
+        position: absolute;
+        z-index: 24;
+        right: 5%;
+        top: 28%;
+        bottom: 5%;
+        transform: translateZ(45px) translateY(20px);
+        width: 60%;
+        max-height: none;
+        padding: 34px 38px;
+        border-radius: 18px;
+        overflow-y: auto;
+        opacity: 0;
+        pointer-events: none;
+        text-align: right;
+        background: linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.03) 55%, rgba(170,225,255,.08));
+        border: 1px solid rgba(255,255,255,.30);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.20), 0 20px 50px rgba(0,0,0,.5);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        transition: opacity .5s ease, transform .5s ease;
+        -webkit-font-smoothing: antialiased;
+        backface-visibility: hidden;
+        contain: layout paint;
+    }
+    .welcome-assembly.shain-open .shain-panel {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateZ(45px) translateY(0);
+    }
+    .shain-panel p {
+        margin: 0 0 14px;
+        font-size: clamp(16px, 1.2vw, 22px);
+        line-height: 1.55;
+        color: rgba(255,255,255,.88);
+    }
+
+    .about-panel {
+        position: absolute;
+        z-index: 24;
+        left: 5%;
+        top: 48%;
+        transform: translateZ(45px) translateY(20px);
+        width: 50%;
+        max-height: 44%;
+        padding: 34px 38px;
+        border-radius: 18px;
+        overflow-y: auto;
+        opacity: 0;
+        pointer-events: none;
+        background: linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.03) 55%, rgba(170,225,255,.08));
+        border: 1px solid rgba(255,255,255,.30);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.20), 0 20px 50px rgba(0,0,0,.5);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        transition: opacity .5s ease, transform .5s ease;
+        -webkit-font-smoothing: antialiased;
+        backface-visibility: hidden;
+        will-change: transform;
+    }
+    .welcome-assembly.about-open .about-panel {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateZ(45px) translateY(0);
+    }
+    .about-panel h2 {
+        margin: 0 0 18px;
+        font-size: clamp(28px, 2.4vw, 44px);
+        font-weight: 400;
+        letter-spacing: .02em;
+    }
+    .about-panel p {
+        margin: 0 0 14px;
+        font-size: clamp(16px, 1.2vw, 22px);
+        line-height: 1.55;
+        color: rgba(255,255,255,.88);
+    }
+
+    .welcome-copy {
+        position: absolute;
+        z-index: 25;
+        left: 5%;
+        top: 50%;
+        transform: translateY(-50%) translateZ(40px);
+        text-shadow: 0 2px 16px rgba(0,0,0,.5);
+    }
+    .welcome-title {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(54px, 5vw, 96px);
+        line-height: 1.05;
+        font-weight: 400;
+        letter-spacing: .015em;
+    }
+    .welcome-subtitle {
+        margin-top: clamp(22px, 3vh, 40px);
+        font-size: clamp(22px, 1.9vw, 36px);
+        line-height: 1.3;
+        font-weight: 400;
+        color: rgba(255,255,255,.9);
+    }
+    .read-button {
+        margin-top: clamp(26px, 3.5vh, 48px);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: clamp(12px, 1.1vw, 18px) clamp(54px, 4vw, 86px);
+        color: #fff;
+        text-decoration: none;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(26px, 2vw, 40px);
+        line-height: 1;
+        font-weight: 400;
+        letter-spacing: .04em;
+        border: 2px solid rgba(255,255,255,.85);
+        border-radius: 999px;
+        background: linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.02) 55%, rgba(170,225,255,.07));
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+        transition: transform .2s, background .2s, box-shadow .2s, border-color .2s, color .2s;
+    }
+    .read-button:hover {
+        transform: translateY(-2px);
+        color: #0a0e13;
+        border-color: #cfe9ff;
+        background: linear-gradient(135deg, #eaf6ff, #bfe3ff 60%, #9cdcff);
+        box-shadow: 0 0 28px rgba(190,235,255,.5);
+    }
+
+    .welcome-tabs {
+        position: absolute;
+        z-index: 25;
+        right: 5%;
+        top: 50%;
+        transform: translateY(-50%) translateZ(45px);
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        transition: opacity .4s ease, transform .5s ease;
+    }
+    .glass-tab {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        min-width: 320px;
+        padding: 20px 36px;
+        color: #fff;
+        text-decoration: none;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(26px, 2vw, 38px);
+        line-height: 1;
+        letter-spacing: .03em;
+        border: 1px solid rgba(255,255,255,.30);
+        border-radius: 999px;
+        background: linear-gradient(135deg, rgba(60,80,100,.32), rgba(30,45,60,.22) 55%, rgba(70,110,150,.28));
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.18);
+        text-shadow: 0 0 3px rgba(0,0,0,.45), 0 0 14px rgba(0,0,0,.40);
+        transition: border-color .25s, box-shadow .25s, transform .2s;
+    }
+    .glass-tab-icon {
+        width: 65px;
+        height: 65px;
+        object-fit: contain;
+        filter: drop-shadow(0 0 4px rgba(156,220,255,.4));
+        flex-shrink: 0;
+    }
+    .glass-tab:hover {
+        border-color: rgba(207,233,255,.9);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.18),
+            0 0 22px rgba(190,235,255,.45),
+            0 0 0 1px rgba(207,233,255,.6);
+        transform: translateY(-1px);
+    }
+    .glass-tab:active {
+        border-color: #cfe9ff;
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.18),
+            0 0 30px rgba(190,235,255,.7),
+            0 0 0 2px rgba(207,233,255,.85);
+    }
+
+    .welcome-assembly.about-open .welcome-tabs,
+    .welcome-assembly.shain-open .welcome-tabs {
+        opacity: 0;
+        transform: translateY(-50%) translateZ(45px) translateX(80px);
+        pointer-events: none;
+    }
+
+    .welcome-dots {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 30px;
+        height: 96px;
+        margin-top: 56px;
+        margin-bottom: 56px;
+        position: relative;
+        z-index: 1;
+    }
+    .dot {
+        display: inline-block;
+        color: #fff;
+        line-height: 1;
+        animation: spinSlow 10s linear infinite;
+    }
+    .dot-inner {
+        display: inline-block;
+        text-shadow: 0 0 10px rgba(207,233,255,.6);
+        transition: transform .25s, text-shadow .25s;
+    }
+    .dot.small { font-size: 18px; }
+    .dot.big   { font-size: 34px; }
+    .dot:hover .dot-inner {
+        transform: scale(1.8);
+        text-shadow: 0 0 22px rgba(207,233,255,1), 0 0 40px rgba(180,225,255,.6);
+    }
+    @keyframes spinSlow {
+        from { transform: rotate(0deg); }
+        to   { transform: rotate(360deg); }
+    }
+
+    /* ===== ВЫБОР ФАНДОМА ===== */
+    .fandom-section {
+        position: relative;
+        width: 100%;
+        padding: 0 26px;
+        z-index: 1;
+    }
+
+    .fandom-scene {
+        width: 100%;
+        perspective: 1600px;
+    }
+
+    .fandom-panel {
+        --fandom-tilt-x: 0deg;
+        --fandom-tilt-y: 0deg;
+        position: relative;
+        width: 100%;
+        height: clamp(620px, 76vh, 860px);
+        min-height: 620px;
+        overflow: hidden;
+        border: 0;
+        border-radius: 18px;
+        background: transparent;
+        box-shadow: none;
+        transform: none;
+        transform-style: flat;
+        transition: none;
+        contain: layout paint;
+    }
+
+    .fandom-panel::before {
+        content: none;
+    }
+
+    .fandom-panel::after {
+        content: none;
+    }
+
+    .fandom-glare {
+        display: none;
+    }
+
+    .fandom-main-orb {
+        position: absolute;
+        left: clamp(-390px, -19vw, -210px);
+        top: 50%;
+        width: clamp(620px, 48vw, 920px);
+        height: clamp(620px, 48vw, 920px);
+        border-radius: 50%;
+        transform: translateY(-50%) translateZ(22px);
+        border: 3px solid rgba(128,218,255,.62);
+        background: #07101a center / cover no-repeat;
+        box-shadow:
+            0 0 12px rgba(110,220,255,.7),
+            0 0 45px rgba(70,190,240,.35),
+            inset 0 0 80px rgba(4,11,18,.78);
+        transition: background-image .35s ease;
+    }
+
+    .fandom-main-orb::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background:
+            linear-gradient(90deg, rgba(3,8,13,.12), rgba(3,8,13,.05) 55%, rgba(3,8,13,.7)),
+            radial-gradient(circle at 68% 30%, rgba(205,242,255,.18), transparent 28%);
+    }
+
+    .fandom-orbit {
+        position: absolute;
+        left: clamp(105px, 19vw, 370px);
+        top: 50%;
+        z-index: 5;
+        width: clamp(330px, 27vw, 500px);
+        height: clamp(590px, 72vh, 790px);
+        transform: translateY(-50%) translateZ(46px);
+        touch-action: pan-y;
+    }
+
+    .fandom-bubble {
+        position: absolute;
+        left: var(--bubble-x);
+        top: var(--bubble-y);
+        width: var(--bubble-size);
+        height: var(--bubble-size);
+        min-width: 0;
+        padding: 0;
+        border: 1px solid rgba(170,225,255,.34);
+        border-radius: 50%;
+        background: #0a1520 center / cover no-repeat;
+        box-shadow: 0 0 18px rgba(100,190,235,.2), inset 0 0 18px rgba(8,20,30,.5);
+        opacity: var(--bubble-opacity);
+        transform: translate(-50%, -50%) scale(var(--bubble-scale));
+        transition: left .55s cubic-bezier(.2,.72,.2,1), top .55s cubic-bezier(.2,.72,.2,1), transform .55s cubic-bezier(.2,.72,.2,1), opacity .35s ease, box-shadow .35s ease;
+    }
+
+    .fandom-bubble::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background: radial-gradient(circle at 32% 24%, rgba(225,247,255,.22), transparent 35%);
+        pointer-events: none;
+    }
+
+    .fandom-bubble.active {
+        border-color: #9be8ff;
+        animation: fandomPulse 2.2s ease-in-out infinite;
+    }
+
+    @keyframes fandomPulse {
+        0%, 100% { box-shadow: 0 0 12px rgba(85,210,255,.65), 0 0 34px rgba(65,190,245,.35), inset 0 0 18px rgba(90,220,255,.14); }
+        50% { box-shadow: 0 0 20px rgba(140,235,255,.95), 0 0 58px rgba(65,200,255,.6), 0 0 90px rgba(40,170,235,.25), inset 0 0 28px rgba(120,235,255,.2); }
+    }
+
+    .fandom-runes {
+        position: absolute;
+        left: var(--active-x, 50%);
+        top: var(--active-y, 50%);
+        z-index: 6;
+        width: var(--active-size, 132px);
+        height: var(--active-size, 132px);
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+        transition: left .55s cubic-bezier(.2,.72,.2,1), top .55s cubic-bezier(.2,.72,.2,1);
+    }
+
+    .fandom-rune {
+        position: absolute;
+        color: #a8ecff;
+        font-size: clamp(18px, 1.45vw, 28px);
+        line-height: 1;
+        text-shadow: 0 0 8px #62d8ff, 0 0 22px rgba(85,210,255,.8);
+        animation: runeFloat 3.4s ease-in-out infinite;
+    }
+
+    .fandom-rune:nth-child(1) { left: 50%; top: -34px; animation-delay: -.4s; }
+    .fandom-rune:nth-child(2) { right: -34px; top: 14%; animation-delay: -1.7s; }
+    .fandom-rune:nth-child(3) { right: -38px; bottom: 5%; animation-delay: -2.6s; }
+    .fandom-rune:nth-child(4) { left: 42%; bottom: -36px; animation-delay: -1.1s; }
+    .fandom-rune:nth-child(5) { left: -34px; top: 38%; animation-delay: -2.1s; }
+
+    @keyframes runeFloat {
+        0%, 100% { transform: translate(-50%, 0) rotate(-5deg); opacity: .62; }
+        50% { transform: translate(-50%, -9px) rotate(6deg); opacity: 1; }
+    }
+
+    .fandom-small-name {
+        position: absolute;
+        left: calc(var(--active-x, 50%) + (var(--active-size, 132px) / 2) + 52px);
+        top: var(--active-y, 50%);
+        z-index: 6;
+        width: clamp(150px, 12vw, 230px);
+        color: rgba(222,245,255,.88);
+        font-size: clamp(14px, 1vw, 18px);
+        letter-spacing: .08em;
+        text-align: left;
+        text-shadow: 0 0 12px rgba(105,215,255,.7);
+        transform: translateY(-50%);
+        transition: left .55s cubic-bezier(.2,.72,.2,1), top .55s cubic-bezier(.2,.72,.2,1), opacity .2s ease;
+    }
+
+    .fandom-info {
+        position: absolute;
+        left: 56%;
+        right: clamp(42px, 5vw, 110px);
+        top: 50%;
+        z-index: 6;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        pointer-events: auto;
+    }
+
+    .fandom-kicker {
+        margin-bottom: 16px;
+        color: rgba(152,221,248,.72);
+        font-size: clamp(13px, .9vw, 17px);
+        letter-spacing: .32em;
+        text-transform: uppercase;
+    }
+
+    .fandom-name {
+        margin: 0;
+        max-width: 760px;
+        font-size: clamp(42px, 4.5vw, 88px);
+        line-height: 1.02;
+        font-weight: 400;
+        letter-spacing: .035em;
+        text-shadow: 0 0 5px rgba(0,0,0,.8), 0 0 25px rgba(96,204,245,.3);
+        transition: opacity .18s ease, transform .18s ease;
+    }
+
+    .fandom-description {
+        width: fit-content;
+        max-width: min(680px, 100%);
+        margin: 25px 0 24px;
+        padding: 18px 22px;
+        border: 1px solid rgba(160,225,250,.24);
+        border-radius: 14px;
+        background: linear-gradient(135deg, rgba(91,164,196,.13), rgba(7,20,30,.34));
+        box-shadow: inset 0 1px rgba(255,255,255,.1), 0 12px 30px rgba(0,0,0,.2);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        color: rgba(228,241,248,.78);
+        font-size: clamp(17px, 1.25vw, 23px);
+        line-height: 1.55;
+        transition: opacity .18s ease, transform .18s ease;
+    }
+
+    .fandom-name.changing,
+    .fandom-description.changing,
+    .fandom-small-name.changing {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    .fandom-characters {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 230px;
+        padding: 15px 38px;
+        border: 1px solid rgba(150,229,255,.72);
+        border-radius: 999px;
+        color: #e9f9ff;
+        background: linear-gradient(135deg, rgba(92,190,230,.18), rgba(14,39,55,.34));
+        font-size: clamp(20px, 1.5vw, 28px);
+        letter-spacing: .08em;
+        text-decoration: none;
+        box-shadow: 0 0 16px rgba(70,190,240,.28), inset 0 1px rgba(255,255,255,.16);
+        animation: buttonPulse 2.85s ease-in-out infinite;
+        animation-delay: -.9s;
+    }
+
+    @keyframes buttonPulse {
+        0%, 100% { box-shadow: 0 0 12px rgba(70,190,240,.3), inset 0 1px rgba(255,255,255,.16); }
+        50% { box-shadow: 0 0 30px rgba(90,215,255,.7), 0 0 58px rgba(50,175,235,.25), inset 0 1px rgba(255,255,255,.24); }
+    }
+
+    body.is-resizing .fandom-panel,
+    body.is-resizing .fandom-bubble,
+    body.is-resizing .fandom-runes,
+    body.is-resizing .fandom-small-name {
+        transition: none !important;
+    }
+
+    .anchor-spacer { min-height: 20vh; }
+
+    /* Планшеты; телефонная версия намеренно не поддерживается. */
+    @media (min-width: 700px) and (max-width: 900px) {
+        .navbar { height: 40px; }
+        .welcome-section,
+        .fandom-section { padding-left: 14px; padding-right: 14px; }
+        .welcome-assembly {
+            height: clamp(560px, 76vh, 720px);
+            min-height: 0;
+        }
+        .welcome-copy {
+            left: 5%;
+            top: 37%;
+            max-width: 48%;
+        }
+        .welcome-title { font-size: clamp(38px, 6vw, 54px); }
+        .welcome-subtitle { font-size: clamp(17px, 2.7vw, 24px); }
+        .read-button {
+            padding: 12px 38px;
+            font-size: clamp(21px, 3vw, 28px);
+        }
+        .welcome-character {
+            right: -5%;
+            bottom: 0;
+            height: 90%;
+            opacity: .9;
+        }
+        .welcome-tabs {
+            right: 4%;
+            top: auto;
+            bottom: 5%;
+            transform: translateZ(45px);
+            flex-direction: row;
+            gap: 12px;
+        }
+        .glass-tab {
+            min-width: 0;
+            padding: 12px 18px;
+            gap: 10px;
+            font-size: clamp(18px, 2.8vw, 25px);
+        }
+        .glass-tab-icon { width: 42px; height: 42px; }
+        .welcome-assembly.about-open .welcome-tabs,
+        .welcome-assembly.shain-open .welcome-tabs {
+            transform: translateZ(45px) translateX(50px);
+        }
+        .about-panel,
+        .shain-panel {
+            left: 4%;
+            right: 4%;
+            top: 48%;
+            width: auto;
+            max-height: 45%;
+            padding: 22px 24px;
+            text-align: left;
+        }
+        .about-panel h2 { font-size: clamp(24px, 4vw, 34px); }
+        .about-panel p,
+        .shain-panel p { font-size: clamp(15px, 2.2vw, 19px); }
+        .shain-copy { right: 5%; top: 30%; }
+        .shain-title { font-size: clamp(32px, 5vw, 46px); }
+        .welcome-assembly.shain-open .shain-copy {
+            transform: translateY(-50%) translateZ(40px);
+        }
+        .welcome-assembly.about-open .welcome-character {
+            transform: translateZ(60px) translateX(85%);
+        }
+        .welcome-assembly.shain-open .welcome-character {
+            transform: translateZ(60px) translateX(-30%);
+        }
+        .welcome-back-glass { left: 8px; right: -8px; }
+        .fandom-panel { height: clamp(620px, 78vh, 760px); min-height: 620px; }
+        .fandom-main-orb { left: -380px; width: 700px; }
+        .fandom-orbit { left: 82px; width: 300px; height: 600px; }
+        .fandom-info { left: 55%; right: 4%; }
+        .fandom-name { font-size: clamp(38px, 5.5vw, 56px); }
+        .fandom-description { font-size: clamp(15px, 2vw, 18px); }
+        .welcome-dots { margin-top: 28px; margin-bottom: 28px; }
+    }
+
+    @media (min-width: 901px) and (max-width: 1500px) {
+        .nav-button { font-size: 24px; }
+        .welcome-assembly { height: 60vh; min-height: 460px; }
+        .welcome-title  { font-size: clamp(44px, 4.2vw, 70px); }
+        .shain-title    { font-size: clamp(34px, 3vw, 54px); }
+        .welcome-subtitle { font-size: clamp(18px, 1.6vw, 26px); }
+        .welcome-character { right: 24%; }
+        .about-panel {
+            width: 46%;
+            max-height: 50%;
+            padding: 22px 26px;
+            top: 52%;
+        }
+        .about-panel h2 { font-size: clamp(24px, 2vw, 34px); margin-bottom: 12px; }
+        .about-panel p  { font-size: clamp(14px, 1vw, 18px); line-height: 1.45; }
+        .shain-copy { right: 5%; }
+        .welcome-assembly.shain-open .shain-copy {
+            transform: translateZ(40px);
+        }
+        .shain-panel {
+            width: 56%;
+            top: 28%;
+            bottom: 5%;
+            max-height: none;
+            padding: 22px 26px;
+        }
+        .shain-panel p { font-size: clamp(14px, 1vw, 18px); line-height: 1.45; }
+    }
+
+    @media (max-height: 800px) {
+        .welcome-assembly { height: clamp(500px, 78vh, 620px); min-height: 0; }
+        .welcome-character { bottom: -2%; height: 110%; }
+        .about-panel  { max-height: 56%; top: 52%; }
+        .shain-panel  { top: 28%; bottom: 4%; max-height: none; }
+        .welcome-assembly.shain-open .shain-copy {
+            transform: translateZ(40px);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        .panel-star,
+        .dot,
+        .fandom-bubble.active,
+        .fandom-characters { animation: none; }
+        *, *::before, *::after { transition-duration: .01ms !important; }
+    }
+</style>
 </head>
+
 <body>
-  <canvas id="snow" aria-hidden="true"></canvas>
-  <header class="site-header"><a href="#top" class="brand">MISTRAEL</a></header>
-  <main>
-    <section class="welcome" id="top" aria-labelledby="welcome-title">
-      <div class="welcome__scene" id="welcomeScene">
-        <img class="welcome__background" src="forgotten.png" alt="" fetchpriority="high">
-        <img class="welcome__character" id="shainTrigger" src="shain.png" alt="Шайнерес Санлесс">
-        <div class="welcome__copy" id="welcomeCopy">
-          <h1 id="welcome-title">ДОБРО<br>ПОЖАЛОВАТЬ꧂</h1>
-          <p>Немного обо мне, персонажи, темы</p>
-          <button class="ice-button" id="aboutTrigger" type="button">ЧИТАТЬ</button>
+<canvas id="constellation"></canvas>
+
+<div class="cursor-glow" id="cursorGlow"></div>
+<img class="cursor-img" id="cursorImg" src="mouse.png" alt="">
+
+<header class="navbar"></header>
+
+<main>
+    <section class="welcome-section" id="top">
+        <div class="welcome-scene" id="scene">
+            <div class="welcome-assembly" id="assembly">
+
+                <div class="welcome-back-glass"></div>
+
+                <div class="welcome-image-layer">
+                    <img class="welcome-bg" src="forgotten.png" alt="">
+                </div>
+
+                <img class="welcome-character" src="shain.png" alt="Шейн" draggable="false">
+                <div class="panel-stars" id="panelStars"></div>
+                <div class="welcome-front-glass" id="frontGlass"></div>
+                <div class="welcome-glare" id="glare"></div>
+
+                <div class="welcome-copy">
+                    <h1 class="welcome-title">ДОБРО<br>ПОЖАЛОВАТЬ꧂</h1>
+                    <div class="welcome-subtitle">Немного обо мне, персонажи, темы</div>
+                    <a class="read-button" href="#" id="readBtn">ЧИТАТЬ</a>
+                </div>
+
+                <div class="welcome-tabs" id="welcomeTabs">
+                    <a class="glass-tab" href="#characters">
+                        <img class="glass-tab-icon" src="character.png" alt="">
+                        <span>ПЕРСОНАЖИ</span>
+                    </a>
+                    <a class="glass-tab" href="#themes">
+                        <img class="glass-tab-icon" src="tema.png" alt="">
+                        <span>ТЕМЫ</span>
+                    </a>
+                </div>
+
+                <div class="about-panel" id="aboutPanel">
+                    <h2> 𓍊𓋼𓍊𓋼𓍊 Ну, привет путник. </h2>
+                    <p>Проходи, садись, на стол ноги не закидывай. Я Мистраэль. Сижу в Silly Tavern. Решила поделиться своими ботами. Специфично их пишу — на вкус и цвет. Учусь писать темы для таверны ТОЛЬКО ДЛЯ ПК. И нет, каджитку рядом зовут не Мистраэль, но это мой любимый ребёнок. За работу ботов не ручаюсь - всё зависит от модели и пресета.</p>
+                </div>
+
+                <div class="shain-copy">
+                    <h1 class="shain-title">ШАЙНЕРЕС<br>САНЛЕСС</h1>
+                </div>
+
+                <div class="shain-panel" id="shainPanel">
+                    <p>Шайнерес Санлесс. Как я сказала - мой любимый ребенок. Ей уже 8 лет. Я создала ее еще в школьные годы, когда попробовала сыграть в Скайрим и вдохновиться одной расой - снежных эльфов, ныне именуемых фалмерами. Она, наверно, среди конкретно МОИХ персонажей прописана лучше и детальнее всех. Знаете историю "Падение снежного принца?" А вот она очень хорошо знает, пережив ту битву при Моэсринге самолично. Ей больше 4000 лет. И, возможно, она знакома с Мираком... А еще она и Гелебор прекрасно друг друга знают. Один испытывает вину спустя столько лет за свое решение. Другая испытывает сплошную ненависть и пустоту. Ну ладно говорить прозами.</p>
+                </div>
+            </div>
         </div>
-        <nav class="welcome__nav" aria-label="Разделы">
-          <a href="#catalog"><img src="character.png" alt="">ПЕРСОНАЖИ</a>
-          <a href="#themes"><img src="tema.png" alt="">ТЕМЫ</a>
-        </nav>
-        <article class="welcome__panel" id="aboutPanel" hidden>
-          <h2>𓍊𓋼𓍊𓋼𓍊 Ну, привет путник.</h2>
-          <p>Проходи, садись, на стол ноги не закидывай. Я Мистраэль. Сижу в Silly Tavern. Решила поделиться своими ботами. Специфично их пишу — на вкус и цвет. Учусь писать темы для таверны ТОЛЬКО ДЛЯ ПК. И нет, каджитку рядом зовут не Мистраэль, но это мой любимый ребёнок. За работу ботов не ручаюсь — всё зависит от модели и пресета.</p>
-        </article>
-        <article class="welcome__panel welcome__panel--right" id="shainPanel" hidden>
-          <h2>ШАЙНЕРЕС САНЛЕСС</h2>
-          <p>Шайнерес Санлесс. Как я сказала — мой любимый ребенок. Ей уже 8 лет. Я создала ее еще в школьные годы, когда попробовала сыграть в Скайрим и вдохновиться одной расой — снежных эльфов, ныне именуемых фалмерами. Она, наверно, среди конкретно МОИХ персонажей прописана лучше и детальнее всех. Знаете историю «Падение снежного принца?» А вот она очень хорошо знает, пережив ту битву при Моэсринге самолично. Ей больше 4000 лет. И, возможно, она знакома с Мираком... А еще она и Гелебор прекрасно друг друга знают.</p>
-        </article>
-      </div>
+
+        <div class="welcome-dots" aria-hidden="true">
+            <span class="dot small"><span class="dot-inner">✦</span></span>
+            <span class="dot big"><span class="dot-inner">✦</span></span>
+            <span class="dot small"><span class="dot-inner">✦</span></span>
+        </div>
     </section>
 
-    <div class="rune-divider" aria-hidden="true">ᚠ · ᚢ · ᚦ</div>
-
-    <section class="catalog" id="catalog" aria-live="polite">
-      <div class="screen is-active" id="fandomScreen">
-        <div class="dial-layout">
-          <div class="dial-wrap">
-            <div class="pointer" aria-hidden="true"></div>
-            <div class="dial" id="fandomDial" role="listbox" aria-label="Фандомы" tabindex="0">
-              <svg class="dial__svg" viewBox="0 0 600 600" aria-hidden="true">
-                <circle cx="300" cy="300" r="286"/><circle cx="300" cy="300" r="250"/><circle cx="300" cy="300" r="174"/>
-                <path class="dial__segments" d="M300 14V52M300 548V586M14 300H52M548 300H586M98 98l27 27M475 475l27 27M502 98l-27 27M125 475l-27 27"/>
-                <text x="300" y="83">ᚠ ᚢ ᚦ ᚨ ᚱ ᚲ ᚷ ᚹ</text>
-                <text x="300" y="535">ᛏ ᛒ ᛖ ᛗ ᛚ ᛜ ᛞ ᛟ</text>
-              </svg>
-              <div class="dial__items" id="fandomItems"></div>
-              <div class="dial__core" aria-hidden="true">ᛉ</div>
+    <section class="fandom-section" id="fandomSection">
+        <div class="fandom-scene" id="fandomScene">
+            <div class="fandom-panel" id="fandomPanel">
+                <div class="fandom-main-orb" id="fandomMainOrb"></div>
+                <div class="fandom-orbit" id="fandomOrbit">
+                    <div class="fandom-runes" id="fandomRunes" aria-hidden="true">
+                        <span class="fandom-rune">ᚠ</span>
+                        <span class="fandom-rune">ᚢ</span>
+                        <span class="fandom-rune">ᚦ</span>
+                        <span class="fandom-rune">ᚨ</span>
+                        <span class="fandom-rune">ᚱ</span>
+                    </div>
+                    <div class="fandom-small-name" id="fandomSmallName">ПРОМЕТЕЙ</div>
+                </div>
+                <div class="fandom-info">
+                    <div class="fandom-kicker">ВЫБОР ФАНДОМА</div>
+                    <h2 class="fandom-name" id="fandomName">ПРОМЕТЕЙ</h2>
+                    <p class="fandom-description" id="fandomDescription">Выберите мир, чтобы открыть связанных с ним персонажей и истории.</p>
+                    <a class="fandom-characters" href="#characters">ПЕРСОНАЖИ</a>
+                </div>
+                <div class="fandom-glare" id="fandomGlare"></div>
             </div>
-            <button class="dial-control dial-control--prev" id="fandomPrev" type="button" aria-label="Предыдущий фандом">‹</button>
-            <button class="dial-control dial-control--next" id="fandomNext" type="button" aria-label="Следующий фандом">›</button>
-          </div>
-          <article class="selection-info">
-            <p class="eyebrow">ВЫБОР ФАНДОМА</p>
-            <h2 id="fandomName"></h2>
-            <p class="ice-panel" id="fandomDescription"></p>
-            <button class="ice-button" id="openCharacters" type="button">ПЕРСОНАЖИ</button>
-          </article>
         </div>
-      </div>
-
-      <div class="screen" id="characterScreen" hidden>
-        <button class="back-button" id="backToFandoms" type="button">← К ФАНДОМАМ</button>
-        <div class="dial-layout">
-          <div class="dial-wrap">
-            <div class="pointer" aria-hidden="true"></div>
-            <div class="dial" id="characterDial" role="listbox" aria-label="Персонажи" tabindex="0">
-              <svg class="dial__svg" viewBox="0 0 600 600" aria-hidden="true"><circle cx="300" cy="300" r="286"/><circle cx="300" cy="300" r="238"/><circle cx="300" cy="300" r="174"/><path class="dial__segments" d="M300 14V52M300 548V586M14 300H52M548 300H586M98 98l27 27M475 475l27 27M502 98l-27 27M125 475l-27 27"/></svg>
-              <div class="dial__items" id="characterItems"></div>
-              <div class="dial__core" aria-hidden="true">ᛇ</div>
-            </div>
-            <button class="dial-control dial-control--prev" id="characterPrev" type="button" aria-label="Предыдущий персонаж">‹</button>
-            <button class="dial-control dial-control--next" id="characterNext" type="button" aria-label="Следующий персонаж">›</button>
-          </div>
-          <article class="selection-info">
-            <p class="eyebrow" id="characterFandom"></p>
-            <h2 id="characterName"></h2>
-            <p class="ice-panel" id="characterDescription"></p>
-            <button class="ice-button" id="openCard" type="button">ОТКРЫТЬ КАРТОЧКУ</button>
-          </article>
+        <div class="welcome-dots" aria-hidden="true">
+            <span class="dot small"><span class="dot-inner">✦</span></span>
+            <span class="dot big"><span class="dot-inner">✦</span></span>
+            <span class="dot small"><span class="dot-inner">✦</span></span>
         </div>
-      </div>
-
-      <div class="screen" id="cardScreen" hidden>
-        <button class="back-button" id="backToCharacters" type="button">← К ПЕРСОНАЖАМ</button>
-        <article class="character-card">
-          <div class="character-card__portrait" id="cardPortrait"></div>
-          <div class="character-card__content">
-            <p class="eyebrow" id="cardFandom"></p><h2 id="cardName"></h2>
-            <p id="cardDescription"></p><div class="tags" id="cardTags"></div>
-            <div class="downloads"><a class="ice-button" id="downloadJson">Скачать JSON</a><a class="ice-button" id="downloadLorebook">Скачать лорбук</a></div>
-          </div>
-        </article>
-      </div>
     </section>
-    <section id="themes" class="themes"><p>ТЕМЫ · СКОРО</p></section>
-  </main>
-  <script type="module" src="assets/js/app.js"></script>
+
+    <section id="about" class="anchor-spacer"></section>
+    <section id="characters" class="anchor-spacer"></section>
+    <section id="themes" class="anchor-spacer"></section>
+</main>
+
+<script>
+    const scene      = document.getElementById('scene');
+    const assembly   = document.getElementById('assembly');
+    const glare      = document.getElementById('glare');
+    const frontGlass = document.getElementById('frontGlass');
+
+    const MAX_TILT = 6;
+
+    let resizeEndTimer;
+    window.addEventListener('resize', () => {
+        document.body.classList.add('is-resizing');
+        assembly.style.transform = 'none';
+        clearTimeout(resizeEndTimer);
+        resizeEndTimer = setTimeout(() => {
+            document.body.classList.remove('is-resizing');
+        }, 180);
+    }, { passive: true });
+
+    let tiltPending = false;
+    scene.addEventListener('mousemove', (e) => {
+        if (tiltPending) return;
+        tiltPending = true;
+        requestAnimationFrame(() => {
+            const r = scene.getBoundingClientRect();
+            const x = e.clientX - r.left;
+            const y = e.clientY - r.top;
+            const cx = r.width / 2;
+            const cy = r.height / 2;
+
+            const rotateX = ((y - cy) / cy) * -MAX_TILT;
+            const rotateY = ((x - cx) / cx) *  MAX_TILT;
+
+            assembly.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+
+            const px = (x / r.width) * 100;
+            const py = (y / r.height) * 100;
+
+            glare.style.setProperty('--mx', `${px}%`);
+            glare.style.setProperty('--my', `${py}%`);
+            frontGlass.style.setProperty('--gx', `${px}%`);
+            frontGlass.style.setProperty('--gy', `${py}%`);
+            tiltPending = false;
+        });
+    });
+
+    scene.addEventListener('mouseleave', () => {
+        assembly.style.transform = 'rotateX(0deg) rotateY(0deg)';
+    });
+
+    const readBtn   = document.getElementById('readBtn');
+    const character = document.querySelector('.welcome-character');
+
+    function openAbout(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        assembly.classList.remove('shain-open');
+        assembly.classList.add('about-open');
+    }
+    function closeAbout() {
+        assembly.classList.remove('about-open');
+    }
+    function openShain(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        assembly.classList.remove('about-open');
+        assembly.classList.add('shain-open');
+    }
+    function closeShain() {
+        assembly.classList.remove('shain-open');
+    }
+
+    readBtn.addEventListener('click', openAbout);
+    character.addEventListener('click', openShain);
+
+    assembly.addEventListener('click', (e) => {
+        const aboutOpen = assembly.classList.contains('about-open');
+        const shainOpen = assembly.classList.contains('shain-open');
+        if (!aboutOpen && !shainOpen) return;
+        if (e.target.closest('.about-panel')) return;
+        if (e.target.closest('.shain-panel')) return;
+        if (e.target.closest('.shain-copy')) return;
+        if (e.target.closest('#readBtn')) return;
+        if (e.target.closest('.welcome-character')) return;
+        closeAbout();
+        closeShain();
+    });
+
+    const cursorImg  = document.getElementById('cursorImg');
+    const cursorGlow = document.getElementById('cursorGlow');
+
+    let mx = 0, my = 0;
+    let gx = 0, gy = 0;
+
+    document.addEventListener('mousemove', (e) => {
+        mx = e.clientX;
+        my = e.clientY;
+        cursorImg.style.transform = `translate(${mx}px, ${my}px)`;
+    });
+
+    function animateCursor() {
+        gx += (mx - gx) * 0.18;
+        gy += (my - gy) * 0.18;
+        cursorGlow.style.transform = `translate(${gx}px, ${gy}px) translate(-50%, -50%)`;
+        requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+
+    document.addEventListener('mouseover', (e) => {
+        if (e.target.closest('a, button, .read-button, .nav-button, .dot, .welcome-character, .about-panel, .glass-tab, .fandom-bubble')) {
+            cursorGlow.classList.add('is-hover');
+        }
+    });
+    document.addEventListener('mouseout', (e) => {
+        if (e.target.closest('a, button, .read-button, .nav-button, .dot, .welcome-character, .about-panel, .glass-tab, .fandom-bubble')) {
+            cursorGlow.classList.remove('is-hover');
+        }
+    });
+
+    document.addEventListener('mouseleave', () => {
+        cursorImg.style.opacity = '0';
+        cursorGlow.style.opacity = '0';
+    });
+    document.addEventListener('mouseenter', () => {
+        cursorImg.style.opacity = '1';
+        cursorGlow.style.opacity = '1';
+    });
+
+    (function () {
+        const canvas = document.getElementById('constellation');
+        const ctx = canvas.getContext('2d');
+
+        let W, H, points;
+        const DENSITY = 22000;
+
+        function resize() {
+            W = canvas.width  = window.innerWidth;
+            H = canvas.height = window.innerHeight;
+            const count = Math.floor((W * H) / DENSITY);
+            points = [];
+            for (let i = 0; i < count; i++) {
+                points.push({
+                    x: Math.random() * W,
+                    y: Math.random() * H,
+                    vx: (Math.random() - 0.5) * 0.18,
+                    vy: (Math.random() - 0.5) * 0.18,
+                    r: 0.7 + Math.random() * 1.4,
+                    tw: Math.random() * Math.PI * 2,
+                    tws: 0.008 + Math.random() * 0.02
+                });
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, W, H);
+            for (const p of points) {
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.x < 0 || p.x > W) p.vx *= -1;
+                if (p.y < 0 || p.y > H) p.vy *= -1;
+                p.tw += p.tws;
+                const flick = 0.4 + (Math.sin(p.tw) + 1) / 2 * 0.6;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(207,233,255,${flick})`;
+                ctx.fill();
+            }
+            requestAnimationFrame(draw);
+        }
+
+        let resizePending = false;
+        window.addEventListener('resize', function () {
+            if (resizePending) return;
+            resizePending = true;
+            requestAnimationFrame(function () {
+                resize();
+                resizePending = false;
+            });
+        }, { passive: true });
+        resize();
+        draw();
+    })();
+
+    // ===== выбор фандома =====
+    (function () {
+        const fandoms = [
+            {
+                name: 'ПРОМЕТЕЙ',
+                image: 'Prometheus.png',
+                description: 'Мир далёких экспедиций, древних создателей и тайн, которые лучше было не пробуждать.'
+            },
+            {
+                name: 'ПИРАТЫ КАРИБСКОГО МОРЯ',
+                image: 'Pirates.png',
+                description: 'Проклятые моря, старые легенды, опасные сделки и свобода под чёрными парусами.'
+            },
+            {
+                name: 'ВЕДЬМАК',
+                image: 'Witcher.png',
+                description: 'Чудовища, древняя магия и истории, в которых человеческий выбор страшнее любого проклятия.'
+            },
+            {
+                name: 'ГЕНШИН',
+                image: 'Genshin.png',
+                description: 'Семь стихий, забытые боги и путешествия по миру, хранящему слишком много тайн.'
+            }
+        ];
+
+        const panel = document.getElementById('fandomPanel');
+        const orbit = document.getElementById('fandomOrbit');
+        const mainOrb = document.getElementById('fandomMainOrb');
+        const nameEl = document.getElementById('fandomName');
+        const smallName = document.getElementById('fandomSmallName');
+        const description = document.getElementById('fandomDescription');
+        const glare = document.getElementById('fandomGlare');
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        const positions = [
+            { x: 40, y: 10, scale: .7, opacity: .58 },
+            { x: 70, y: 30, scale: .84, opacity: .82 },
+            { x: 84, y: 50, scale: 1, opacity: 1 },
+            { x: 70, y: 70, scale: .84, opacity: .82 }
+        ];
+        let activeIndex = 2;
+        let dragStartY = null;
+        let dragDistance = 0;
+        let textTimer;
+
+        const bubbles = fandoms.map(function (fandom, index) {
+            const bubble = document.createElement('button');
+            bubble.type = 'button';
+            bubble.className = 'fandom-bubble';
+            bubble.setAttribute('aria-label', fandom.name);
+            bubble.style.backgroundImage = 'url("' + fandom.image + '")';
+            bubble.addEventListener('click', function () {
+                if (Math.abs(dragDistance) > 8 || index === activeIndex) return;
+                activeIndex = index;
+                render(true);
+            });
+            orbit.appendChild(bubble);
+            return bubble;
+        });
+
+        function wrappedOffset(index) {
+            const count = fandoms.length;
+            let offset = index - activeIndex;
+            if (offset > count / 2) offset -= count;
+            if (offset < -count / 2) offset += count;
+            return offset;
+        }
+
+        function render(animateText) {
+            const active = fandoms[activeIndex];
+
+            bubbles.forEach(function (bubble, index) {
+                const slot = positions[(wrappedOffset(index) + 2 + positions.length) % positions.length];
+                bubble.style.setProperty('--bubble-x', slot.x + '%');
+                bubble.style.setProperty('--bubble-y', slot.y + '%');
+                bubble.style.setProperty('--bubble-size', 'clamp(76px, 7vw, 132px)');
+                bubble.style.setProperty('--bubble-scale', String(slot.scale));
+                bubble.style.setProperty('--bubble-opacity', String(slot.opacity));
+                bubble.classList.toggle('active', index === activeIndex);
+                bubble.setAttribute('aria-pressed', index === activeIndex ? 'true' : 'false');
+            });
+
+            const activeSlot = positions[2];
+            orbit.style.setProperty('--active-x', activeSlot.x + '%');
+            orbit.style.setProperty('--active-y', activeSlot.y + '%');
+            orbit.style.setProperty('--active-size', 'clamp(76px, 7vw, 132px)');
+            mainOrb.style.backgroundImage = 'url("' + active.image + '")';
+
+            clearTimeout(textTimer);
+            if (animateText && !reducedMotion.matches) {
+                nameEl.classList.add('changing');
+                description.classList.add('changing');
+                smallName.classList.add('changing');
+                textTimer = setTimeout(function () {
+                    updateText(active);
+                    nameEl.classList.remove('changing');
+                    description.classList.remove('changing');
+                    smallName.classList.remove('changing');
+                }, 150);
+            } else {
+                updateText(active);
+            }
+        }
+
+        function updateText(active) {
+            nameEl.textContent = active.name;
+            smallName.textContent = active.name;
+            description.textContent = active.description;
+        }
+
+        function move(direction) {
+            activeIndex = (activeIndex + direction + fandoms.length) % fandoms.length;
+            render(true);
+        }
+
+        orbit.addEventListener('pointerdown', function (event) {
+            dragStartY = event.clientY;
+            dragDistance = 0;
+            orbit.setPointerCapture(event.pointerId);
+        });
+
+        orbit.addEventListener('pointermove', function (event) {
+            if (dragStartY === null) return;
+            dragDistance = event.clientY - dragStartY;
+        });
+
+        orbit.addEventListener('pointerup', function (event) {
+            if (dragStartY === null) return;
+            if (Math.abs(dragDistance) > 45) move(dragDistance < 0 ? 1 : -1);
+            dragStartY = null;
+            orbit.releasePointerCapture(event.pointerId);
+            setTimeout(function () { dragDistance = 0; }, 0);
+        });
+
+        render(false);
+    })();
+
+    (function () {
+        const box = document.getElementById('panelStars');
+        const COUNT = 40;
+        for (let i = 0; i < COUNT; i++) {
+            const s = document.createElement('span');
+            s.className = 'panel-star';
+            s.style.left = (42 + Math.random() * 56) + '%';
+            s.style.top  = (Math.random() * 100) + '%';
+            s.style.setProperty('--dur', (2 + Math.random() * 4) + 's');
+            s.style.setProperty('--delay', (Math.random() * 4) + 's');
+            box.appendChild(s);
+        }
+    })();
+</script>
+
 </body>
 </html>
