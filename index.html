@@ -600,6 +600,66 @@
         transition: background-image .35s ease;
     }
 
+    .fandom-orb-ring {
+        position: absolute;
+        left: clamp(-390px, -19vw, -210px);
+        top: 50%;
+        width: clamp(620px, 48vw, 920px);
+        height: clamp(620px, 48vw, 920px);
+        z-index: 1;
+        border-radius: 50%;
+        pointer-events: none;
+        opacity: .58;
+        background:
+            conic-gradient(
+                from 0deg,
+                transparent 0deg 18deg,
+                rgba(136,225,255,.78) 18deg 24deg,
+                transparent 24deg 61deg,
+                rgba(81,184,230,.44) 61deg 68deg,
+                transparent 68deg 112deg,
+                rgba(180,239,255,.68) 112deg 117deg,
+                transparent 117deg 360deg
+            );
+        -webkit-mask: radial-gradient(circle, transparent calc(50% - 4px), #000 calc(50% - 3px), #000 50%, transparent calc(50% + 1px));
+        mask: radial-gradient(circle, transparent calc(50% - 4px), #000 calc(50% - 3px), #000 50%, transparent calc(50% + 1px));
+        filter: drop-shadow(0 0 8px rgba(91,207,255,.5));
+        will-change: transform;
+    }
+
+    .fandom-orb-ring::before,
+    .fandom-orb-ring::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        border: 1px solid rgba(133,221,255,.34);
+    }
+
+    .fandom-orb-ring::before { inset: 18px; }
+    .fandom-orb-ring::after {
+        inset: 38px;
+        border-style: dashed;
+        border-color: rgba(142,226,255,.22);
+    }
+
+    .fandom-orb-ring-left {
+        animation: fandomRingLeft 28s linear infinite;
+    }
+
+    .fandom-orb-ring-right {
+        animation: fandomRingRight 34s linear infinite reverse;
+    }
+
+    @keyframes fandomRingLeft {
+        from { transform: translate(-8%, -50%) rotate(0deg); }
+        to { transform: translate(-8%, -50%) rotate(360deg); }
+    }
+
+    @keyframes fandomRingRight {
+        from { transform: translate(8%, -50%) rotate(0deg); }
+        to { transform: translate(8%, -50%) rotate(360deg); }
+    }
+
     .fandom-main-orb::after {
         content: "";
         position: absolute;
@@ -835,6 +895,11 @@
         .welcome-back-glass { left: 8px; right: -8px; }
         .fandom-panel { height: clamp(620px, 78vh, 760px); min-height: 620px; }
         .fandom-main-orb { left: -380px; width: 700px; }
+        .fandom-orb-ring {
+            left: -380px;
+            width: 700px;
+            height: 700px;
+        }
         .fandom-orbit { left: 82px; width: 300px; height: 680px; }
         .fandom-info { left: 55%; right: 4%; }
         .fandom-name { font-size: clamp(38px, 5.5vw, 56px); }
@@ -885,7 +950,8 @@
         .panel-star,
         .dot,
         .fandom-bubble.active::before,
-        .fandom-characters::before { animation: none; }
+        .fandom-characters::before,
+        .fandom-orb-ring { animation: none; }
         *, *::before, *::after { transition-duration: .01ms !important; }
     }
 </style>
@@ -957,6 +1023,8 @@
     <section class="fandom-section" id="fandomSection">
         <div class="fandom-scene" id="fandomScene">
             <div class="fandom-panel" id="fandomPanel">
+                <div class="fandom-orb-ring fandom-orb-ring-left" aria-hidden="true"></div>
+                <div class="fandom-orb-ring fandom-orb-ring-right" aria-hidden="true"></div>
                 <div class="fandom-main-orb" id="fandomMainOrb"></div>
                 <div class="fandom-orbit" id="fandomOrbit">
                     <div class="fandom-runes" id="fandomRunes" aria-hidden="true">
