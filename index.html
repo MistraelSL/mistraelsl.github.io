@@ -594,15 +594,15 @@
         --fandom-tilt-y: 0deg;
         position: relative;
         width: 100%;
-        height: clamp(620px, 76vh, 860px);
-        min-height: 620px;
+        height: clamp(700px, 84vh, 940px);
+        min-height: 700px;
         overflow: hidden;
         border: 0;
         border-radius: 18px;
         background:
-            linear-gradient(to right, rgba(2,7,11,.8), rgba(3,10,16,.58) 48%, rgba(2,7,11,.76)),
-            linear-gradient(to bottom, rgba(2,7,11,.5), rgba(2,7,11,.72)),
-            url("melmyrme.jpg") center 38% / cover no-repeat;
+            linear-gradient(to right, rgba(2,7,11,.55), rgba(3,10,16,.30) 48%, rgba(2,7,11,.52)),
+            linear-gradient(to bottom, rgba(2,7,11,.25), rgba(2,7,11,.46)),
+            url("melmyrme.jpg") center 58% / cover no-repeat;
         box-shadow: none;
         transform: none;
         transform-style: flat;
@@ -611,12 +611,35 @@
     }
 
     .fandom-panel::before {
-        content: none;
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        border-radius: inherit;
+        pointer-events: none;
+        opacity: 0;
+        background: radial-gradient(
+            circle 360px at var(--fandom-light-x, 50%) var(--fandom-light-y, 50%),
+            rgba(175,226,246,.22),
+            rgba(80,155,190,.08) 42%,
+            transparent 72%
+        );
+        transition: opacity .35s ease;
     }
 
     .fandom-panel::after {
-        content: none;
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 10;
+        border-radius: inherit;
+        pointer-events: none;
+        background:
+            linear-gradient(to right, rgba(4,8,12,.92), transparent 10%, transparent 90%, rgba(4,8,12,.92)),
+            linear-gradient(to bottom, rgba(4,8,12,.88), transparent 12%, transparent 86%, rgba(4,8,12,.92));
     }
+
+    .fandom-panel:hover::before { opacity: 1; }
 
     .fandom-glare {
         display: none;
@@ -660,38 +683,25 @@
         touch-action: pan-y;
     }
 
-    .fandom-orbit-rail {
+    .fandom-orbit-rails {
         position: absolute;
-        top: -2%;
-        height: 104%;
-        border-right: 2px solid rgba(127,222,255,.5);
-        border-radius: 50%;
+        inset: -4% -18% -4% -12%;
+        width: 130%;
+        height: 108%;
+        overflow: visible;
         pointer-events: none;
+    }
+
+    .fandom-orbit-rail-path {
+        fill: none;
+        stroke: rgba(127,222,255,.52);
+        stroke-width: 2;
+        vector-effect: non-scaling-stroke;
         filter: drop-shadow(0 0 7px rgba(91,207,255,.55));
     }
 
-    .fandom-orbit-rail-left {
-        left: 2%;
-        width: 72%;
-    }
-
-    .fandom-orbit-rail-right {
-        left: 10%;
-        width: 90%;
-        border-right-color: rgba(157,232,255,.62);
-    }
-
-    .fandom-orbit-glyphs {
-        position: absolute;
-        inset: -4% -32% -4% 0;
-        pointer-events: none;
-        overflow: visible;
-    }
-
-    .fandom-orbit-glyphs svg {
-        width: 100%;
-        height: 100%;
-        overflow: visible;
+    .fandom-orbit-rail-path-right {
+        stroke: rgba(157,232,255,.68);
     }
 
     .fandom-orbit-glyph {
@@ -766,6 +776,8 @@
 
     .fandom-bubble.active::before {
         animation: fandomOrbPulse 4.8s ease-in-out infinite;
+        outline: 1px solid rgba(135,224,255,.28);
+        outline-offset: 9px;
     }
 
     @keyframes fandomCorePulse {
@@ -931,7 +943,7 @@
         .welcome-title { font-size: 44px; }
         .welcome-character { right: -10px; height: 100%; opacity: .92; }
         .welcome-back-glass { left: 8px; right: -8px; }
-        .fandom-panel { height: clamp(620px, 78vh, 760px); min-height: 620px; }
+        .fandom-panel { height: clamp(700px, 84vh, 820px); min-height: 700px; }
         .fandom-main-orb { left: -380px; width: 700px; }
         .fandom-orbit { left: 82px; width: 300px; height: 680px; }
         .fandom-info { left: 55%; right: 4%; }
@@ -1063,23 +1075,18 @@
             <div class="fandom-panel" id="fandomPanel">
                 <div class="fandom-main-orb" id="fandomMainOrb"></div>
                 <div class="fandom-orbit" id="fandomOrbit">
-                    <div class="fandom-orbit-rail fandom-orbit-rail-left" aria-hidden="true"></div>
-                    <div class="fandom-orbit-rail fandom-orbit-rail-right" aria-hidden="true"></div>
-                    <div class="fandom-orbit-glyphs" aria-hidden="true">
-                        <svg viewBox="0 0 650 900" preserveAspectRatio="none">
-                            <defs>
-                                <path id="fandomGlyphArc" d="M 470 855 C 650 690 650 210 470 45" />
-                            </defs>
-                            <text class="fandom-orbit-glyph"><textPath href="#fandomGlyphArc" startOffset="5%">ᚠ<animate attributeName="startOffset" from="5%" to="105%" dur="48s" repeatCount="indefinite" /></textPath></text>
-                            <text class="fandom-orbit-glyph"><textPath href="#fandomGlyphArc" startOffset="18%">ᚢ<animate attributeName="startOffset" from="18%" to="118%" dur="48s" repeatCount="indefinite" /></textPath></text>
-                            <text class="fandom-orbit-glyph"><textPath href="#fandomGlyphArc" startOffset="31%">ᚦ<animate attributeName="startOffset" from="31%" to="131%" dur="48s" repeatCount="indefinite" /></textPath></text>
-                            <text class="fandom-orbit-glyph"><textPath href="#fandomGlyphArc" startOffset="44%">ᚨ<animate attributeName="startOffset" from="44%" to="144%" dur="48s" repeatCount="indefinite" /></textPath></text>
-                            <text class="fandom-orbit-glyph"><textPath href="#fandomGlyphArc" startOffset="57%">ᚱ<animate attributeName="startOffset" from="57%" to="157%" dur="48s" repeatCount="indefinite" /></textPath></text>
-                            <text class="fandom-orbit-glyph"><textPath href="#fandomGlyphArc" startOffset="70%">ᚲ<animate attributeName="startOffset" from="70%" to="170%" dur="48s" repeatCount="indefinite" /></textPath></text>
-                            <text class="fandom-orbit-glyph"><textPath href="#fandomGlyphArc" startOffset="83%">ᚷ<animate attributeName="startOffset" from="83%" to="183%" dur="48s" repeatCount="indefinite" /></textPath></text>
-                            <text class="fandom-orbit-glyph"><textPath href="#fandomGlyphArc" startOffset="96%">ᚹ<animate attributeName="startOffset" from="96%" to="196%" dur="48s" repeatCount="indefinite" /></textPath></text>
-                        </svg>
-                    </div>
+                    <svg class="fandom-orbit-rails" viewBox="0 0 650 900" preserveAspectRatio="none" aria-hidden="true">
+                        <path class="fandom-orbit-rail-path" d="M 115 940 C 260 790 330 630 330 450 C 330 270 255 110 70 -40" />
+                        <path class="fandom-orbit-rail-path fandom-orbit-rail-path-right" id="fandomGlyphArc" d="M 315 940 C 460 790 530 630 530 450 C 530 270 455 110 270 -40" />
+                        <text class="fandom-orbit-glyph">ᚠ<animateMotion path="M 315 940 C 460 790 530 630 530 450 C 530 270 455 110 270 -40" dur="48s" begin="0s" rotate="auto-reverse" repeatCount="indefinite" /></text>
+                        <text class="fandom-orbit-glyph">ᚢ<animateMotion path="M 315 940 C 460 790 530 630 530 450 C 530 270 455 110 270 -40" dur="48s" begin="-6s" rotate="auto-reverse" repeatCount="indefinite" /></text>
+                        <text class="fandom-orbit-glyph">ᚦ<animateMotion path="M 315 940 C 460 790 530 630 530 450 C 530 270 455 110 270 -40" dur="48s" begin="-12s" rotate="auto-reverse" repeatCount="indefinite" /></text>
+                        <text class="fandom-orbit-glyph">ᚨ<animateMotion path="M 315 940 C 460 790 530 630 530 450 C 530 270 455 110 270 -40" dur="48s" begin="-18s" rotate="auto-reverse" repeatCount="indefinite" /></text>
+                        <text class="fandom-orbit-glyph">ᚱ<animateMotion path="M 315 940 C 460 790 530 630 530 450 C 530 270 455 110 270 -40" dur="48s" begin="-24s" rotate="auto-reverse" repeatCount="indefinite" /></text>
+                        <text class="fandom-orbit-glyph">ᚲ<animateMotion path="M 315 940 C 460 790 530 630 530 450 C 530 270 455 110 270 -40" dur="48s" begin="-30s" rotate="auto-reverse" repeatCount="indefinite" /></text>
+                        <text class="fandom-orbit-glyph">ᚷ<animateMotion path="M 315 940 C 460 790 530 630 530 450 C 530 270 455 110 270 -40" dur="48s" begin="-36s" rotate="auto-reverse" repeatCount="indefinite" /></text>
+                        <text class="fandom-orbit-glyph">ᚹ<animateMotion path="M 315 940 C 460 790 530 630 530 450 C 530 270 455 110 270 -40" dur="48s" begin="-42s" rotate="auto-reverse" repeatCount="indefinite" /></text>
+                    </svg>
                     <div class="fandom-runes" id="fandomRunes" aria-hidden="true">
                         <span class="fandom-rune">ᚠ</span>
                         <span class="fandom-rune">ᚢ</span>
@@ -1433,6 +1440,12 @@
         let dragDistance = 0;
         let textTimer;
         const previousSlots = new Map();
+
+        panel.addEventListener('pointermove', function (event) {
+            const rect = panel.getBoundingClientRect();
+            panel.style.setProperty('--fandom-light-x', ((event.clientX - rect.left) / rect.width * 100) + '%');
+            panel.style.setProperty('--fandom-light-y', ((event.clientY - rect.top) / rect.height * 100) + '%');
+        });
 
         const bubbles = fandoms.map(function (fandom, index) {
             const bubble = document.createElement('button');
