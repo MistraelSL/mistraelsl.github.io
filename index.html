@@ -616,7 +616,7 @@
         top: 50%;
         z-index: 5;
         width: clamp(330px, 27vw, 500px);
-        height: clamp(590px, 72vh, 790px);
+        height: clamp(680px, 82vh, 900px);
         transform: translateY(-50%) translateZ(46px);
         touch-action: pan-y;
     }
@@ -647,14 +647,40 @@
         pointer-events: none;
     }
 
-    .fandom-bubble.active {
-        border-color: #9be8ff;
-        animation: fandomPulse 2.2s ease-in-out infinite;
+    .fandom-bubble::before {
+        content: "";
+        position: absolute;
+        inset: -10px;
+        border: 2px solid rgba(126,226,255,.72);
+        border-radius: 50%;
+        opacity: 0;
+        pointer-events: none;
+        transform: scale(.92);
     }
 
-    @keyframes fandomPulse {
-        0%, 100% { box-shadow: 0 0 12px rgba(85,210,255,.65), 0 0 34px rgba(65,190,245,.35), inset 0 0 18px rgba(90,220,255,.14); }
-        50% { box-shadow: 0 0 20px rgba(140,235,255,.95), 0 0 58px rgba(65,200,255,.6), 0 0 90px rgba(40,170,235,.25), inset 0 0 28px rgba(120,235,255,.2); }
+    .fandom-bubble.active {
+        border-color: #9be8ff;
+        box-shadow:
+            0 0 16px rgba(85,210,255,.82),
+            0 0 42px rgba(65,190,245,.42),
+            inset 0 0 22px rgba(90,220,255,.16);
+    }
+
+    .fandom-bubble.active::before {
+        animation: fandomOrbPulse 2.15s ease-in-out infinite;
+    }
+
+    @keyframes fandomOrbPulse {
+        0%, 100% {
+            opacity: .2;
+            transform: scale(.92);
+            box-shadow: 0 0 12px rgba(85,210,255,.2);
+        }
+        50% {
+            opacity: 1;
+            transform: scale(1.12);
+            box-shadow: 0 0 30px rgba(110,225,255,.75), 0 0 64px rgba(55,185,245,.34);
+        }
     }
 
     .fandom-runes {
@@ -774,13 +800,18 @@
         letter-spacing: .08em;
         text-decoration: none;
         box-shadow: 0 0 16px rgba(70,190,240,.28), inset 0 1px rgba(255,255,255,.16);
-        animation: buttonPulse 2.85s ease-in-out infinite;
-        animation-delay: -.9s;
+        animation: fandomButtonPulse 3.1s ease-in-out infinite;
     }
 
-    @keyframes buttonPulse {
-        0%, 100% { box-shadow: 0 0 12px rgba(70,190,240,.3), inset 0 1px rgba(255,255,255,.16); }
-        50% { box-shadow: 0 0 30px rgba(90,215,255,.7), 0 0 58px rgba(50,175,235,.25), inset 0 1px rgba(255,255,255,.24); }
+    @keyframes fandomButtonPulse {
+        0%, 100% {
+            border-color: rgba(150,229,255,.56);
+            box-shadow: 0 0 10px rgba(70,190,240,.22), inset 0 1px rgba(255,255,255,.14);
+        }
+        50% {
+            border-color: rgba(195,244,255,.95);
+            box-shadow: 0 0 24px rgba(90,215,255,.62), 0 0 48px rgba(50,175,235,.2), inset 0 1px rgba(255,255,255,.24);
+        }
     }
 
     body.is-resizing .fandom-panel,
@@ -803,7 +834,7 @@
         .welcome-back-glass { left: 8px; right: -8px; }
         .fandom-panel { height: clamp(620px, 78vh, 760px); min-height: 620px; }
         .fandom-main-orb { left: -380px; width: 700px; }
-        .fandom-orbit { left: 82px; width: 300px; height: 600px; }
+        .fandom-orbit { left: 82px; width: 300px; height: 680px; }
         .fandom-info { left: 55%; right: 4%; }
         .fandom-name { font-size: clamp(38px, 5.5vw, 56px); }
         .fandom-description { font-size: clamp(15px, 2vw, 18px); }
@@ -852,7 +883,7 @@
         html { scroll-behavior: auto; }
         .panel-star,
         .dot,
-        .fandom-bubble.active,
+        .fandom-bubble.active::before,
         .fandom-characters { animation: none; }
         *, *::before, *::after { transition-duration: .01ms !important; }
     }
@@ -1152,6 +1183,16 @@
                 name: 'ГЕНШИН',
                 image: 'Genshin.png',
                 description: 'Семь стихий, забытые боги и путешествия по миру, хранящему слишком много тайн.'
+            },
+            {
+                name: 'НЕИЗВЕСТНЫЙ МИР I',
+                image: '',
+                description: 'Место подготовлено для нового фандома. Название, описание и изображение можно будет добавить позже.'
+            },
+            {
+                name: 'НЕИЗВЕСТНЫЙ МИР II',
+                image: '',
+                description: 'Место подготовлено для нового фандома. Название, описание и изображение можно будет добавить позже.'
             }
         ];
 
@@ -1164,11 +1205,14 @@
         const glare = document.getElementById('fandomGlare');
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
         const positions = [
-            { x: 40, y: 10, scale: .7, opacity: .58 },
-            { x: 70, y: 30, scale: .84, opacity: .82 },
-            { x: 84, y: 50, scale: 1, opacity: 1 },
-            { x: 70, y: 70, scale: .84, opacity: .82 }
+            { x: 34, y: -7, scale: .62, opacity: .44 },
+            { x: 57, y: 12, scale: .7, opacity: .58 },
+            { x: 75, y: 31, scale: .84, opacity: .82 },
+            { x: 86, y: 50, scale: 1, opacity: 1 },
+            { x: 72, y: 72, scale: .82, opacity: .78 },
+            { x: 43, y: 94, scale: .66, opacity: .5 }
         ];
+        const ACTIVE_SLOT = 3;
         let activeIndex = 2;
         let dragStartY = null;
         let dragDistance = 0;
@@ -1179,7 +1223,11 @@
             bubble.type = 'button';
             bubble.className = 'fandom-bubble';
             bubble.setAttribute('aria-label', fandom.name);
-            bubble.style.backgroundImage = 'url("' + fandom.image + '")';
+            if (fandom.image) {
+                bubble.style.backgroundImage = 'url("' + fandom.image + '")';
+            } else {
+                bubble.style.backgroundImage = 'radial-gradient(circle at 35% 28%, rgba(185,235,255,.24), transparent 30%), linear-gradient(145deg, #173044, #07131f 68%, #02070c)';
+            }
             bubble.addEventListener('click', function () {
                 if (Math.abs(dragDistance) > 8 || index === activeIndex) return;
                 activeIndex = index;
@@ -1201,7 +1249,7 @@
             const active = fandoms[activeIndex];
 
             bubbles.forEach(function (bubble, index) {
-                const slot = positions[(wrappedOffset(index) + 2 + positions.length) % positions.length];
+                const slot = positions[(wrappedOffset(index) + ACTIVE_SLOT + positions.length) % positions.length];
                 bubble.style.setProperty('--bubble-x', slot.x + '%');
                 bubble.style.setProperty('--bubble-y', slot.y + '%');
                 bubble.style.setProperty('--bubble-size', 'clamp(76px, 7vw, 132px)');
@@ -1211,11 +1259,13 @@
                 bubble.setAttribute('aria-pressed', index === activeIndex ? 'true' : 'false');
             });
 
-            const activeSlot = positions[2];
+            const activeSlot = positions[ACTIVE_SLOT];
             orbit.style.setProperty('--active-x', activeSlot.x + '%');
             orbit.style.setProperty('--active-y', activeSlot.y + '%');
             orbit.style.setProperty('--active-size', 'clamp(76px, 7vw, 132px)');
-            mainOrb.style.backgroundImage = 'url("' + active.image + '")';
+            mainOrb.style.backgroundImage = active.image
+                ? 'url("' + active.image + '")'
+                : 'radial-gradient(circle at 38% 30%, rgba(182,235,255,.2), transparent 30%), linear-gradient(145deg, #18364c, #07141f 65%, #02070c)';
 
             clearTimeout(textTimer);
             if (animateText && !reducedMotion.matches) {
