@@ -1163,7 +1163,7 @@
             audio.currentTime = 0;
             audio.src = clickSounds[soundIndex];
             audio.play().catch(function () {});
-        });
+        }, true);
     })();
 
     (function () {
