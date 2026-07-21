@@ -1063,7 +1063,7 @@
                 </div>
 
                 <div class="welcome-tabs" id="welcomeTabs">
-                    <a class="glass-tab" href="#characters">
+                    <a class="glass-tab" href="#fandomSection">
                         <img class="glass-tab-icon" src="character.png" alt="">
                         <span>ПЕРСОНАЖИ</span>
                     </a>
@@ -1510,6 +1510,13 @@
         const description = document.getElementById('fandomDescription');
         const glare = document.getElementById('fandomGlare');
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        const runeMotions = orbit.querySelectorAll('.fandom-orbit-glyph animateMotion');
+        const runeSpacingSeconds = 3.1;
+
+        runeMotions.forEach(function (motion, index) {
+            motion.setAttribute('begin', '-' + ((index % 10) * runeSpacingSeconds) + 's');
+        });
+
         const positions = [
             { x: -8, y: -7, scale: .62, opacity: .44 },
             { x: 53, y: 12, scale: .7, opacity: .58 },
