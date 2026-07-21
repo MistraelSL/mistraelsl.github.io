@@ -123,6 +123,16 @@
         transform-style: preserve-3d;
         transition: transform .15s ease-out;
         will-change: transform;
+        contain: layout paint;
+    }
+
+    body.is-resizing .welcome-assembly,
+    body.is-resizing .welcome-character,
+    body.is-resizing .welcome-copy,
+    body.is-resizing .shain-copy,
+    body.is-resizing .shain-panel,
+    body.is-resizing .about-panel {
+        transition: none !important;
     }
 
     .welcome-back-glass {
@@ -290,14 +300,14 @@
         pointer-events: none;
     }
     .welcome-assembly.shain-open .welcome-character {
-        transform: translateZ(60px) translateX(-120%);
+        transform: translateZ(60px) translateX(-35%);
     }
 
     .shain-copy {
         position: absolute;
         z-index: 25;
         right: 6%;
-        top: 50%;
+        top: 10%;
         transform: translateY(-50%) translateZ(40px) translateX(60px);
         text-align: right;
         opacity: 0;
@@ -307,7 +317,7 @@
     }
     .welcome-assembly.shain-open .shain-copy {
         opacity: 1;
-        transform: translateY(-50%) translateZ(40px) translateY(-90px);
+        transform: translateZ(40px);
         pointer-events: auto;
     }
     .shain-title {
@@ -323,10 +333,11 @@
         position: absolute;
         z-index: 24;
         right: 5%;
-        top: 48%;
+        top: 28%;
+        bottom: 5%;
         transform: translateZ(45px) translateY(20px);
         width: 60%;
-        max-height: 58%;
+        max-height: none;
         padding: 34px 38px;
         border-radius: 18px;
         overflow-y: auto;
@@ -341,7 +352,7 @@
         transition: opacity .5s ease, transform .5s ease;
         -webkit-font-smoothing: antialiased;
         backface-visibility: hidden;
-        will-change: transform;
+        contain: layout paint;
     }
     .welcome-assembly.shain-open .shain-panel {
         opacity: 1;
@@ -782,7 +793,7 @@
             transform: translateZ(60px) translateX(85%);
         }
         .welcome-assembly.shain-open .welcome-character {
-            transform: translateZ(60px) translateX(-105%);
+            transform: translateZ(60px) translateX(-30%);
         }
         .welcome-back-glass { left: 8px; right: -8px; }
         .fandom-panel { min-height: clamp(600px, 78vh, 760px); }
@@ -807,13 +818,14 @@
         .about-panel p  { font-size: clamp(14px, 1vw, 18px); line-height: 1.45; }
         .shain-copy { right: 5%; }
         .welcome-assembly.shain-open .shain-copy {
-            transform: translateY(-50%) translateZ(40px) translateY(-130px);
+            transform: translateZ(40px);
         }
         .shain-panel {
             width: 56%;
-            max-height: 52%;
+            top: 28%;
+            bottom: 5%;
+            max-height: none;
             padding: 22px 26px;
-            top: 54%;
         }
         .shain-panel p { font-size: clamp(14px, 1vw, 18px); line-height: 1.45; }
     }
@@ -822,9 +834,9 @@
         .welcome-assembly { height: clamp(500px, 78vh, 620px); min-height: 0; }
         .welcome-character { bottom: -2%; height: 110%; }
         .about-panel  { max-height: 56%; top: 52%; }
-        .shain-panel  { max-height: 56%; top: 56%; }
+        .shain-panel  { top: 28%; bottom: 4%; max-height: none; }
         .welcome-assembly.shain-open .shain-copy {
-            transform: translateY(-50%) translateZ(40px) translateY(-140px);
+            transform: translateZ(40px);
         }
     }
 
@@ -926,6 +938,16 @@
     const frontGlass = document.getElementById('frontGlass');
 
     const MAX_TILT = 6;
+
+    let resizeEndTimer;
+    window.addEventListener('resize', () => {
+        document.body.classList.add('is-resizing');
+        assembly.style.transform = 'none';
+        clearTimeout(resizeEndTimer);
+        resizeEndTimer = setTimeout(() => {
+            document.body.classList.remove('is-resizing');
+        }, 180);
+    }, { passive: true });
 
     let tiltPending = false;
     scene.addEventListener('mousemove', (e) => {
@@ -1078,7 +1100,15 @@
             requestAnimationFrame(draw);
         }
 
-        window.addEventListener('resize', resize);
+        let resizePending = false;
+        window.addEventListener('resize', function () {
+            if (resizePending) return;
+            resizePending = true;
+            requestAnimationFrame(function () {
+                resize();
+                resizePending = false;
+            });
+        }, { passive: true });
         resize();
         draw();
     })();
@@ -1447,15 +1477,26 @@
         refl.style.width  = (bubbleData[activeIndex].size * 0.85) + 'px';
         refl.style.height = (bubbleData[activeIndex].size * 0.55) + 'px';
 
+        var wheelResizePending = false;
         window.addEventListener('resize', function () {
-            computeTargets();
-            // при ресайзе — мгновенно, без анимации
-            bubbleData.forEach(function (b) {
-                b.x = b.tx; b.y = b.ty;
-                b.size = b.tSize;
-                b.opacity = b.tOpacity;
+            if (wheelResizePending) return;
+            wheelResizePending = true;
+            requestAnimationFrame(function () {
+                computeTargets();
+                // При изменении окна сразу ставим элементы на новые позиции.
+                bubbleData.forEach(function (b) {
+                    b.x = b.tx; b.y = b.ty;
+                    b.size = b.tSize;
+                    b.opacity = b.tOpacity;
+                });
+                var active = bubbleData[activeIndex];
+                orbitSystem.style.left = active.x + 'px';
+                orbitSystem.style.top = active.y + 'px';
+                refl.style.left = active.x + 'px';
+                refl.style.top = (active.y + active.size * 0.48) + 'px';
+                wheelResizePending = false;
             });
-        });
+        }, { passive: true });
 
         tick();
     })();
