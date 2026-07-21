@@ -52,7 +52,7 @@
     }
 
     * { cursor: none !important; user-select: none; -webkit-user-drag: none; }
-    img { pointer-events: none; -webkit-user-drag: none; draggable: false; }
+    img { pointer-events: none; -webkit-user-drag: none; }
 
     .cursor-glow {
         position: fixed;
@@ -209,7 +209,8 @@
             drop-shadow(0 0 16px rgba(155,220,255,.28))
             drop-shadow(0 18px 30px rgba(0,0,0,.5));
         user-select: none;
-        pointer-events: none;
+        pointer-events: auto;
+        transition: transform .55s ease;
     }
 
     .welcome-front-glass {
@@ -268,7 +269,6 @@
     }
     .welcome-scene:hover .welcome-glare { opacity: 1; }
 
-    .welcome-character { transition: transform .55s ease; }
     .welcome-copy { transition: top .5s ease, transform .5s ease; }
     .welcome-subtitle, .read-button { transition: opacity .35s ease; }
 
@@ -715,15 +715,79 @@
 
     .anchor-spacer { min-height: 20vh; }
 
-    @media (max-width: 900px) {
-        .navbar { height: 56px; padding: 0 22px; gap: 26px; }
-        .nav-button { font-size: 22px; }
-        .welcome-section { padding: 16px 16px 0; }
-        .welcome-assembly { height: 56vh; min-height: 440px; }
-        .welcome-copy { left: 6%; }
-        .welcome-title { font-size: 44px; }
-        .welcome-character { right: -10px; height: 100%; opacity: .92; }
+    /* Планшеты; телефонная версия намеренно не поддерживается. */
+    @media (min-width: 700px) and (max-width: 900px) {
+        .navbar { height: 40px; }
+        .welcome-section,
+        .fandom-section { padding-left: 14px; padding-right: 14px; }
+        .welcome-assembly {
+            height: clamp(560px, 76vh, 720px);
+            min-height: 0;
+        }
+        .welcome-copy {
+            left: 5%;
+            top: 37%;
+            max-width: 48%;
+        }
+        .welcome-title { font-size: clamp(38px, 6vw, 54px); }
+        .welcome-subtitle { font-size: clamp(17px, 2.7vw, 24px); }
+        .read-button {
+            padding: 12px 38px;
+            font-size: clamp(21px, 3vw, 28px);
+        }
+        .welcome-character {
+            right: -5%;
+            bottom: 0;
+            height: 90%;
+            opacity: .9;
+        }
+        .welcome-tabs {
+            right: 4%;
+            top: auto;
+            bottom: 5%;
+            transform: translateZ(45px);
+            flex-direction: row;
+            gap: 12px;
+        }
+        .glass-tab {
+            min-width: 0;
+            padding: 12px 18px;
+            gap: 10px;
+            font-size: clamp(18px, 2.8vw, 25px);
+        }
+        .glass-tab-icon { width: 42px; height: 42px; }
+        .welcome-assembly.about-open .welcome-tabs,
+        .welcome-assembly.shain-open .welcome-tabs {
+            transform: translateZ(45px) translateX(50px);
+        }
+        .about-panel,
+        .shain-panel {
+            left: 4%;
+            right: 4%;
+            top: 48%;
+            width: auto;
+            max-height: 45%;
+            padding: 22px 24px;
+            text-align: left;
+        }
+        .about-panel h2 { font-size: clamp(24px, 4vw, 34px); }
+        .about-panel p,
+        .shain-panel p { font-size: clamp(15px, 2.2vw, 19px); }
+        .shain-copy { right: 5%; top: 30%; }
+        .shain-title { font-size: clamp(32px, 5vw, 46px); }
+        .welcome-assembly.shain-open .shain-copy {
+            transform: translateY(-50%) translateZ(40px);
+        }
+        .welcome-assembly.about-open .welcome-character {
+            transform: translateZ(60px) translateX(85%);
+        }
+        .welcome-assembly.shain-open .welcome-character {
+            transform: translateZ(60px) translateX(-105%);
+        }
         .welcome-back-glass { left: 8px; right: -8px; }
+        .fandom-panel { min-height: clamp(600px, 78vh, 760px); }
+        .fandom-wheel { height: clamp(330px, 45vh, 440px); }
+        .welcome-dots { margin-top: 28px; margin-bottom: 28px; }
     }
 
     @media (min-width: 901px) and (max-width: 1500px) {
@@ -755,13 +819,20 @@
     }
 
     @media (max-height: 800px) {
-        .welcome-assembly { height: 66vh; min-height: 420px; }
+        .welcome-assembly { height: clamp(500px, 78vh, 620px); min-height: 0; }
         .welcome-character { bottom: -2%; height: 110%; }
         .about-panel  { max-height: 56%; top: 52%; }
         .shain-panel  { max-height: 56%; top: 56%; }
         .welcome-assembly.shain-open .shain-copy {
             transform: translateY(-50%) translateZ(40px) translateY(-140px);
         }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        .panel-star,
+        .dot { animation: none; }
+        *, *::before, *::after { transition-duration: .01ms !important; }
     }
 </style>
 </head>
@@ -910,7 +981,6 @@
     }
 
     readBtn.addEventListener('click', openAbout);
-    character.style.pointerEvents = 'auto';
     character.addEventListener('click', openShain);
 
     assembly.addEventListener('click', (e) => {
@@ -1023,7 +1093,7 @@
         ];
 
         const STEP_T    = 0.17;
-        const BASE_SIZE = 250;
+        const MAX_BASE_SIZE = 250;
         const LERP      = 0.14; // скорость плавности (0.08 медленнее, 0.20 быстрее)
         let activeIndex = 0;
 
@@ -1040,6 +1110,9 @@
             img.src = f.img;
             img.alt = '';
             img.draggable = false;
+            img.addEventListener('error', function () {
+                img.remove();
+            });
             bgWrap.appendChild(img);
         });
 
@@ -1053,7 +1126,7 @@
         oSvg.setAttribute('width', '900');
         oSvg.setAttribute('height', '900');
         oSvg.setAttribute('viewBox', '-450 -450 900 900');
-        oSvg.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);overflow:visible;pointer-events:none;';
+        oSvg.style.cssText = 'position:absolute;top:50%;left:50%;width:clamp(560px,70vw,900px);height:clamp(560px,70vw,900px);transform:translate(-50%,-50%);overflow:visible;pointer-events:none;';
 
         var oc = '120,225,245';
         var runes = 'ᚠ ᚢ ᚦ ᚨ ᚱ ᚲ ᚷ ᚹ ᚺ ᚾ ᛁ ᛃ ᛇ ᛈ ᛉ ᛊ ᛏ ᛒ ᛖ ᛗ ᛚ ᛝ ᛞ ᛟ ᚠ ᚢ ᚦ ᚨ ᚱ ᚲ ᚷ ᚹ ᚺ ᚾ ᛁ ᛃ ᛇ ᛈ ᛉ ᛊ ᛏ ᛒ ᛖ ᛗ ᛚ ᛝ ᛞ ᛟ';
@@ -1202,6 +1275,7 @@
             var H = wheel.offsetHeight;
             var cx = W / 2;
             var N  = FANDOMS.length;
+            var baseSize = Math.max(150, Math.min(MAX_BASE_SIZE, W * 0.24, H * 0.56));
 
             var edgeY    = H * 0.10;
             var controlY = H * 1.50;
@@ -1230,7 +1304,7 @@
 
                 var clamped = Math.max(0, Math.min(1, t));
                 var pos  = bezier(clamped, P0, P1, P2);
-                var size = dist === 0 ? BASE_SIZE : Math.max(55, BASE_SIZE - dist * 65);
+                var size = dist === 0 ? baseSize : Math.max(55, baseSize - dist * (baseSize * 0.26));
                 var alpha = dist === 0 ? 1 : Math.max(0.18, 1 - dist * 0.30);
 
                 b.tx = pos.x;
