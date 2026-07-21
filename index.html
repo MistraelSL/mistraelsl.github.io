@@ -83,38 +83,41 @@
     }
 
     .navbar {
-        display: flex;
-        align-items: center;
+        display: block;
         width: 100%;
         height: 64px;
         background: transparent;
         border: none;
-        padding: 0 26px;
+        padding: 0;
     }
 
     .music-toggle {
-        position: relative;
-        z-index: 30;
+        position: fixed;
+        top: 18px;
+        left: 18px;
+        z-index: 100000;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-width: 190px;
-        padding: 10px 22px;
+        width: 58px;
+        height: 58px;
+        min-width: 0;
+        padding: 0;
         border: 1px solid rgba(157,226,255,.58);
-        border-radius: 999px;
+        border-radius: 50%;
         color: rgba(235,249,255,.94);
         background: linear-gradient(135deg, rgba(81,156,192,.18), rgba(8,24,35,.44));
         box-shadow: 0 0 14px rgba(75,190,235,.2), inset 0 1px rgba(255,255,255,.14);
-        font: 16px/1 Georgia, "Times New Roman", serif;
-        letter-spacing: .08em;
+        font: 27px/1 Georgia, "Times New Roman", serif;
         text-shadow: 0 0 10px rgba(105,215,255,.55);
-        transition: border-color .2s, box-shadow .2s, color .2s, background .2s;
+        transition: transform .2s, border-color .2s, box-shadow .2s, color .2s, background .2s;
     }
 
     .music-toggle:hover {
         color: #fff;
         border-color: rgba(205,244,255,.9);
         box-shadow: 0 0 22px rgba(90,215,255,.42), inset 0 1px rgba(255,255,255,.2);
+        transform: scale(1.06);
     }
 
     .music-toggle.is-muted {
@@ -891,8 +894,14 @@
     .anchor-spacer { min-height: 20vh; }
 
     @media (max-width: 900px) {
-        .navbar { height: 56px; padding: 0 16px; gap: 26px; }
-        .music-toggle { min-width: 166px; padding: 9px 16px; font-size: 14px; }
+        .navbar { height: 56px; padding: 0; }
+        .music-toggle {
+            top: 12px;
+            left: 12px;
+            width: 50px;
+            height: 50px;
+            font-size: 23px;
+        }
         .nav-button { font-size: 22px; }
         .welcome-section { padding: 16px 16px 0; }
         .welcome-assembly { height: 56vh; min-height: 440px; }
@@ -967,7 +976,7 @@
 <img class="cursor-img" id="cursorImg" src="mouse.png" alt="">
 
 <header class="navbar">
-    <button class="music-toggle" id="musicToggle" type="button" aria-pressed="false">МУЗЫКА: ВКЛ</button>
+    <button class="music-toggle" id="musicToggle" type="button" aria-label="Выключить музыку" aria-pressed="false">♫</button>
 </header>
 
 <main>
@@ -1187,7 +1196,7 @@
         const toggle = document.getElementById('musicToggle');
         let started = false;
 
-        music.volume = 0.22;
+        music.volume = 0.34;
 
         function startMusic() {
             if (started) return;
@@ -1199,7 +1208,8 @@
 
         function updateToggle() {
             toggle.classList.toggle('is-muted', music.muted);
-            toggle.textContent = music.muted ? 'МУЗЫКА: ВЫКЛ' : 'МУЗЫКА: ВКЛ';
+            toggle.textContent = music.muted ? '♩' : '♫';
+            toggle.setAttribute('aria-label', music.muted ? 'Включить музыку' : 'Выключить музыку');
             toggle.setAttribute('aria-pressed', music.muted ? 'true' : 'false');
         }
 
@@ -1252,7 +1262,7 @@
         const audioPool = Array.from({ length: 4 }, function () {
             const audio = new Audio();
             audio.preload = 'auto';
-            audio.volume = 0.28;
+            audio.volume = 0.14;
             return audio;
         });
         let poolIndex = 0;
