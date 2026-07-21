@@ -83,12 +83,46 @@
     }
 
     .navbar {
-        display: block;
+        display: flex;
+        align-items: center;
         width: 100%;
         height: 64px;
         background: transparent;
         border: none;
-        padding: 0;
+        padding: 0 26px;
+    }
+
+    .music-toggle {
+        position: relative;
+        z-index: 30;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 190px;
+        padding: 10px 22px;
+        border: 1px solid rgba(157,226,255,.58);
+        border-radius: 999px;
+        color: rgba(235,249,255,.94);
+        background: linear-gradient(135deg, rgba(81,156,192,.18), rgba(8,24,35,.44));
+        box-shadow: 0 0 14px rgba(75,190,235,.2), inset 0 1px rgba(255,255,255,.14);
+        font: 16px/1 Georgia, "Times New Roman", serif;
+        letter-spacing: .08em;
+        text-shadow: 0 0 10px rgba(105,215,255,.55);
+        transition: border-color .2s, box-shadow .2s, color .2s, background .2s;
+    }
+
+    .music-toggle:hover {
+        color: #fff;
+        border-color: rgba(205,244,255,.9);
+        box-shadow: 0 0 22px rgba(90,215,255,.42), inset 0 1px rgba(255,255,255,.2);
+    }
+
+    .music-toggle.is-muted {
+        color: rgba(205,220,228,.68);
+        border-color: rgba(145,174,190,.3);
+        background: linear-gradient(135deg, rgba(55,76,88,.15), rgba(7,16,22,.36));
+        box-shadow: inset 0 1px rgba(255,255,255,.08);
+        text-shadow: none;
     }
     .nav-button {
         color: rgba(255,255,255,.92);
@@ -857,7 +891,8 @@
     .anchor-spacer { min-height: 20vh; }
 
     @media (max-width: 900px) {
-        .navbar { height: 56px; padding: 0 22px; gap: 26px; }
+        .navbar { height: 56px; padding: 0 16px; gap: 26px; }
+        .music-toggle { min-width: 166px; padding: 9px 16px; font-size: 14px; }
         .nav-button { font-size: 22px; }
         .welcome-section { padding: 16px 16px 0; }
         .welcome-assembly { height: 56vh; min-height: 440px; }
@@ -926,10 +961,14 @@
 <body>
 <canvas id="constellation"></canvas>
 
+<audio id="backgroundMusic" src="Amethyst%20Sounds/relaxing.mp3" preload="auto" loop></audio>
+
 <div class="cursor-glow" id="cursorGlow"></div>
 <img class="cursor-img" id="cursorImg" src="mouse.png" alt="">
 
-<header class="navbar"></header>
+<header class="navbar">
+    <button class="music-toggle" id="musicToggle" type="button" aria-pressed="false">МУЗЫКА: ВКЛ</button>
+</header>
 
 <main>
     <section class="welcome-section" id="top">
@@ -1140,6 +1179,41 @@
         cursorImg.style.opacity = '1';
         cursorGlow.style.opacity = '1';
     });
+
+    // Музыка запускается после первого действия пользователя.
+    // Выключение только заглушает её и не сбрасывает позицию трека.
+    (function () {
+        const music = document.getElementById('backgroundMusic');
+        const toggle = document.getElementById('musicToggle');
+        let started = false;
+
+        music.volume = 0.22;
+
+        function startMusic() {
+            if (started) return;
+            started = true;
+            music.play().catch(function () {
+                started = false;
+            });
+        }
+
+        function updateToggle() {
+            toggle.classList.toggle('is-muted', music.muted);
+            toggle.textContent = music.muted ? 'МУЗЫКА: ВЫКЛ' : 'МУЗЫКА: ВКЛ';
+            toggle.setAttribute('aria-pressed', music.muted ? 'true' : 'false');
+        }
+
+        document.addEventListener('pointerdown', startMusic, { once: true, capture: true });
+        document.addEventListener('keydown', startMusic, { once: true, capture: true });
+
+        toggle.addEventListener('click', function () {
+            startMusic();
+            music.muted = !music.muted;
+            updateToggle();
+        });
+
+        updateToggle();
+    })();
 
     // Случайный аметистовый звук при каждом клике по сайту.
     (function () {
