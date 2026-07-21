@@ -1107,6 +1107,65 @@
         cursorGlow.style.opacity = '1';
     });
 
+    // Случайный аметистовый звук при каждом клике по сайту.
+    (function () {
+        const clickSounds = [
+            'Amethyst Break 1.mp3',
+            'Amethyst Break 2.mp3',
+            'Amethyst Break 3.mp3',
+            'Amethyst Break 4.mp3',
+            'Amethyst Cluster Break 1.mp3',
+            'Amethyst Cluster Break 2.mp3',
+            'Amethyst Cluster Break 3.mp3',
+            'Amethyst Cluster Break 4.mp3',
+            'Amethyst Cluster Place 1.mp3',
+            'Amethyst Cluster Place 2.mp3',
+            'Amethyst Cluster Place 3.mp3',
+            'Amethyst Cluster Place 4.mp3',
+            'Amethyst Shimmer.mp3',
+            'Amethyst Step 1.mp3',
+            'Amethyst Step 2.mp3',
+            'Amethyst Step 3.mp3',
+            'Amethyst Step 4.mp3',
+            'Amethyst Step 5.mp3',
+            'Amethyst Step 6.mp3',
+            'Amethyst Step 7.mp3',
+            'Amethyst Step 8.mp3',
+            'Amethyst Step 9.mp3',
+            'Amethyst Step 10.mp3',
+            'Amethyst Step 11.mp3',
+            'Amethyst Step 12.mp3',
+            'Amethyst Step 13.mp3',
+            'Amethyst Step 14.mp3'
+        ].map(function (fileName) {
+            return 'Amethyst Sounds/' + encodeURIComponent(fileName);
+        });
+
+        const audioPool = Array.from({ length: 4 }, function () {
+            const audio = new Audio();
+            audio.preload = 'auto';
+            audio.volume = 0.28;
+            return audio;
+        });
+        let poolIndex = 0;
+        let previousSound = -1;
+
+        document.addEventListener('click', function () {
+            let soundIndex;
+            do {
+                soundIndex = Math.floor(Math.random() * clickSounds.length);
+            } while (clickSounds.length > 1 && soundIndex === previousSound);
+            previousSound = soundIndex;
+
+            const audio = audioPool[poolIndex];
+            poolIndex = (poolIndex + 1) % audioPool.length;
+            audio.pause();
+            audio.currentTime = 0;
+            audio.src = clickSounds[soundIndex];
+            audio.play().catch(function () {});
+        });
+    })();
+
     (function () {
         const canvas = document.getElementById('constellation');
         const ctx = canvas.getContext('2d');
