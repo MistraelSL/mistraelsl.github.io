@@ -711,12 +711,28 @@
         pointer-events: none;
     }
 
-    .fandom-orbit-rail-path {
-        fill: none;
-        stroke: rgba(127,222,255,.52);
-        stroke-width: 2;
-        vector-effect: non-scaling-stroke;
+    .fandom-orbit-ring {
+        position: absolute;
+        top: 0;
+        height: 100%;
+        aspect-ratio: 1 / 1;
+        border: 2px solid rgba(127,222,255,.52);
+        border-radius: 50%;
         filter: drop-shadow(0 0 7px rgba(91,207,255,.55));
+        pointer-events: none;
+    }
+
+    .fandom-orbit-ring-left {
+        right: 52%;
+    }
+
+    .fandom-orbit-ring-right {
+        right: 4%;
+        border-color: rgba(157,232,255,.68);
+    }
+
+    .fandom-orbit-rail-path {
+        display: none;
     }
 
     .fandom-orbit-rail-path-right {
@@ -1100,6 +1116,8 @@
             <div class="fandom-panel" id="fandomPanel">
                 <div class="fandom-main-orb" id="fandomMainOrb"></div>
                 <div class="fandom-orbit" id="fandomOrbit">
+                    <div class="fandom-orbit-ring fandom-orbit-ring-left" aria-hidden="true"></div>
+                    <div class="fandom-orbit-ring fandom-orbit-ring-right" aria-hidden="true"></div>
                     <svg class="fandom-orbit-rails" viewBox="0 0 650 900" preserveAspectRatio="none" aria-hidden="true">
                         <defs>
                             <path id="fandomRuneTrackRight" d="M 111 -65 A 515 515 0 0 1 111 965" />
