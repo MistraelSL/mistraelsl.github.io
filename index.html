@@ -692,7 +692,7 @@
 
     .fandom-orbit {
         position: absolute;
-        left: clamp(105px, 19vw, 370px);
+        left: clamp(125px, calc(19vw + 20px), 390px);
         top: -90px;
         bottom: -90px;
         z-index: 5;
@@ -970,7 +970,7 @@
         .welcome-back-glass { left: 8px; right: -8px; }
         .fandom-panel { width: calc(100% - 20px); height: clamp(720px, 84vh, 840px); min-height: 720px; }
         .fandom-main-orb { left: -520px; width: auto; height: calc(100% + 160px); }
-        .fandom-orbit { left: 82px; top: -80px; bottom: -80px; width: 300px; height: auto; }
+        .fandom-orbit { left: 102px; top: -80px; bottom: -80px; width: 300px; height: auto; }
         .fandom-info { left: 55%; right: 4%; }
         .fandom-name { font-size: clamp(38px, 5.5vw, 56px); }
         .fandom-description { font-size: clamp(15px, 2vw, 18px); }
@@ -1104,6 +1104,7 @@
                         <defs>
                             <path id="fandomRuneTrackRight" d="M 111 -65 A 515 515 0 0 1 111 965" />
                             <path id="fandomRuneTrackLeft" d="M -179 965 A 515 515 0 0 0 -179 -65" />
+                            <path id="fandomRuneTrackLeftInner" d="M -229 965 A 515 515 0 0 0 -229 -65" />
                         </defs>
                         <path class="fandom-orbit-rail-path" d="M -154 -65 A 515 515 0 0 1 -154 965" />
                         <path class="fandom-orbit-rail-path fandom-orbit-rail-path-right" d="M 86 -65 A 515 515 0 0 1 86 965" />
@@ -1129,6 +1130,17 @@
                         <text class="fandom-orbit-glyph">ᚹ<animateMotion dur="48s" begin="-33.6s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackLeft" /></animateMotion></text>
                         <text class="fandom-orbit-glyph">ᚺ<animateMotion dur="48s" begin="-38.4s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackLeft" /></animateMotion></text>
                         <text class="fandom-orbit-glyph">ᚾ<animateMotion dur="48s" begin="-43.2s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackLeft" /></animateMotion></text>
+
+                        <text class="fandom-orbit-glyph">ᚠ<animateMotion dur="48s" begin="0s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackLeftInner" /></animateMotion></text>
+                        <text class="fandom-orbit-glyph">ᚢ<animateMotion dur="48s" begin="-4.8s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackLeftInner" /></animateMotion></text>
+                        <text class="fandom-orbit-glyph">ᚦ<animateMotion dur="48s" begin="-9.6s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackLeftInner" /></animateMotion></text>
+                        <text class="fandom-orbit-glyph">ᚨ<animateMotion dur="48s" begin="-14.4s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackLeftInner" /></animateMotion></text>
+                        <text class="fandom-orbit-glyph">ᚱ<animateMotion dur="48s" begin="-19.2s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackLeftInner" /></animateMotion></text>
+                        <text class="fandom-orbit-glyph">ᚲ<animateMotion dur="48s" begin="-24s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackLeftInner" /></animateMotion></text>
+                        <text class="fandom-orbit-glyph">ᚷ<animateMotion dur="48s" begin="-28.8s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackLeftInner" /></animateMotion></text>
+                        <text class="fandom-orbit-glyph">ᚹ<animateMotion dur="48s" begin="-33.6s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackLeftInner" /></animateMotion></text>
+                        <text class="fandom-orbit-glyph">ᚺ<animateMotion dur="48s" begin="-38.4s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackLeftInner" /></animateMotion></text>
+                        <text class="fandom-orbit-glyph">ᚾ<animateMotion dur="48s" begin="-43.2s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackLeftInner" /></animateMotion></text>
                     </svg>
                     <div class="fandom-runes" id="fandomRunes" aria-hidden="true">
                         <span class="fandom-rune">ᚠ</span>
