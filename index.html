@@ -714,8 +714,6 @@
         fill: none;
         stroke: rgba(127,222,255,.52);
         stroke-width: 2;
-        stroke-linecap: round;
-        stroke-linejoin: round;
         vector-effect: non-scaling-stroke;
         filter: drop-shadow(0 0 7px rgba(91,207,255,.55));
     }
@@ -795,9 +793,9 @@
     }
 
     .fandom-bubble.active::before {
-        animation: fandomOrbPulse 5.6s ease-in-out infinite;
-        outline: 1px solid rgba(135,224,255,.26);
-        outline-offset: 14px;
+        animation: fandomOrbPulse 4.8s ease-in-out infinite;
+        outline: 1px solid rgba(135,224,255,.28);
+        outline-offset: 9px;
     }
 
     @keyframes fandomCorePulse {
@@ -811,21 +809,14 @@
 
     @keyframes fandomOrbPulse {
         0%, 100% {
-            opacity: .16;
-            transform: scale(.94);
-            box-shadow:
-                0 0 0 2px rgba(145,230,255,.22),
-                0 0 0 12px rgba(100,210,250,.06),
-                0 0 18px rgba(85,210,255,.18);
+            opacity: .2;
+            transform: scale(.92);
+            box-shadow: 0 0 12px rgba(85,210,255,.2);
         }
         50% {
-            opacity: .9;
-            transform: scale(1.16);
-            box-shadow:
-                0 0 0 4px rgba(170,239,255,.48),
-                0 0 0 22px rgba(115,218,255,.12),
-                0 0 38px rgba(110,225,255,.62),
-                0 0 72px rgba(55,185,245,.24);
+            opacity: 1;
+            transform: scale(1.12);
+            box-shadow: 0 0 30px rgba(110,225,255,.75), 0 0 64px rgba(55,185,245,.34);
         }
     }
 
@@ -1109,16 +1100,16 @@
                 <div class="fandom-main-orb" id="fandomMainOrb"></div>
                 <div class="fandom-orbit" id="fandomOrbit">
                     <svg class="fandom-orbit-rails" viewBox="0 0 650 900" preserveAspectRatio="none" aria-hidden="true">
-                        <path class="fandom-orbit-rail-path" d="M 95 965 C 235 820 345 650 390 450 C 345 250 235 80 95 -65" />
-                        <path class="fandom-orbit-rail-path fandom-orbit-rail-path-right" d="M 305 965 C 445 820 555 650 600 450 C 555 250 445 80 305 -65" />
-                        <text class="fandom-orbit-glyph">ᚠ<animateMotion path="M 385 965 C 520 820 590 650 600 450 C 590 250 520 80 385 -65" dur="48s" begin="0s" rotate="auto-reverse" repeatCount="indefinite" /></text>
-                        <text class="fandom-orbit-glyph">ᚢ<animateMotion path="M 385 965 C 520 820 590 650 600 450 C 590 250 520 80 385 -65" dur="48s" begin="-6s" rotate="auto-reverse" repeatCount="indefinite" /></text>
-                        <text class="fandom-orbit-glyph">ᚦ<animateMotion path="M 385 965 C 520 820 590 650 600 450 C 590 250 520 80 385 -65" dur="48s" begin="-12s" rotate="auto-reverse" repeatCount="indefinite" /></text>
-                        <text class="fandom-orbit-glyph">ᚨ<animateMotion path="M 385 965 C 520 820 590 650 600 450 C 590 250 520 80 385 -65" dur="48s" begin="-18s" rotate="auto-reverse" repeatCount="indefinite" /></text>
-                        <text class="fandom-orbit-glyph">ᚱ<animateMotion path="M 385 965 C 520 820 590 650 600 450 C 590 250 520 80 385 -65" dur="48s" begin="-24s" rotate="auto-reverse" repeatCount="indefinite" /></text>
-                        <text class="fandom-orbit-glyph">ᚲ<animateMotion path="M 385 965 C 520 820 590 650 600 450 C 590 250 520 80 385 -65" dur="48s" begin="-30s" rotate="auto-reverse" repeatCount="indefinite" /></text>
-                        <text class="fandom-orbit-glyph">ᚷ<animateMotion path="M 385 965 C 520 820 590 650 600 450 C 590 250 520 80 385 -65" dur="48s" begin="-36s" rotate="auto-reverse" repeatCount="indefinite" /></text>
-                        <text class="fandom-orbit-glyph">ᚹ<animateMotion path="M 385 965 C 520 820 590 650 600 450 C 590 250 520 80 385 -65" dur="48s" begin="-42s" rotate="auto-reverse" repeatCount="indefinite" /></text>
+                        <path class="fandom-orbit-rail-path" d="M 95 965 C 490 820 490 80 95 -65" />
+                        <path class="fandom-orbit-rail-path fandom-orbit-rail-path-right" d="M 305 965 C 700 820 700 80 305 -65" />
+                        <text class="fandom-orbit-glyph">ᚠ<animateMotion path="M 385 965 C 780 820 780 80 385 -65" dur="48s" begin="0s" rotate="auto-reverse" repeatCount="indefinite" /></text>
+                        <text class="fandom-orbit-glyph">ᚢ<animateMotion path="M 385 965 C 780 820 780 80 385 -65" dur="48s" begin="-6s" rotate="auto-reverse" repeatCount="indefinite" /></text>
+                        <text class="fandom-orbit-glyph">ᚦ<animateMotion path="M 385 965 C 780 820 780 80 385 -65" dur="48s" begin="-12s" rotate="auto-reverse" repeatCount="indefinite" /></text>
+                        <text class="fandom-orbit-glyph">ᚨ<animateMotion path="M 385 965 C 780 820 780 80 385 -65" dur="48s" begin="-18s" rotate="auto-reverse" repeatCount="indefinite" /></text>
+                        <text class="fandom-orbit-glyph">ᚱ<animateMotion path="M 385 965 C 780 820 780 80 385 -65" dur="48s" begin="-24s" rotate="auto-reverse" repeatCount="indefinite" /></text>
+                        <text class="fandom-orbit-glyph">ᚲ<animateMotion path="M 385 965 C 780 820 780 80 385 -65" dur="48s" begin="-30s" rotate="auto-reverse" repeatCount="indefinite" /></text>
+                        <text class="fandom-orbit-glyph">ᚷ<animateMotion path="M 385 965 C 780 820 780 80 385 -65" dur="48s" begin="-36s" rotate="auto-reverse" repeatCount="indefinite" /></text>
+                        <text class="fandom-orbit-glyph">ᚹ<animateMotion path="M 385 965 C 780 820 780 80 385 -65" dur="48s" begin="-42s" rotate="auto-reverse" repeatCount="indefinite" /></text>
                     </svg>
                     <div class="fandom-runes" id="fandomRunes" aria-hidden="true">
                         <span class="fandom-rune">ᚠ</span>
