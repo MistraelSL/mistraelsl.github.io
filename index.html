@@ -31,12 +31,28 @@
     html { scroll-behavior: smooth; }
 
     body {
+        --site-light-x: 50%;
+        --site-light-y: 35%;
         margin: 0;
         min-height: 100vh;
         background: linear-gradient(to bottom, #0a0e13 0%, #070a0e 50%, #04070a 100%);
         color: white;
         font-family: Georgia, "Times New Roman", serif;
         overflow-x: hidden;
+    }
+
+    body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 99990;
+        pointer-events: none;
+        background: radial-gradient(
+            circle 360px at var(--site-light-x) var(--site-light-y),
+            transparent 0%,
+            rgba(2,7,11,.08) 44%,
+            rgba(2,7,11,.46) 100%
+        );
     }
 
     #constellation {
@@ -593,16 +609,17 @@
         --fandom-tilt-x: 0deg;
         --fandom-tilt-y: 0deg;
         position: relative;
-        width: 100%;
-        height: clamp(780px, 92vh, 1080px);
-        min-height: 780px;
+        width: calc(100% - 40px);
+        height: clamp(720px, 84vh, 940px);
+        min-height: 720px;
+        margin: 0 auto;
         overflow: hidden;
         border: 0;
         border-radius: 18px;
         background:
             linear-gradient(to right, rgba(2,7,11,.55), rgba(3,10,16,.30) 48%, rgba(2,7,11,.52)),
             linear-gradient(to bottom, rgba(2,7,11,.25), rgba(2,7,11,.46)),
-            url("melmyrme.jpg") center 58% / cover no-repeat;
+            url("melmyrme.jpg") center 70% / cover no-repeat;
         box-shadow: none;
         transform: none;
         transform-style: flat;
@@ -620,8 +637,8 @@
         opacity: 0;
         background: radial-gradient(
             circle 360px at var(--fandom-light-x, 50%) var(--fandom-light-y, 50%),
-            rgba(175,226,246,.22),
-            rgba(80,155,190,.08) 42%,
+            rgba(190,236,252,.32),
+            rgba(94,177,211,.13) 42%,
             transparent 72%
         );
         transition: opacity .35s ease;
@@ -649,8 +666,8 @@
         position: absolute;
         left: clamp(-390px, -19vw, -210px);
         top: 50%;
-        width: clamp(620px, 48vw, 920px);
-        height: clamp(620px, 48vw, 920px);
+        width: clamp(540px, 40vw, 680px);
+        height: clamp(540px, 40vw, 680px);
         border-radius: 50%;
         transform: translateY(-50%) translateZ(22px);
         border: 3px solid rgba(128,218,255,.62);
@@ -678,7 +695,7 @@
         top: 50%;
         z-index: 5;
         width: clamp(330px, 27vw, 500px);
-        height: clamp(680px, 82vh, 900px);
+        height: clamp(600px, 70vh, 700px);
         transform: translateY(-50%) translateZ(46px);
         touch-action: pan-y;
     }
@@ -775,9 +792,9 @@
     }
 
     .fandom-bubble.active::before {
-        animation: fandomOrbPulse 4.8s ease-in-out infinite;
-        outline: 1px solid rgba(135,224,255,.28);
-        outline-offset: 9px;
+        animation: fandomOrbPulse 5.6s ease-in-out infinite;
+        outline: 1px solid rgba(135,224,255,.26);
+        outline-offset: 14px;
     }
 
     @keyframes fandomCorePulse {
@@ -791,14 +808,21 @@
 
     @keyframes fandomOrbPulse {
         0%, 100% {
-            opacity: .2;
-            transform: scale(.92);
-            box-shadow: 0 0 12px rgba(85,210,255,.2);
+            opacity: .16;
+            transform: scale(.94);
+            box-shadow:
+                0 0 0 2px rgba(145,230,255,.22),
+                0 0 0 12px rgba(100,210,250,.06),
+                0 0 18px rgba(85,210,255,.18);
         }
         50% {
-            opacity: 1;
-            transform: scale(1.12);
-            box-shadow: 0 0 30px rgba(110,225,255,.75), 0 0 64px rgba(55,185,245,.34);
+            opacity: .9;
+            transform: scale(1.16);
+            box-shadow:
+                0 0 0 4px rgba(170,239,255,.48),
+                0 0 0 22px rgba(115,218,255,.12),
+                0 0 38px rgba(110,225,255,.62),
+                0 0 72px rgba(55,185,245,.24);
         }
     }
 
@@ -899,7 +923,7 @@
         border: 1px solid rgba(150,229,255,.72);
         border-radius: 999px;
         color: #e9f9ff;
-        background: linear-gradient(135deg, rgba(92,190,230,.18), rgba(14,39,55,.34));
+        background: linear-gradient(135deg, rgba(54,117,145,.14), rgba(10,29,41,.36));
         font-size: clamp(20px, 1.5vw, 28px);
         letter-spacing: .08em;
         text-decoration: none;
@@ -915,14 +939,12 @@
         0%, 100% {
             color: rgba(225,246,255,.88);
             border-color: rgba(126,207,238,.46);
-            background: linear-gradient(135deg, rgba(61,139,176,.12), rgba(10,30,43,.34));
-            box-shadow: 0 0 10px rgba(70,190,240,.18), inset 0 1px rgba(255,255,255,.12);
+            box-shadow: 0 0 8px rgba(70,190,240,.16), 0 0 18px rgba(70,190,240,.08);
         }
         50% {
             color: #fff;
             border-color: rgba(190,241,255,.9);
-            background: linear-gradient(135deg, rgba(103,207,243,.25), rgba(21,61,82,.5));
-            box-shadow: 0 0 24px rgba(90,215,255,.5), inset 0 1px rgba(255,255,255,.22);
+            box-shadow: 0 0 24px rgba(90,215,255,.56), 0 0 48px rgba(50,175,235,.2);
         }
     }
 
@@ -951,9 +973,9 @@
         .welcome-title { font-size: 44px; }
         .welcome-character { right: -10px; height: 100%; opacity: .92; }
         .welcome-back-glass { left: 8px; right: -8px; }
-        .fandom-panel { height: clamp(780px, 92vh, 940px); min-height: 780px; }
-        .fandom-main-orb { left: -380px; width: 700px; }
-        .fandom-orbit { left: 82px; width: 300px; height: 680px; }
+        .fandom-panel { width: calc(100% - 20px); height: clamp(720px, 84vh, 840px); min-height: 720px; }
+        .fandom-main-orb { left: -330px; width: 620px; height: 620px; }
+        .fandom-orbit { left: 82px; width: 300px; height: 600px; }
         .fandom-info { left: 55%; right: 4%; }
         .fandom-name { font-size: clamp(38px, 5.5vw, 56px); }
         .fandom-description { font-size: clamp(15px, 2vw, 18px); }
@@ -1014,7 +1036,7 @@
 <body>
 <canvas id="constellation"></canvas>
 
-<audio id="backgroundMusic" src="Amethyst%20Sounds/relaxing.mp3" preload="auto" loop></audio>
+<audio id="backgroundMusic" src="Amethyst%20Sounds/relaxing.mp3" preload="auto" autoplay loop></audio>
 
 <div class="cursor-glow" id="cursorGlow"></div>
 <img class="cursor-img" id="cursorImg" src="mouse.png" alt="">
@@ -1084,8 +1106,8 @@
                 <div class="fandom-main-orb" id="fandomMainOrb"></div>
                 <div class="fandom-orbit" id="fandomOrbit">
                     <svg class="fandom-orbit-rails" viewBox="0 0 650 900" preserveAspectRatio="none" aria-hidden="true">
-                        <path class="fandom-orbit-rail-path" d="M 115 965 C 250 820 320 650 330 450 C 320 250 250 80 115 -65" />
-                        <path class="fandom-orbit-rail-path fandom-orbit-rail-path-right" d="M 315 965 C 450 820 520 650 530 450 C 520 250 450 80 315 -65" />
+                        <path class="fandom-orbit-rail-path" d="M 95 965 C 235 820 345 650 390 450 C 345 250 235 80 95 -65" />
+                        <path class="fandom-orbit-rail-path fandom-orbit-rail-path-right" d="M 305 965 C 445 820 555 650 600 450 C 555 250 445 80 305 -65" />
                         <text class="fandom-orbit-glyph">ᚠ<animateMotion path="M 385 965 C 520 820 590 650 600 450 C 590 250 520 80 385 -65" dur="48s" begin="0s" rotate="auto-reverse" repeatCount="indefinite" /></text>
                         <text class="fandom-orbit-glyph">ᚢ<animateMotion path="M 385 965 C 520 820 590 650 600 450 C 590 250 520 80 385 -65" dur="48s" begin="-6s" rotate="auto-reverse" repeatCount="indefinite" /></text>
                         <text class="fandom-orbit-glyph">ᚦ<animateMotion path="M 385 965 C 520 820 590 650 600 450 C 590 250 520 80 385 -65" dur="48s" begin="-12s" rotate="auto-reverse" repeatCount="indefinite" /></text>
@@ -1211,6 +1233,8 @@
     document.addEventListener('mousemove', (e) => {
         mx = e.clientX;
         my = e.clientY;
+        document.body.style.setProperty('--site-light-x', `${mx}px`);
+        document.body.style.setProperty('--site-light-y', `${my}px`);
         cursorImg.style.transform = `translate(${mx}px, ${my}px)`;
     });
 
@@ -1259,6 +1283,8 @@
             });
         }
 
+        startMusic();
+
         function updateToggle() {
             toggle.classList.toggle('is-muted', music.muted);
             toggle.textContent = music.muted ? '♩' : '♫';
@@ -1276,6 +1302,20 @@
         });
 
         updateToggle();
+    })();
+
+    // Отдельный кристальный звук кнопки перехода к персонажам.
+    (function () {
+        const charactersButton = document.querySelector('.fandom-characters');
+        const crystalSound = new Audio('Amethyst%20Sounds/cristall.mp3');
+        crystalSound.preload = 'auto';
+        crystalSound.volume = 0.34;
+
+        charactersButton.addEventListener('click', function () {
+            crystalSound.pause();
+            crystalSound.currentTime = 0;
+            crystalSound.play().catch(function () {});
+        });
     })();
 
     // Случайный аметистовый звук при каждом клике по сайту.
@@ -1321,7 +1361,8 @@
         let poolIndex = 0;
         let previousSound = -1;
 
-        document.addEventListener('click', function () {
+        document.addEventListener('click', function (event) {
+            if (event.target.closest('.fandom-characters')) return;
             let soundIndex;
             do {
                 soundIndex = Math.floor(Math.random() * clickSounds.length);
@@ -1435,12 +1476,12 @@
         const glare = document.getElementById('fandomGlare');
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
         const positions = [
-            { x: 34, y: -7, scale: .62, opacity: .44 },
-            { x: 57, y: 12, scale: .7, opacity: .58 },
-            { x: 75, y: 31, scale: .84, opacity: .82 },
-            { x: 86, y: 50, scale: 1, opacity: 1 },
-            { x: 72, y: 72, scale: .82, opacity: .78 },
-            { x: 43, y: 94, scale: .66, opacity: .5 }
+            { x: 31, y: -7, scale: .62, opacity: .44 },
+            { x: 52, y: 12, scale: .7, opacity: .58 },
+            { x: 70, y: 31, scale: .84, opacity: .82 },
+            { x: 76, y: 50, scale: 1, opacity: 1 },
+            { x: 68, y: 72, scale: .82, opacity: .78 },
+            { x: 39, y: 94, scale: .66, opacity: .5 }
         ];
         const ACTIVE_SLOT = 3;
         let activeIndex = 2;
