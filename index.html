@@ -664,7 +664,7 @@
 
     .fandom-main-orb {
         position: absolute;
-        left: clamp(-650px, -30vw, -430px);
+        left: clamp(-630px, calc(-30vw + 20px), -410px);
         top: 50%;
         width: auto;
         height: calc(100% + 180px);
@@ -692,7 +692,7 @@
 
     .fandom-orbit {
         position: absolute;
-        left: clamp(125px, calc(19vw + 20px), 390px);
+        left: clamp(145px, calc(19vw + 40px), 410px);
         top: -90px;
         bottom: -90px;
         z-index: 5;
@@ -969,8 +969,8 @@
         .welcome-character { right: -10px; height: 100%; opacity: .92; }
         .welcome-back-glass { left: 8px; right: -8px; }
         .fandom-panel { width: calc(100% - 20px); height: clamp(720px, 84vh, 840px); min-height: 720px; }
-        .fandom-main-orb { left: -520px; width: auto; height: calc(100% + 160px); }
-        .fandom-orbit { left: 102px; top: -80px; bottom: -80px; width: 300px; height: auto; }
+        .fandom-main-orb { left: -500px; width: auto; height: calc(100% + 160px); }
+        .fandom-orbit { left: 122px; top: -80px; bottom: -80px; width: 300px; height: auto; }
         .fandom-info { left: 55%; right: 4%; }
         .fandom-name { font-size: clamp(38px, 5.5vw, 56px); }
         .fandom-description { font-size: clamp(15px, 2vw, 18px); }
@@ -1104,7 +1104,7 @@
                         <defs>
                             <path id="fandomRuneTrackRight" d="M 111 -65 A 515 515 0 0 1 111 965" />
                             <path id="fandomRuneTrackLeft" d="M -179 965 A 515 515 0 0 0 -179 -65" />
-                            <path id="fandomRuneTrackLeftInner" d="M -229 965 A 515 515 0 0 0 -229 -65" />
+                            <path id="fandomRuneTrackLeftInner" d="M -285 965 A 515 515 0 0 0 -285 -65" />
                         </defs>
                         <path class="fandom-orbit-rail-path" d="M -154 -65 A 515 515 0 0 1 -154 965" />
                         <path class="fandom-orbit-rail-path fandom-orbit-rail-path-right" d="M 86 -65 A 515 515 0 0 1 86 965" />
