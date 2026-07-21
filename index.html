@@ -52,7 +52,7 @@
     }
 
     * { cursor: none !important; user-select: none; -webkit-user-drag: none; }
-    img { pointer-events: none; -webkit-user-drag: none; }
+    img { pointer-events: none; -webkit-user-drag: none; draggable: false; }
 
     .cursor-glow {
         position: fixed;
@@ -123,16 +123,6 @@
         transform-style: preserve-3d;
         transition: transform .15s ease-out;
         will-change: transform;
-        contain: layout paint;
-    }
-
-    body.is-resizing .welcome-assembly,
-    body.is-resizing .welcome-character,
-    body.is-resizing .welcome-copy,
-    body.is-resizing .shain-copy,
-    body.is-resizing .shain-panel,
-    body.is-resizing .about-panel {
-        transition: none !important;
     }
 
     .welcome-back-glass {
@@ -219,8 +209,7 @@
             drop-shadow(0 0 16px rgba(155,220,255,.28))
             drop-shadow(0 18px 30px rgba(0,0,0,.5));
         user-select: none;
-        pointer-events: auto;
-        transition: transform .55s ease;
+        pointer-events: none;
     }
 
     .welcome-front-glass {
@@ -279,6 +268,7 @@
     }
     .welcome-scene:hover .welcome-glare { opacity: 1; }
 
+    .welcome-character { transition: transform .55s ease; }
     .welcome-copy { transition: top .5s ease, transform .5s ease; }
     .welcome-subtitle, .read-button { transition: opacity .35s ease; }
 
@@ -307,7 +297,7 @@
         position: absolute;
         z-index: 25;
         right: 6%;
-        top: 10%;
+        top: 50%;
         transform: translateY(-50%) translateZ(40px) translateX(60px);
         text-align: right;
         opacity: 0;
@@ -317,7 +307,7 @@
     }
     .welcome-assembly.shain-open .shain-copy {
         opacity: 1;
-        transform: translateZ(40px);
+        transform: translateY(-50%) translateZ(40px) translateY(-90px);
         pointer-events: auto;
     }
     .shain-title {
@@ -332,12 +322,11 @@
     .shain-panel {
         position: absolute;
         z-index: 24;
-        right: 4%;
-        top: 52%;
-        bottom: auto;
+        right: 5%;
+        top: 48%;
         transform: translateZ(45px) translateY(20px);
-        width: 44%;
-        max-height: 43%;
+        width: 60%;
+        max-height: 58%;
         padding: 34px 38px;
         border-radius: 18px;
         overflow-y: auto;
@@ -352,7 +341,7 @@
         transition: opacity .5s ease, transform .5s ease;
         -webkit-font-smoothing: antialiased;
         backface-visibility: hidden;
-        contain: layout paint;
+        will-change: transform;
     }
     .welcome-assembly.shain-open .shain-panel {
         opacity: 1;
@@ -803,78 +792,14 @@
 
     .anchor-spacer { min-height: 20vh; }
 
-    /* Планшеты; телефонная версия намеренно не поддерживается. */
-    @media (min-width: 700px) and (max-width: 900px) {
-        .navbar { height: 40px; }
-        .welcome-section,
-        .fandom-section { padding-left: 14px; padding-right: 14px; }
-        .welcome-assembly {
-            height: clamp(560px, 76vh, 720px);
-            min-height: 0;
-        }
-        .welcome-copy {
-            left: 5%;
-            top: 37%;
-            max-width: 48%;
-        }
-        .welcome-title { font-size: clamp(38px, 6vw, 54px); }
-        .welcome-subtitle { font-size: clamp(17px, 2.7vw, 24px); }
-        .read-button {
-            padding: 12px 38px;
-            font-size: clamp(21px, 3vw, 28px);
-        }
-        .welcome-character {
-            right: -5%;
-            bottom: 0;
-            height: 90%;
-            opacity: .9;
-        }
-        .welcome-tabs {
-            right: 4%;
-            top: auto;
-            bottom: 5%;
-            transform: translateZ(45px);
-            flex-direction: row;
-            gap: 12px;
-        }
-        .glass-tab {
-            min-width: 0;
-            padding: 12px 18px;
-            gap: 10px;
-            font-size: clamp(18px, 2.8vw, 25px);
-        }
-        .glass-tab-icon { width: 42px; height: 42px; }
-        .welcome-assembly.about-open .welcome-tabs,
-        .welcome-assembly.shain-open .welcome-tabs {
-            transform: translateZ(45px) translateX(50px);
-        }
-        .about-panel,
-        .shain-panel {
-            left: 4%;
-            right: 4%;
-            top: 48%;
-            bottom: auto;
-            width: auto;
-            max-height: 45%;
-            padding: 22px 24px;
-            text-align: left;
-        }
-        .shain-panel {
-            left: 43%;
-            right: 4%;
-            width: auto;
-        }
-        .about-panel h2 { font-size: clamp(24px, 4vw, 34px); }
-        .about-panel p,
-        .shain-panel p { font-size: clamp(15px, 2.2vw, 19px); }
-        .shain-copy { right: 5%; top: 30%; }
-        .shain-title { font-size: clamp(32px, 5vw, 46px); }
-        .welcome-assembly.shain-open .shain-copy {
-            transform: translateY(-50%) translateZ(40px);
-        }
-        .welcome-assembly.about-open .welcome-character {
-            transform: translateZ(60px) translateX(85%);
-        }
+    @media (max-width: 900px) {
+        .navbar { height: 56px; padding: 0 22px; gap: 26px; }
+        .nav-button { font-size: 22px; }
+        .welcome-section { padding: 16px 16px 0; }
+        .welcome-assembly { height: 56vh; min-height: 440px; }
+        .welcome-copy { left: 6%; }
+        .welcome-title { font-size: 44px; }
+        .welcome-character { right: -10px; height: 100%; opacity: .92; }
         .welcome-back-glass { left: 8px; right: -8px; }
         .fandom-panel { height: clamp(620px, 78vh, 760px); min-height: 620px; }
         .fandom-main-orb { left: -380px; width: 700px; }
@@ -902,25 +827,24 @@
         .about-panel p  { font-size: clamp(14px, 1vw, 18px); line-height: 1.45; }
         .shain-copy { right: 5%; }
         .welcome-assembly.shain-open .shain-copy {
-            transform: translateZ(40px);
+            transform: translateY(-50%) translateZ(40px) translateY(-130px);
         }
         .shain-panel {
-            width: 46%;
-            top: 48%;
-            bottom: auto;
-            max-height: 46%;
+            width: 56%;
+            max-height: 52%;
             padding: 22px 26px;
+            top: 54%;
         }
         .shain-panel p { font-size: clamp(14px, 1vw, 18px); line-height: 1.45; }
     }
 
     @media (max-height: 800px) {
-        .welcome-assembly { height: clamp(500px, 78vh, 620px); min-height: 0; }
+        .welcome-assembly { height: 66vh; min-height: 420px; }
         .welcome-character { bottom: -2%; height: 110%; }
         .about-panel  { max-height: 56%; top: 52%; }
-        .shain-panel  { top: 46%; bottom: auto; max-height: 49%; }
+        .shain-panel  { max-height: 56%; top: 56%; }
         .welcome-assembly.shain-open .shain-copy {
-            transform: translateZ(40px);
+            transform: translateY(-50%) translateZ(40px) translateY(-140px);
         }
     }
 
@@ -1041,16 +965,6 @@
 
     const MAX_TILT = 6;
 
-    let resizeEndTimer;
-    window.addEventListener('resize', () => {
-        document.body.classList.add('is-resizing');
-        assembly.style.transform = 'none';
-        clearTimeout(resizeEndTimer);
-        resizeEndTimer = setTimeout(() => {
-            document.body.classList.remove('is-resizing');
-        }, 180);
-    }, { passive: true });
-
     let tiltPending = false;
     scene.addEventListener('mousemove', (e) => {
         if (tiltPending) return;
@@ -1105,6 +1019,7 @@
     }
 
     readBtn.addEventListener('click', openAbout);
+    character.style.pointerEvents = 'auto';
     character.addEventListener('click', openShain);
 
     assembly.addEventListener('click', (e) => {
