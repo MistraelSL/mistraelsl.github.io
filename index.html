@@ -1146,6 +1146,19 @@
         animation: fandomButtonOuterPulse 3.8s ease-in-out infinite;
     }
 
+    .glass-tab[href="#fandomSection"]:hover,
+    .fandom-characters:hover {
+        transform: translateY(-2px);
+        color: #0a0e13;
+        border-color: #cfe9ff;
+        background: linear-gradient(135deg, #eaf6ff, #bfe3ff 60%, #9cdcff);
+        box-shadow: 0 0 28px rgba(190,235,255,.5) !important;
+    }
+
+    .fandom-characters:hover {
+        animation: none;
+    }
+
     @keyframes fandomButtonOuterPulse {
         0%, 100% {
             box-shadow: 0 0 8px rgba(var(--fandom-accent), .20), 0 0 18px rgba(var(--fandom-accent), .10);
