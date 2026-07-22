@@ -730,6 +730,10 @@
         animation: fandomGlyphPulse 7.2s ease-in-out infinite;
     }
 
+    .fandom-orbit-glyph-right {
+        font-size: 32px;
+    }
+
     .fandom-orbit-glyph:nth-of-type(2) { animation-delay: -.6s; }
     .fandom-orbit-glyph:nth-of-type(3) { animation-delay: -1.2s; }
     .fandom-orbit-glyph:nth-of-type(4) { animation-delay: -1.8s; }
@@ -1110,16 +1114,16 @@
                         <path class="fandom-orbit-rail-path fandom-orbit-rail-path-right" d="M 86 -65 A 515 515 0 0 1 86 965" />
                         <path class="fandom-orbit-rail-path fandom-orbit-rail-path-right" d="M 386 -65 A 515 515 0 0 1 386 965" />
 
-                        <text class="fandom-orbit-glyph">ᚠ<animateMotion dur="48s" begin="0s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackRight" /></animateMotion></text>
-                        <text class="fandom-orbit-glyph">ᚢ<animateMotion dur="48s" begin="-4.8s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackRight" /></animateMotion></text>
-                        <text class="fandom-orbit-glyph">ᚦ<animateMotion dur="48s" begin="-9.6s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackRight" /></animateMotion></text>
-                        <text class="fandom-orbit-glyph">ᚨ<animateMotion dur="48s" begin="-14.4s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackRight" /></animateMotion></text>
-                        <text class="fandom-orbit-glyph">ᚱ<animateMotion dur="48s" begin="-19.2s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackRight" /></animateMotion></text>
-                        <text class="fandom-orbit-glyph">ᚲ<animateMotion dur="48s" begin="-24s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackRight" /></animateMotion></text>
-                        <text class="fandom-orbit-glyph">ᚷ<animateMotion dur="48s" begin="-28.8s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackRight" /></animateMotion></text>
-                        <text class="fandom-orbit-glyph">ᚹ<animateMotion dur="48s" begin="-33.6s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackRight" /></animateMotion></text>
-                        <text class="fandom-orbit-glyph">ᚺ<animateMotion dur="48s" begin="-38.4s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackRight" /></animateMotion></text>
-                        <text class="fandom-orbit-glyph">ᚾ<animateMotion dur="48s" begin="-43.2s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackRight" /></animateMotion></text>
+                        <text class="fandom-orbit-glyph fandom-orbit-glyph-right">ᚠ<animateMotion dur="48s" begin="0s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackRight" /></animateMotion></text>
+                        <text class="fandom-orbit-glyph fandom-orbit-glyph-right">ᚢ<animateMotion dur="48s" begin="-4.8s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackRight" /></animateMotion></text>
+                        <text class="fandom-orbit-glyph fandom-orbit-glyph-right">ᚦ<animateMotion dur="48s" begin="-9.6s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackRight" /></animateMotion></text>
+                        <text class="fandom-orbit-glyph fandom-orbit-glyph-right">ᚨ<animateMotion dur="48s" begin="-14.4s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackRight" /></animateMotion></text>
+                        <text class="fandom-orbit-glyph fandom-orbit-glyph-right">ᚱ<animateMotion dur="48s" begin="-19.2s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackRight" /></animateMotion></text>
+                        <text class="fandom-orbit-glyph fandom-orbit-glyph-right">ᚲ<animateMotion dur="48s" begin="-24s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackRight" /></animateMotion></text>
+                        <text class="fandom-orbit-glyph fandom-orbit-glyph-right">ᚷ<animateMotion dur="48s" begin="-28.8s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackRight" /></animateMotion></text>
+                        <text class="fandom-orbit-glyph fandom-orbit-glyph-right">ᚹ<animateMotion dur="48s" begin="-33.6s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackRight" /></animateMotion></text>
+                        <text class="fandom-orbit-glyph fandom-orbit-glyph-right">ᚺ<animateMotion dur="48s" begin="-38.4s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackRight" /></animateMotion></text>
+                        <text class="fandom-orbit-glyph fandom-orbit-glyph-right">ᚾ<animateMotion dur="48s" begin="-43.2s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackRight" /></animateMotion></text>
 
                         <text class="fandom-orbit-glyph">ᚠ<animateMotion dur="48s" begin="0s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackLeft" /></animateMotion></text>
                         <text class="fandom-orbit-glyph">ᚢ<animateMotion dur="48s" begin="-4.8s" rotate="auto-reverse" repeatCount="indefinite"><mpath href="#fandomRuneTrackLeft" /></animateMotion></text>
@@ -1187,8 +1191,10 @@
     fandomLink.addEventListener('click', function (event) {
         event.preventDefault();
         const fandomPanel = document.getElementById('fandomPanel');
-        const panelTop = window.scrollY + fandomPanel.getBoundingClientRect().top;
-        window.scrollTo({ top: panelTop, behavior: 'smooth' });
+        const panelRect = fandomPanel.getBoundingClientRect();
+        const panelCenter = window.scrollY + panelRect.top + panelRect.height / 2;
+        const centeredTop = panelCenter - window.innerHeight / 2;
+        window.scrollTo({ top: Math.max(0, centeredTop), behavior: 'smooth' });
     });
 
     const scene      = document.getElementById('scene');
