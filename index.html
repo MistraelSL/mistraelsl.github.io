@@ -1157,9 +1157,9 @@
 
     .fandom-selection-pulse {
         position: absolute;
-        left: var(--active-x, 74%);
-        top: var(--active-y, 50%);
-        z-index: 4;
+        left: var(--selection-pulse-x, 42%);
+        top: var(--selection-pulse-y, 50%);
+        z-index: 2;
         width: var(--active-size, 132px);
         height: var(--active-size, 132px);
         border: 2px solid rgba(var(--fandom-bright), .88);
@@ -1376,13 +1376,13 @@
     <section class="fandom-section" id="fandomSection">
         <div class="fandom-scene" id="fandomScene">
             <div class="fandom-panel" id="fandomPanel">
+                <div class="fandom-selection-pulse" id="fandomSelectionPulse" aria-hidden="true"></div>
                 <div class="fandom-main-aura" aria-hidden="true"></div>
                 <div class="fandom-main-orb" id="fandomMainOrb">
                     <div class="fandom-main-image visible"></div>
                     <div class="fandom-main-image"></div>
                 </div>
                 <div class="fandom-orbit" id="fandomOrbit">
-                    <div class="fandom-selection-pulse" id="fandomSelectionPulse" aria-hidden="true"></div>
                     <svg class="fandom-orbit-rails" viewBox="0 0 650 900" preserveAspectRatio="none" aria-hidden="true">
                         <defs>
                             <path id="fandomRuneTrackRight" d="M 236 -65 A 515 515 0 0 1 236 965" />
@@ -1951,6 +1951,8 @@
             orbit.style.setProperty('--active-x', activeSlot.x + '%');
             orbit.style.setProperty('--active-y', activeSlot.y + '%');
             orbit.style.setProperty('--active-size', 'clamp(76px, 7vw, 132px)');
+            panel.style.setProperty('--selection-pulse-x', (orbit.offsetLeft + orbit.offsetWidth * activeSlot.x / 100) + 'px');
+            panel.style.setProperty('--selection-pulse-y', (orbit.offsetTop + orbit.offsetHeight * activeSlot.y / 100) + 'px');
 
             const nextMainImage = animateText ? 1 - visibleMainImage : visibleMainImage;
             mainImages[nextMainImage].style.setProperty('--fandom-image-x', active.imagePosition || '50%');
