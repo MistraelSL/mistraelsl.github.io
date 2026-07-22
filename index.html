@@ -1169,7 +1169,10 @@
         z-index: 100001;
         border: 2px solid rgba(var(--fandom-accent), .58);
         border-radius: 18px;
-        background: linear-gradient(135deg, #08121b, #0a1924);
+        background:
+            linear-gradient(135deg, rgba(var(--fandom-bright), .12), transparent 34%),
+            linear-gradient(315deg, rgba(var(--fandom-accent), .08), transparent 42%),
+            linear-gradient(135deg, #0b1b27, #07121b);
         box-shadow: 0 0 0 100vmax #04070a;
         opacity: 0;
         visibility: hidden;
