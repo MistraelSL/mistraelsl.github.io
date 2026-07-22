@@ -603,6 +603,10 @@
     .fandom-panel {
         --fandom-tilt-x: 0deg;
         --fandom-tilt-y: 0deg;
+        --fandom-accent: 90, 214, 255;
+        --fandom-bright: 205, 246, 255;
+        --fandom-text: 228, 247, 255;
+        --fandom-dark: 20, 74, 102;
         position: relative;
         width: calc(100% - 40px);
         height: clamp(720px, 84vh, 940px);
@@ -632,8 +636,8 @@
         opacity: 0;
         background: radial-gradient(
             circle 360px at var(--fandom-light-x, 50%) var(--fandom-light-y, 50%),
-            rgba(190,236,252,.32),
-            rgba(94,177,211,.13) 42%,
+            rgba(var(--fandom-bright), .32),
+            rgba(var(--fandom-accent), .13) 42%,
             transparent 72%
         );
         transition: opacity .35s ease;
@@ -667,7 +671,7 @@
         aspect-ratio: 1 / 1;
         border-radius: 50%;
         transform: translateY(-50%) translateZ(22px);
-        border: 3px solid rgba(128,218,255,.62);
+        border: 3px solid rgba(var(--fandom-accent), .62);
         background: #07101a center / cover no-repeat;
         box-shadow:
             0 0 12px rgba(110,220,255,.7),
@@ -715,14 +719,14 @@
     @keyframes fandomMainAuraPulse {
         0%, 100% {
             box-shadow:
-                0 0 12px rgba(70,190,240,.22),
-                0 0 30px rgba(55,175,235,.12);
+                0 0 12px rgba(var(--fandom-accent), .22),
+                0 0 30px rgba(var(--fandom-accent), .12);
         }
         50% {
             box-shadow:
-                0 0 24px rgba(110,225,255,.68),
-                0 0 58px rgba(55,185,245,.34),
-                0 0 92px rgba(40,145,220,.16);
+                0 0 24px rgba(var(--fandom-bright), .68),
+                0 0 58px rgba(var(--fandom-accent), .34),
+                0 0 92px rgba(var(--fandom-accent), .16);
         }
     }
 
@@ -761,14 +765,15 @@
 
     .fandom-orbit-rail-path {
         fill: none;
-        stroke: rgba(127,222,255,.52);
+        stroke: rgba(var(--fandom-accent), .52);
         stroke-width: 2;
         vector-effect: non-scaling-stroke;
-        filter: drop-shadow(0 0 7px rgba(91,207,255,.55));
+        filter: drop-shadow(0 0 7px rgba(var(--fandom-accent), .55));
+        transition: stroke .55s ease, filter .55s ease;
     }
 
     .fandom-orbit-rail-path-right {
-        stroke: rgba(157,232,255,.68);
+        stroke: rgba(var(--fandom-bright), .68);
     }
 
     .fandom-orbit.rail-pulse .fandom-orbit-rail-path {
@@ -777,29 +782,30 @@
 
     @keyframes fandomRailImpulse {
         0% {
-            stroke: rgba(157,232,255,.48);
+            stroke: rgba(var(--fandom-accent), .48);
             stroke-width: 2;
-            filter: drop-shadow(0 0 4px rgba(91,207,255,.32));
+            filter: drop-shadow(0 0 4px rgba(var(--fandom-accent), .32));
         }
         45% {
-            stroke: rgba(220,249,255,1);
+            stroke: rgba(var(--fandom-bright), 1);
             stroke-width: 3.5;
             filter:
-                drop-shadow(0 0 8px rgba(174,239,255,.95))
-                drop-shadow(0 0 18px rgba(70,190,255,.72));
+                drop-shadow(0 0 8px rgba(var(--fandom-bright), .95))
+                drop-shadow(0 0 18px rgba(var(--fandom-accent), .72));
         }
         100% {
-            stroke: rgba(157,232,255,.68);
+            stroke: rgba(var(--fandom-bright), .68);
             stroke-width: 2;
-            filter: drop-shadow(0 0 5px rgba(91,207,255,.48));
+            filter: drop-shadow(0 0 5px rgba(var(--fandom-accent), .48));
         }
     }
 
     .fandom-orbit-glyph {
-        fill: rgba(156,231,255,.72);
+        fill: rgba(var(--fandom-bright), .72);
         font: 25px Georgia, "Times New Roman", serif;
-        filter: drop-shadow(0 0 6px rgba(90,214,255,.78));
+        filter: drop-shadow(0 0 6px rgba(var(--fandom-accent), .78));
         animation: fandomGlyphPulse 7.2s ease-in-out infinite;
+        transition: fill .55s ease, filter .55s ease;
     }
 
     .fandom-orbit-glyph-right {
@@ -808,7 +814,7 @@
     }
 
     .fandom-orbit-glyph-static {
-        fill: rgba(174,238,255,.88);
+        fill: rgba(var(--fandom-bright), .88);
         font: 24px Georgia, "Times New Roman", serif;
         letter-spacing: 12px;
         pointer-events: none;
@@ -818,13 +824,34 @@
     @keyframes fandomStaticGlyphPulse {
         0%, 100% {
             opacity: .48;
-            filter: drop-shadow(0 0 4px rgba(90,214,255,.48));
+            filter: drop-shadow(0 0 4px rgba(var(--fandom-accent), .48));
         }
         50% {
             opacity: 1;
             filter:
-                drop-shadow(0 0 7px rgba(174,239,255,.95))
-                drop-shadow(0 0 15px rgba(70,190,255,.68));
+                drop-shadow(0 0 7px rgba(var(--fandom-bright), .95))
+                drop-shadow(0 0 15px rgba(var(--fandom-accent), .68));
+        }
+    }
+
+    .fandom-orbit.static-rune-sweep .fandom-orbit-glyph-static {
+        animation: fandomStaticRuneSweep 1.15s ease-out 1;
+    }
+
+    @keyframes fandomStaticRuneSweep {
+        0% {
+            opacity: .5;
+            filter: drop-shadow(0 0 4px rgba(var(--fandom-accent), .42));
+        }
+        45% {
+            opacity: 1;
+            filter:
+                drop-shadow(0 0 10px rgba(var(--fandom-bright), 1))
+                drop-shadow(0 0 24px rgba(var(--fandom-accent), .92));
+        }
+        100% {
+            opacity: .58;
+            filter: drop-shadow(0 0 5px rgba(var(--fandom-accent), .5));
         }
     }
 
@@ -883,7 +910,7 @@
     }
 
     .fandom-bubble.active {
-        border-color: #9be8ff;
+        border-color: rgb(var(--fandom-bright));
         animation: fandomCorePulse 4.8s ease-in-out infinite;
         box-shadow:
             0 0 16px rgba(85,210,255,.82),
@@ -899,10 +926,10 @@
 
     @keyframes fandomCorePulse {
         0%, 100% {
-            box-shadow: 0 0 10px rgba(85,210,255,.34), 0 0 26px rgba(65,190,245,.2), inset 0 0 18px rgba(90,220,255,.12);
+            box-shadow: 0 0 10px rgba(var(--fandom-accent), .34), 0 0 26px rgba(var(--fandom-accent), .2), inset 0 0 18px rgba(var(--fandom-accent), .12);
         }
         50% {
-            box-shadow: 0 0 18px rgba(110,225,255,.6), 0 0 46px rgba(55,185,245,.3), inset 0 0 24px rgba(110,230,255,.18);
+            box-shadow: 0 0 18px rgba(var(--fandom-bright), .6), 0 0 46px rgba(var(--fandom-accent), .3), inset 0 0 24px rgba(var(--fandom-bright), .18);
         }
     }
 
@@ -910,12 +937,12 @@
         0%, 100% {
             opacity: .2;
             transform: scale(.92);
-            box-shadow: 0 0 12px rgba(85,210,255,.2);
+            box-shadow: 0 0 12px rgba(var(--fandom-accent), .2);
         }
         50% {
             opacity: 1;
             transform: scale(1.12);
-            box-shadow: 0 0 30px rgba(110,225,255,.75), 0 0 64px rgba(55,185,245,.34);
+            box-shadow: 0 0 30px rgba(var(--fandom-bright), .75), 0 0 64px rgba(var(--fandom-accent), .34);
         }
     }
 
@@ -933,11 +960,13 @@
 
     .fandom-rune {
         position: absolute;
-        color: #a8ecff;
+        color: rgb(var(--fandom-bright));
         font-size: clamp(18px, 1.45vw, 28px);
         line-height: 1;
         text-shadow: 0 0 8px #62d8ff, 0 0 22px rgba(85,210,255,.8);
         animation: runeFloat 3.4s ease-in-out infinite;
+        filter: drop-shadow(0 0 7px rgba(var(--fandom-accent), .8));
+        transition: color .55s ease, filter .55s ease;
     }
 
     .fandom-rune:nth-child(1) { left: 50%; top: -34px; animation-delay: -.4s; }
@@ -995,7 +1024,7 @@
 
     .fandom-kicker {
         margin-bottom: 16px;
-        color: rgba(152,221,248,.72);
+        color: rgba(var(--fandom-accent), .78);
         font-size: clamp(13px, .9vw, 17px);
         letter-spacing: .32em;
         text-transform: uppercase;
@@ -1010,6 +1039,7 @@
         letter-spacing: .035em;
         text-shadow: 0 0 5px rgba(0,0,0,.8), 0 0 25px rgba(96,204,245,.3);
         transition: opacity .18s ease, transform .18s ease;
+        color: rgb(var(--fandom-text));
     }
 
     .fandom-description {
@@ -1017,22 +1047,31 @@
         max-width: min(680px, 100%);
         margin: 25px 0 24px;
         padding: 18px 22px;
-        border: 1px solid rgba(160,225,250,.24);
+        border: 1px solid rgba(var(--fandom-accent), .3);
         border-radius: 14px;
-        background: linear-gradient(135deg, rgba(91,164,196,.13), rgba(7,20,30,.34));
+        background: linear-gradient(135deg, rgba(var(--fandom-accent), .13), rgba(var(--fandom-dark), .34));
         box-shadow: inset 0 1px rgba(255,255,255,.1), 0 12px 30px rgba(0,0,0,.2);
         backdrop-filter: blur(5px);
         -webkit-backdrop-filter: blur(5px);
-        color: rgba(228,241,248,.78);
+        color: rgba(var(--fandom-text), .82);
         font-size: clamp(17px, 1.25vw, 23px);
         line-height: 1.55;
         transition: opacity .18s ease, transform .18s ease;
     }
 
     .fandom-name.changing,
-    .fandom-description.changing {
+    .fandom-description.changing,
+    .fandom-characters.changing {
         opacity: 0;
         transform: translateY(8px);
+    }
+
+    .fandom-description {
+        transition-delay: .07s;
+    }
+
+    .fandom-characters {
+        transition: opacity .18s ease .14s, transform .18s ease .14s, border-color .55s ease, color .55s ease;
     }
 
     .fandom-characters {
@@ -1042,10 +1081,10 @@
         justify-content: center;
         min-width: 230px;
         padding: 15px 38px;
-        border: 1px solid rgba(150,229,255,.72);
+        border: 1px solid rgba(var(--fandom-accent), .72);
         border-radius: 999px;
-        color: #e9f9ff;
-        background: linear-gradient(135deg, rgba(54,117,145,.14), rgba(10,29,41,.36));
+        color: rgb(var(--fandom-text));
+        background: linear-gradient(135deg, rgba(var(--fandom-accent), .18), rgba(var(--fandom-dark), .36));
         font-size: clamp(20px, 1.5vw, 28px);
         letter-spacing: .08em;
         text-decoration: none;
@@ -1109,11 +1148,57 @@
 
     @keyframes fandomButtonOuterPulse {
         0%, 100% {
-            box-shadow: 0 0 8px rgba(70,190,240,.20), 0 0 18px rgba(70,190,240,.10);
+            box-shadow: 0 0 8px rgba(var(--fandom-accent), .20), 0 0 18px rgba(var(--fandom-accent), .10);
         }
         50% {
-            box-shadow: 0 0 22px rgba(90,215,255,.62), 0 0 44px rgba(50,175,235,.28);
+            box-shadow: 0 0 22px rgba(var(--fandom-bright), .62), 0 0 44px rgba(var(--fandom-accent), .28);
         }
+    }
+
+    .fandom-selection-pulse {
+        position: absolute;
+        left: var(--active-x, 74%);
+        top: var(--active-y, 50%);
+        z-index: 4;
+        width: clamp(240px, 25vw, 460px);
+        height: 2px;
+        pointer-events: none;
+        opacity: 0;
+        transform: translate(-100%, -50%);
+        background: linear-gradient(to left, rgba(var(--fandom-bright), .8), rgba(var(--fandom-accent), .28) 45%, transparent);
+    }
+
+    .fandom-selection-pulse::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 50%;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: rgb(var(--fandom-bright));
+        filter: drop-shadow(0 0 9px rgba(var(--fandom-accent), 1));
+        transform: translate(50%, -50%);
+    }
+
+    .fandom-selection-pulse.active {
+        animation: fandomSelectionBeam .85s ease-out 1;
+    }
+
+    .fandom-selection-pulse.active::after {
+        animation: fandomSelectionDot .85s ease-in 1;
+    }
+
+    @keyframes fandomSelectionBeam {
+        0% { opacity: 0; clip-path: inset(0 0 0 100%); }
+        22% { opacity: 1; }
+        70% { opacity: .72; clip-path: inset(0 0 0 0); }
+        100% { opacity: 0; clip-path: inset(0 0 0 0); }
+    }
+
+    @keyframes fandomSelectionDot {
+        from { right: 0; opacity: 1; }
+        to { right: 100%; opacity: 0; }
     }
 
     .anchor-spacer { min-height: 20vh; }
@@ -1270,6 +1355,7 @@
                     <div class="fandom-main-image"></div>
                 </div>
                 <div class="fandom-orbit" id="fandomOrbit">
+                    <div class="fandom-selection-pulse" id="fandomSelectionPulse" aria-hidden="true"></div>
                     <svg class="fandom-orbit-rails" viewBox="0 0 650 900" preserveAspectRatio="none" aria-hidden="true">
                         <defs>
                             <path id="fandomRuneTrackRight" d="M 236 -65 A 515 515 0 0 1 236 965" />
@@ -1705,33 +1791,39 @@
                 name: 'ПРОМЕТЕЙ',
                 image: 'prometei.png',
                 imagePosition: '50%',
+                theme: ['86, 205, 255', '205, 246, 255', '229, 248, 255', '18, 67, 96'],
                 description: 'Мир далёких экспедиций, древних создателей и тайн, которые лучше было не пробуждать.'
             },
             {
                 name: 'ПИРАТЫ КАРИБСКОГО МОРЯ',
                 image: 'piratess.png',
                 imagePosition: '100%',
+                theme: ['54, 211, 186', '190, 255, 237', '225, 255, 247', '13, 72, 67'],
                 description: 'Проклятые моря, старые легенды, опасные сделки и свобода под чёрными парусами.'
             },
             {
                 name: 'ВЕДЬМАК',
                 image: 'vedmak.jpg',
                 imagePosition: '75%',
+                theme: ['143, 194, 151', '226, 246, 224', '238, 249, 236', '45, 75, 50'],
                 description: 'Чудовища, древняя магия и истории, в которых человеческий выбор страшнее любого проклятия.'
             },
             {
                 name: 'ГЕНШИН',
                 image: 'Genshin.png',
+                theme: ['174, 133, 255', '235, 220, 255', '247, 240, 255', '66, 43, 105'],
                 description: 'Семь стихий, забытые боги и путешествия по миру, хранящему слишком много тайн.'
             },
             {
                 name: 'НЕИЗВЕСТНЫЙ МИР I',
                 image: '',
+                theme: ['230, 178, 91', '255, 233, 190', '255, 246, 226', '92, 59, 22'],
                 description: 'Место подготовлено для нового фандома. Название, описание и изображение можно будет добавить позже.'
             },
             {
                 name: 'НЕИЗВЕСТНЫЙ МИР II',
                 image: '',
+                theme: ['119, 154, 221', '210, 226, 255', '235, 242, 255', '35, 52, 91'],
                 description: 'Место подготовлено для нового фандома. Название, описание и изображение можно будет добавить позже.'
             }
         ];
@@ -1742,6 +1834,8 @@
         const mainImages = Array.from(mainOrb.querySelectorAll('.fandom-main-image'));
         const nameEl = document.getElementById('fandomName');
         const description = document.getElementById('fandomDescription');
+        const charactersButton = document.querySelector('.fandom-characters');
+        const selectionPulse = document.getElementById('fandomSelectionPulse');
         const glare = document.getElementById('fandomGlare');
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
         const positions = [
@@ -1756,7 +1850,7 @@
         let activeIndex = 2;
         let dragStartY = null;
         let dragDistance = 0;
-        let textTimer;
+        let textTimers = [];
         let visibleMainImage = 0;
         const previousSlots = new Map();
 
@@ -1795,6 +1889,12 @@
 
         function render(animateText) {
             const active = fandoms[activeIndex];
+            const theme = active.theme;
+
+            panel.style.setProperty('--fandom-accent', theme[0]);
+            panel.style.setProperty('--fandom-bright', theme[1]);
+            panel.style.setProperty('--fandom-text', theme[2]);
+            panel.style.setProperty('--fandom-dark', theme[3]);
 
             bubbles.forEach(function (bubble, index) {
                 const slotIndex = (wrappedOffset(index) + ACTIVE_SLOT + positions.length) % positions.length;
@@ -1837,21 +1937,35 @@
                 visibleMainImage = nextMainImage;
 
                 orbit.classList.remove('rail-pulse');
+                orbit.classList.remove('static-rune-sweep');
+                selectionPulse.classList.remove('active');
                 void orbit.offsetWidth;
                 orbit.classList.add('rail-pulse');
+                orbit.classList.add('static-rune-sweep');
+                selectionPulse.classList.add('active');
             }
 
-            clearTimeout(textTimer);
+            textTimers.forEach(clearTimeout);
+            textTimers = [];
             if (animateText && !reducedMotion.matches) {
                 nameEl.classList.add('changing');
                 description.classList.add('changing');
-                textTimer = setTimeout(function () {
+                charactersButton.classList.add('changing');
+                textTimers.push(setTimeout(function () {
                     updateText(active);
                     nameEl.classList.remove('changing');
+                }, 135));
+                textTimers.push(setTimeout(function () {
                     description.classList.remove('changing');
-                }, 150);
+                }, 225));
+                textTimers.push(setTimeout(function () {
+                    charactersButton.classList.remove('changing');
+                }, 315));
             } else {
                 updateText(active);
+                nameEl.classList.remove('changing');
+                description.classList.remove('changing');
+                charactersButton.classList.remove('changing');
             }
         }
 
