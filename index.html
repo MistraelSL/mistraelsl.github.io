@@ -65,7 +65,7 @@
         background: radial-gradient(circle, rgba(156,220,255,.18) 0%, rgba(120,180,255,.08) 45%, transparent 72%);
         transform: translate(-50%, -50%);
         pointer-events: none;
-        z-index: 99998;
+        z-index: 100003;
         will-change: transform;
         transition: width .2s, height .2s, opacity .2s;
     }
@@ -75,7 +75,7 @@
         width: 64px;
         height: auto;
         pointer-events: none;
-        z-index: 99999;
+        z-index: 100004;
         will-change: transform;
         filter: drop-shadow(0 0 6px rgba(156,220,255,.45));
     }
@@ -1152,11 +1152,15 @@
     }
 
     .fandom-characters-window {
+        --fandom-accent: 90, 214, 255;
+        --fandom-bright: 205, 246, 255;
+        --fandom-text: 228, 247, 255;
+        --fandom-dark: 20, 74, 102;
         position: fixed;
-        inset: 0;
+        inset: clamp(12px, 1.5vw, 26px);
         z-index: 100001;
-        border: 1px solid rgba(var(--fandom-bright), .42);
-        border-radius: 0;
+        border: 2px solid rgba(var(--fandom-bright), .58);
+        border-radius: 18px;
         background: linear-gradient(135deg, rgba(8,18,27,.88), rgba(10,25,36,.74));
         backdrop-filter: blur(18px);
         -webkit-backdrop-filter: blur(18px);
@@ -1173,12 +1177,30 @@
         pointer-events: auto;
         transform: scale(1);
         transition: opacity .32s ease, transform .32s ease;
+        animation: fandomCharactersWindowPulse 3.8s ease-in-out infinite;
+    }
+
+    @keyframes fandomCharactersWindowPulse {
+        0%, 100% {
+            border-color: rgba(var(--fandom-accent), .46);
+            box-shadow:
+                0 0 10px rgba(var(--fandom-accent), .22),
+                0 0 24px rgba(var(--fandom-accent), .12),
+                inset 0 0 18px rgba(var(--fandom-accent), .08) !important;
+        }
+        50% {
+            border-color: rgba(var(--fandom-bright), .92);
+            box-shadow:
+                0 0 24px rgba(var(--fandom-bright), .62),
+                0 0 52px rgba(var(--fandom-accent), .3),
+                inset 0 0 28px rgba(var(--fandom-bright), .12) !important;
+        }
     }
 
     .fandom-characters-close {
         position: absolute;
         top: clamp(18px, 2.2vw, 34px);
-        left: clamp(18px, 2.2vw, 34px);
+        right: clamp(18px, 2.2vw, 34px);
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -2064,6 +2086,10 @@
         function openCharactersWindow(event) {
             event.preventDefault();
             dismissNavigationHint();
+            const panelStyle = getComputedStyle(panel);
+            ['--fandom-accent', '--fandom-bright', '--fandom-text', '--fandom-dark'].forEach(function (propertyName) {
+                charactersWindow.style.setProperty(propertyName, panelStyle.getPropertyValue(propertyName));
+            });
             charactersWindow.classList.add('open');
             charactersWindow.setAttribute('aria-hidden', 'false');
             charactersClose.focus();
