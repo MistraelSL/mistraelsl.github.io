@@ -672,17 +672,100 @@
             0 0 12px rgba(110,220,255,.7),
             0 0 45px rgba(70,190,240,.35),
             inset 0 0 80px rgba(4,11,18,.78);
-        transition: background-image .35s ease;
+        overflow: hidden;
+    }
+
+    .fandom-main-image {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        border-radius: inherit;
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+        opacity: 0;
+        transition: opacity .8s ease;
+        animation: fandomImageDrift 14s ease-in-out infinite alternate;
+        will-change: opacity, background-position;
+    }
+
+    .fandom-main-image.visible {
+        opacity: 1;
+    }
+
+    @keyframes fandomImageDrift {
+        from { background-position: calc(50% - 5px) calc(50% - 3px); }
+        to { background-position: calc(50% + 5px) calc(50% + 3px); }
+    }
+
+    .fandom-main-smoke {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        overflow: hidden;
+        border-radius: inherit;
+        pointer-events: none;
+        opacity: 0;
+    }
+
+    .fandom-main-smoke.active {
+        animation: fandomSmokeReveal 1.25s ease-out;
+    }
+
+    .fandom-main-smoke span {
+        position: absolute;
+        right: 2%;
+        top: 50%;
+        width: 190px;
+        height: 190px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(153,229,255,.25), rgba(67,157,205,.11) 42%, transparent 72%);
+        filter: blur(13px);
+        transform: translate(30%, -50%) scale(.55);
+    }
+
+    .fandom-main-smoke span:nth-child(2) {
+        right: 7%;
+        top: 35%;
+        width: 145px;
+        height: 145px;
+        animation-delay: .12s;
+    }
+
+    .fandom-main-smoke span:nth-child(3) {
+        right: 5%;
+        top: 68%;
+        width: 165px;
+        height: 165px;
+        animation-delay: .24s;
+    }
+
+    .fandom-main-smoke.active span {
+        animation: fandomSmokeWisp 1.15s ease-out both;
+    }
+
+    @keyframes fandomSmokeReveal {
+        0% { opacity: 0; }
+        25% { opacity: 1; }
+        100% { opacity: 0; }
+    }
+
+    @keyframes fandomSmokeWisp {
+        0% { opacity: 0; transform: translate(35%, -40%) scale(.45); }
+        35% { opacity: .9; }
+        100% { opacity: 0; transform: translate(-35%, -75%) scale(1.35); }
     }
 
     .fandom-main-orb::after {
         content: "";
         position: absolute;
         inset: 0;
+        z-index: 3;
         border-radius: inherit;
         background:
             linear-gradient(90deg, rgba(3,8,13,.12), rgba(3,8,13,.05) 55%, rgba(3,8,13,.7)),
             radial-gradient(circle at 68% 30%, rgba(205,242,255,.18), transparent 28%);
+        pointer-events: none;
     }
 
     .fandom-orbit {
@@ -716,6 +799,30 @@
 
     .fandom-orbit-rail-path-right {
         stroke: rgba(157,232,255,.68);
+    }
+
+    .fandom-orbit.rail-pulse .fandom-orbit-rail-path {
+        animation: fandomRailImpulse .9s ease-out 1;
+    }
+
+    @keyframes fandomRailImpulse {
+        0% {
+            stroke: rgba(157,232,255,.48);
+            stroke-width: 2;
+            filter: drop-shadow(0 0 4px rgba(91,207,255,.32));
+        }
+        45% {
+            stroke: rgba(220,249,255,1);
+            stroke-width: 3.5;
+            filter:
+                drop-shadow(0 0 8px rgba(174,239,255,.95))
+                drop-shadow(0 0 18px rgba(70,190,255,.72));
+        }
+        100% {
+            stroke: rgba(157,232,255,.68);
+            stroke-width: 2;
+            filter: drop-shadow(0 0 5px rgba(91,207,255,.48));
+        }
     }
 
     .fandom-orbit-glyph {
@@ -1187,7 +1294,15 @@
     <section class="fandom-section" id="fandomSection">
         <div class="fandom-scene" id="fandomScene">
             <div class="fandom-panel" id="fandomPanel">
-                <div class="fandom-main-orb" id="fandomMainOrb"></div>
+                <div class="fandom-main-orb" id="fandomMainOrb">
+                    <div class="fandom-main-image visible"></div>
+                    <div class="fandom-main-image"></div>
+                    <div class="fandom-main-smoke" aria-hidden="true">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
                 <div class="fandom-orbit" id="fandomOrbit">
                     <svg class="fandom-orbit-rails" viewBox="0 0 650 900" preserveAspectRatio="none" aria-hidden="true">
                         <defs>
@@ -1622,12 +1737,12 @@
         const fandoms = [
             {
                 name: 'ПРОМЕТЕЙ',
-                image: 'Prometheus.png',
+                image: 'prometei.png',
                 description: 'Мир далёких экспедиций, древних создателей и тайн, которые лучше было не пробуждать.'
             },
             {
                 name: 'ПИРАТЫ КАРИБСКОГО МОРЯ',
-                image: 'Pirates.png',
+                image: 'piratess.png',
                 description: 'Проклятые моря, старые легенды, опасные сделки и свобода под чёрными парусами.'
             },
             {
@@ -1655,6 +1770,8 @@
         const panel = document.getElementById('fandomPanel');
         const orbit = document.getElementById('fandomOrbit');
         const mainOrb = document.getElementById('fandomMainOrb');
+        const mainImages = Array.from(mainOrb.querySelectorAll('.fandom-main-image'));
+        const mainSmoke = mainOrb.querySelector('.fandom-main-smoke');
         const nameEl = document.getElementById('fandomName');
         const description = document.getElementById('fandomDescription');
         const glare = document.getElementById('fandomGlare');
@@ -1672,6 +1789,7 @@
         let dragStartY = null;
         let dragDistance = 0;
         let textTimer;
+        let visibleMainImage = 0;
         const previousSlots = new Map();
 
         panel.addEventListener('pointermove', function (event) {
@@ -1738,9 +1856,23 @@
             orbit.style.setProperty('--active-x', activeSlot.x + '%');
             orbit.style.setProperty('--active-y', activeSlot.y + '%');
             orbit.style.setProperty('--active-size', 'clamp(76px, 7vw, 132px)');
-            mainOrb.style.backgroundImage = active.image
+
+            const nextMainImage = animateText ? 1 - visibleMainImage : visibleMainImage;
+            mainImages[nextMainImage].style.backgroundImage = active.image
                 ? 'url("' + active.image + '")'
                 : 'radial-gradient(circle at 38% 30%, rgba(182,235,255,.2), transparent 30%), linear-gradient(145deg, #18364c, #07141f 65%, #02070c)';
+
+            if (animateText) {
+                mainImages[nextMainImage].classList.add('visible');
+                mainImages[visibleMainImage].classList.remove('visible');
+                visibleMainImage = nextMainImage;
+
+                mainSmoke.classList.remove('active');
+                orbit.classList.remove('rail-pulse');
+                void mainSmoke.offsetWidth;
+                mainSmoke.classList.add('active');
+                orbit.classList.add('rail-pulse');
+            }
 
             clearTimeout(textTimer);
             if (animateText && !reducedMotion.matches) {
