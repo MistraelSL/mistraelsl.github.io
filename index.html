@@ -1178,6 +1178,15 @@
         transition: opacity .32s ease, transform .32s ease, visibility 0s linear .32s;
     }
 
+    .fandom-characters-window::before {
+        content: "";
+        position: fixed;
+        inset: -100vmax;
+        z-index: -1;
+        background: #04070a;
+        pointer-events: auto;
+    }
+
     .fandom-characters-window.open {
         opacity: 1;
         visibility: visible;
