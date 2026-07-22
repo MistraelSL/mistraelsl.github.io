@@ -964,6 +964,26 @@
         transition: none !important;
     }
 
+    /* Shadows are disabled site-wide to reduce repaints. */
+    *,
+    *::before,
+    *::after {
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    .cursor-img,
+    .welcome-character,
+    .glass-tab-icon,
+    .fandom-orbit-rail-path,
+    .fandom-orbit-glyph {
+        filter: none !important;
+    }
+
+    .fandom-panel {
+        box-shadow: 0 24px 70px rgba(0,0,0,.58) !important;
+    }
+
     .anchor-spacer { min-height: 20vh; }
 
     @media (max-width: 900px) {
