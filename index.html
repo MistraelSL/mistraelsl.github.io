@@ -1183,16 +1183,38 @@
 
     .fandom-characters-panel {
         position: absolute;
-        inset: clamp(12px, 1.5vw, 26px);
+        inset: clamp(20px, 2vw, 36px);
         overflow: hidden;
         border: 2px solid rgba(var(--fandom-accent), .58);
         border-radius: 18px;
-        background:
-            linear-gradient(135deg, rgba(var(--fandom-bright), .12), transparent 34%),
-            linear-gradient(315deg, rgba(var(--fandom-accent), .08), transparent 42%),
-            linear-gradient(135deg, #08121b, #0a1924);
+        background: #07101a;
         transform: scale(.985);
         transition: transform .32s ease;
+    }
+
+    .fandom-characters-background {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        opacity: 0;
+        background-position: center 70%;
+        background-size: cover;
+        background-repeat: no-repeat;
+        transition: opacity .7s ease;
+        pointer-events: none;
+    }
+
+    .fandom-characters-background::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(to right, rgba(2,7,11,.55), rgba(3,10,16,.30) 48%, rgba(2,7,11,.52)),
+            linear-gradient(to bottom, rgba(2,7,11,.25), rgba(2,7,11,.46));
+    }
+
+    .fandom-characters-background.visible {
+        opacity: 1;
     }
 
     .fandom-characters-window.open .fandom-characters-panel {
@@ -1679,6 +1701,8 @@
 
 <section class="fandom-characters-window" id="fandomCharactersWindow" role="dialog" aria-modal="true" aria-label="Персонажи" aria-hidden="true">
     <div class="fandom-characters-panel">
+        <div class="fandom-characters-background visible"></div>
+        <div class="fandom-characters-background"></div>
         <button class="fandom-characters-close" id="fandomCharactersClose" type="button" aria-label="Вернуться к выбору фандома">×</button>
     </div>
 </section>
@@ -2064,6 +2088,7 @@
         const description = document.getElementById('fandomDescription');
         const charactersButton = document.querySelector('.fandom-characters');
         const charactersWindow = document.getElementById('fandomCharactersWindow');
+        const charactersBackgrounds = Array.from(charactersWindow.querySelectorAll('.fandom-characters-background'));
         const charactersClose = document.getElementById('fandomCharactersClose');
         const counter = document.getElementById('fandomCounter');
         const navigationHint = document.getElementById('fandomNavigationHint');
@@ -2085,6 +2110,7 @@
         let textTimers = [];
         let visibleMainImage = 0;
         let visiblePanelBackground = 0;
+        let visibleCharactersBackground = 0;
         let themeAnimationFrame = null;
         let charactersWindowScrollY = 0;
         let previousScrollBehavior = '';
@@ -2238,11 +2264,20 @@
             setTheme(theme, animateText && !reducedMotion.matches);
 
             const nextPanelBackground = animateText ? 1 - visiblePanelBackground : visiblePanelBackground;
-            panelBackgrounds[nextPanelBackground].style.backgroundImage = 'url("' + (active.panelBackground || 'melmyrme.jpg') + '")';
+            const activePanelBackground = 'url("' + (active.panelBackground || 'melmyrme.jpg') + '")';
+            panelBackgrounds[nextPanelBackground].style.backgroundImage = activePanelBackground;
             if (animateText) {
                 panelBackgrounds[nextPanelBackground].classList.add('visible');
                 panelBackgrounds[visiblePanelBackground].classList.remove('visible');
                 visiblePanelBackground = nextPanelBackground;
+            }
+
+            const nextCharactersBackground = animateText ? 1 - visibleCharactersBackground : visibleCharactersBackground;
+            charactersBackgrounds[nextCharactersBackground].style.backgroundImage = activePanelBackground;
+            if (animateText) {
+                charactersBackgrounds[nextCharactersBackground].classList.add('visible');
+                charactersBackgrounds[visibleCharactersBackground].classList.remove('visible');
+                visibleCharactersBackground = nextCharactersBackground;
             }
 
             bubbles.forEach(function (bubble, index) {
