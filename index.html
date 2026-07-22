@@ -1217,6 +1217,38 @@
         opacity: 1;
     }
 
+    .fandom-characters-panel::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 10;
+        border-radius: inherit;
+        pointer-events: none;
+        background:
+            linear-gradient(to right, rgba(4,8,12,.92), transparent 10%, transparent 90%, rgba(4,8,12,.92)),
+            linear-gradient(to bottom, rgba(4,8,12,.88), transparent 12%, transparent 86%, rgba(4,8,12,.92));
+    }
+
+    .fandom-characters-glare {
+        position: absolute;
+        inset: 0;
+        z-index: 9;
+        border-radius: inherit;
+        pointer-events: none;
+        opacity: 0;
+        background: radial-gradient(
+            circle 360px at var(--characters-light-x, 50%) var(--characters-light-y, 50%),
+            rgba(var(--fandom-bright), .32),
+            rgba(var(--fandom-accent), .13) 42%,
+            transparent 72%
+        );
+        transition: opacity .35s ease;
+    }
+
+    .fandom-characters-panel:hover .fandom-characters-glare {
+        opacity: 1;
+    }
+
     .fandom-characters-window.open .fandom-characters-panel {
         transform: scale(1);
         animation: fandomCharactersWindowPulse 3.8s ease-in-out infinite;
@@ -1241,6 +1273,7 @@
 
     .fandom-characters-close {
         position: absolute;
+        z-index: 11;
         top: clamp(18px, 2.2vw, 34px);
         right: clamp(18px, 2.2vw, 34px);
         display: inline-flex;
@@ -1703,6 +1736,7 @@
     <div class="fandom-characters-panel">
         <div class="fandom-characters-background visible"></div>
         <div class="fandom-characters-background"></div>
+        <div class="fandom-characters-glare" aria-hidden="true"></div>
         <button class="fandom-characters-close" id="fandomCharactersClose" type="button" aria-label="Вернуться к выбору фандома">×</button>
     </div>
 </section>
@@ -2088,6 +2122,7 @@
         const description = document.getElementById('fandomDescription');
         const charactersButton = document.querySelector('.fandom-characters');
         const charactersWindow = document.getElementById('fandomCharactersWindow');
+        const charactersPanel = charactersWindow.querySelector('.fandom-characters-panel');
         const charactersBackgrounds = Array.from(charactersWindow.querySelectorAll('.fandom-characters-background'));
         const charactersClose = document.getElementById('fandomCharactersClose');
         const counter = document.getElementById('fandomCounter');
@@ -2228,6 +2263,12 @@
             const rect = panel.getBoundingClientRect();
             panel.style.setProperty('--fandom-light-x', ((event.clientX - rect.left) / rect.width * 100) + '%');
             panel.style.setProperty('--fandom-light-y', ((event.clientY - rect.top) / rect.height * 100) + '%');
+        });
+
+        charactersPanel.addEventListener('pointermove', function (event) {
+            const rect = charactersPanel.getBoundingClientRect();
+            charactersPanel.style.setProperty('--characters-light-x', ((event.clientX - rect.left) / rect.width * 100) + '%');
+            charactersPanel.style.setProperty('--characters-light-y', ((event.clientY - rect.top) / rect.height * 100) + '%');
         });
 
         const bubbles = fandoms.map(function (fandom, index) {
