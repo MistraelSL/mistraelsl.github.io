@@ -41,20 +41,6 @@
         overflow-x: hidden;
     }
 
-    body::after {
-        content: "";
-        position: fixed;
-        inset: 0;
-        z-index: 99990;
-        pointer-events: none;
-        background: radial-gradient(
-            circle 360px at var(--site-light-x) var(--site-light-y),
-            transparent 0%,
-            rgba(2,7,11,.08) 44%,
-            rgba(2,7,11,.46) 100%
-        );
-    }
-
     #constellation {
         position: fixed;
         inset: 0;
