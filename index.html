@@ -28,7 +28,10 @@
             0 2px 6px rgba(0,0,0,.6);
     }
 
-    html { scroll-behavior: smooth; }
+    html {
+        scroll-behavior: smooth;
+        background: #04070a;
+    }
 
     body {
         --site-light-x: 50%;
@@ -43,6 +46,7 @@
 
     body.characters-window-open {
         overflow: hidden;
+        background: #04070a;
     }
 
     #constellation {
@@ -1165,9 +1169,8 @@
         z-index: 100001;
         border: 2px solid rgba(var(--fandom-accent), .58);
         border-radius: 18px;
-        background: linear-gradient(135deg, rgba(8,18,27,.88), rgba(10,25,36,.74));
-        backdrop-filter: blur(18px);
-        -webkit-backdrop-filter: blur(18px);
+        background: linear-gradient(135deg, #08121b, #0a1924);
+        box-shadow: 0 0 0 100vmax #04070a;
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
@@ -2344,14 +2347,13 @@
             const rect = panel.getBoundingClientRect();
             if (rect.bottom <= 0 || rect.top >= window.innerHeight) return;
 
-            if (['ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight', 'Enter'].includes(event.key)) {
+            if (['ArrowUp', 'ArrowLeft', 'ArrowDown', 'ArrowRight'].includes(event.key)) {
                 event.preventDefault();
                 dismissNavigationHint();
             }
 
             if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') move(-1);
             if (event.key === 'ArrowDown' || event.key === 'ArrowRight') move(1);
-            if (event.key === 'Enter') charactersButton.click();
         });
 
         render(false);
