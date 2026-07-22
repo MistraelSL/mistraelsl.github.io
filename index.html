@@ -731,7 +731,8 @@
     }
 
     .fandom-orbit-glyph-right {
-        font-size: 32px;
+        font-size: 30px;
+        font-stretch: normal;
     }
 
     .fandom-orbit-glyph:nth-of-type(2) { animation-delay: -.6s; }
@@ -1354,17 +1355,19 @@
         updateToggle();
     })();
 
-    // Отдельный кристальный звук кнопки перехода к персонажам.
+    // Отдельный кристальный звук кнопок перехода к персонажам.
     (function () {
-        const charactersButton = document.querySelector('.fandom-characters');
+        const charactersButtons = document.querySelectorAll('.fandom-characters, .glass-tab[href="#fandomSection"]');
         const crystalSound = new Audio('Amethyst%20Sounds/cristall.mp3');
         crystalSound.preload = 'auto';
         crystalSound.volume = 0.34;
 
-        charactersButton.addEventListener('click', function () {
-            crystalSound.pause();
-            crystalSound.currentTime = 0;
-            crystalSound.play().catch(function () {});
+        charactersButtons.forEach(function (button) {
+            button.addEventListener('click', function () {
+                crystalSound.pause();
+                crystalSound.currentTime = 0;
+                crystalSound.play().catch(function () {});
+            });
         });
     })();
 
@@ -1412,7 +1415,7 @@
         let previousSound = -1;
 
         document.addEventListener('click', function (event) {
-            if (event.target.closest('.fandom-characters')) return;
+            if (event.target.closest('.fandom-characters, .glass-tab[href="#fandomSection"]')) return;
             let soundIndex;
             do {
                 soundIndex = Math.floor(Math.random() * clickSounds.length);
@@ -1525,11 +1528,30 @@
         const description = document.getElementById('fandomDescription');
         const glare = document.getElementById('fandomGlare');
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-        const runeMotions = orbit.querySelectorAll('.fandom-orbit-glyph animateMotion');
-        const runeSpacingSeconds = 3.1;
+        const runeSpacingSeconds = 3;
+        const runeDurationSeconds = 48;
+        const runesPerTrack = Math.ceil(runeDurationSeconds / runeSpacingSeconds);
+        const runeTracks = new Map();
 
-        runeMotions.forEach(function (motion, index) {
-            motion.setAttribute('begin', '-' + ((index % 10) * runeSpacingSeconds) + 's');
+        orbit.querySelectorAll('.fandom-orbit-glyph animateMotion').forEach(function (motion) {
+            const track = motion.querySelector('mpath').getAttribute('href');
+            if (!runeTracks.has(track)) runeTracks.set(track, []);
+            runeTracks.get(track).push(motion.parentElement);
+        });
+
+        runeTracks.forEach(function (runes) {
+            const originalRunes = runes.slice();
+            while (runes.length < runesPerTrack) {
+                const clone = originalRunes[runes.length % originalRunes.length].cloneNode(true);
+                runes[runes.length - 1].after(clone);
+                runes.push(clone);
+            }
+
+            runes.forEach(function (rune, index) {
+                const motion = rune.querySelector('animateMotion');
+                motion.setAttribute('dur', runeDurationSeconds + 's');
+                motion.setAttribute('begin', '-' + (index * runeSpacingSeconds) + 's');
+            });
         });
 
         const positions = [
