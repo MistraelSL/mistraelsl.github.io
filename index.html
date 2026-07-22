@@ -1238,6 +1238,9 @@
 
     const readBtn   = document.getElementById('readBtn');
     const character = document.querySelector('.welcome-character');
+    const shainOpenSound = new Audio('Amethyst%20Sounds/rost-kristalla.mp3');
+    shainOpenSound.preload = 'auto';
+    shainOpenSound.volume = 0.34;
 
     function openAbout(e) {
         e.preventDefault();
@@ -1251,8 +1254,15 @@
     function openShain(e) {
         e.preventDefault();
         e.stopPropagation();
+        if (assembly.classList.contains('shain-open')) {
+            closeShain();
+            return;
+        }
         assembly.classList.remove('about-open');
         assembly.classList.add('shain-open');
+        shainOpenSound.pause();
+        shainOpenSound.currentTime = 0;
+        shainOpenSound.play().catch(function () {});
     }
     function closeShain() {
         assembly.classList.remove('shain-open');
