@@ -951,7 +951,7 @@
     }
 
     /* Shadows are disabled site-wide to reduce repaints. */
-    *,
+    *:not(.fandom-panel):not(.fandom-characters),
     *::before,
     *::after {
         box-shadow: none !important;
@@ -960,14 +960,33 @@
 
     .cursor-img,
     .welcome-character,
-    .glass-tab-icon,
-    .fandom-orbit-rail-path,
-    .fandom-orbit-glyph {
+    .glass-tab-icon {
         filter: none !important;
+    }
+
+    .fandom-orbit-rail-path {
+        filter: drop-shadow(0 0 5px rgba(91,207,255,.48)) !important;
+    }
+
+    .fandom-orbit-glyph {
+        filter: drop-shadow(0 0 6px rgba(90,214,255,.78)) !important;
     }
 
     .fandom-panel {
         box-shadow: 0 24px 70px rgba(0,0,0,.58) !important;
+    }
+
+    .fandom-characters {
+        animation: fandomButtonOuterPulse 3.8s ease-in-out infinite;
+    }
+
+    @keyframes fandomButtonOuterPulse {
+        0%, 100% {
+            box-shadow: 0 0 8px rgba(70,190,240,.20), 0 0 18px rgba(70,190,240,.10);
+        }
+        50% {
+            box-shadow: 0 0 22px rgba(90,215,255,.62), 0 0 44px rgba(50,175,235,.28);
+        }
     }
 
     .anchor-spacer { min-height: 20vh; }
