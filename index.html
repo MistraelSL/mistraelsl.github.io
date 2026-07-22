@@ -41,6 +41,10 @@
         overflow-x: hidden;
     }
 
+    body.characters-window-open {
+        overflow: hidden;
+    }
+
     #constellation {
         position: fixed;
         inset: 0;
@@ -1691,6 +1695,7 @@
 
     let tiltPending = false;
     scene.addEventListener('mousemove', (e) => {
+        if (document.body.classList.contains('characters-window-open')) return;
         if (assembly.classList.contains('shain-open') || assembly.classList.contains('about-open')) return;
         if (tiltPending) return;
         tiltPending = true;
@@ -2063,6 +2068,7 @@
         let visibleMainImage = 0;
         let visiblePanelBackground = 0;
         let themeAnimationFrame = null;
+        let charactersWindowScrollY = 0;
         const previousSlots = new Map();
 
         fandoms.forEach(function (fandom) {
@@ -2086,10 +2092,24 @@
         function openCharactersWindow(event) {
             event.preventDefault();
             dismissNavigationHint();
+
+            const panelRect = panel.getBoundingClientRect();
+            const panelCenter = window.scrollY + panelRect.top + panelRect.height / 2;
+            const centeredTop = Math.max(0, panelCenter - window.innerHeight / 2);
+            window.scrollTo({ top: centeredTop, behavior: 'auto' });
+            charactersWindowScrollY = window.scrollY;
+
             const panelStyle = getComputedStyle(panel);
             ['--fandom-accent', '--fandom-bright', '--fandom-text', '--fandom-dark'].forEach(function (propertyName) {
                 charactersWindow.style.setProperty(propertyName, panelStyle.getPropertyValue(propertyName));
             });
+
+            document.body.classList.add('characters-window-open');
+            document.body.style.position = 'fixed';
+            document.body.style.top = '-' + charactersWindowScrollY + 'px';
+            document.body.style.left = '0';
+            document.body.style.right = '0';
+            document.body.style.width = '100%';
             charactersWindow.classList.add('open');
             charactersWindow.setAttribute('aria-hidden', 'false');
             charactersClose.focus();
@@ -2099,6 +2119,13 @@
             if (!charactersWindow.classList.contains('open')) return;
             charactersWindow.classList.remove('open');
             charactersWindow.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('characters-window-open');
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.left = '';
+            document.body.style.right = '';
+            document.body.style.width = '';
+            window.scrollTo({ top: charactersWindowScrollY, behavior: 'auto' });
             charactersButton.focus();
         }
 
