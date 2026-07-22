@@ -1102,7 +1102,7 @@
                 <div class="fandom-orbit" id="fandomOrbit">
                     <svg class="fandom-orbit-rails" viewBox="0 0 650 900" preserveAspectRatio="none" aria-hidden="true">
                         <defs>
-                            <path id="fandomRuneTrackRight" d="M 111 -65 A 515 515 0 0 1 111 965" />
+                            <path id="fandomRuneTrackRight" d="M 236 -65 A 515 515 0 0 1 236 965" />
                             <path id="fandomRuneTrackLeft" d="M -179 965 A 515 515 0 0 0 -179 -65" />
                             <path id="fandomRuneTrackLeftInner" d="M -285 965 A 515 515 0 0 0 -285 -65" />
                         </defs>
@@ -1181,6 +1181,14 @@
     });
     window.addEventListener('pagehide', function () {
         window.scrollTo(0, 0);
+    });
+
+    const fandomLink = document.querySelector('.glass-tab[href="#fandomSection"]');
+    fandomLink.addEventListener('click', function (event) {
+        event.preventDefault();
+        const fandomPanel = document.getElementById('fandomPanel');
+        const panelTop = window.scrollY + fandomPanel.getBoundingClientRect().top;
+        window.scrollTo({ top: panelTop, behavior: 'smooth' });
     });
 
     const scene      = document.getElementById('scene');
