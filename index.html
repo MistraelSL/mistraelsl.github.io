@@ -1152,14 +1152,11 @@
     }
 
     .fandom-characters-window {
-        position: absolute;
-        inset: clamp(22px, 2.4vw, 42px);
-        z-index: 12;
-        display: flex;
-        flex-direction: column;
-        padding: clamp(24px, 3vw, 48px);
+        position: fixed;
+        inset: 0;
+        z-index: 100001;
         border: 1px solid rgba(var(--fandom-bright), .42);
-        border-radius: 18px;
+        border-radius: 0;
         background: linear-gradient(135deg, rgba(8,18,27,.88), rgba(10,25,36,.74));
         backdrop-filter: blur(18px);
         -webkit-backdrop-filter: blur(18px);
@@ -1178,44 +1175,13 @@
         transition: opacity .32s ease, transform .32s ease;
     }
 
-    .fandom-characters-window-header {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 28px;
-        padding-bottom: 22px;
-        border-bottom: 1px solid rgba(var(--fandom-bright), .22);
-    }
-
-    .fandom-characters-window-kicker {
-        margin-bottom: 10px;
-        color: rgba(var(--fandom-accent), .78);
-        font-size: clamp(12px, .85vw, 16px);
-        letter-spacing: .3em;
-        text-transform: uppercase;
-    }
-
-    .fandom-characters-window-title {
-        margin: 0;
-        color: rgb(var(--fandom-text));
-        font-size: clamp(34px, 3.4vw, 64px);
-        line-height: 1.05;
-        font-weight: 400;
-        letter-spacing: .035em;
-    }
-
-    .fandom-characters-window-count {
-        margin-top: 12px;
-        color: rgba(var(--fandom-text), .58);
-        font-size: clamp(13px, .9vw, 17px);
-        letter-spacing: .2em;
-    }
-
     .fandom-characters-close {
+        position: absolute;
+        top: clamp(18px, 2.2vw, 34px);
+        left: clamp(18px, 2.2vw, 34px);
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        flex: 0 0 auto;
         width: 58px;
         height: 58px;
         padding: 0;
@@ -1232,60 +1198,6 @@
         border-color: rgb(var(--fandom-bright));
         background: rgb(var(--fandom-bright));
         transform: scale(1.05);
-    }
-
-    .fandom-characters-window-body {
-        display: grid;
-        grid-template-columns: minmax(220px, .8fr) minmax(300px, 1.4fr);
-        gap: clamp(20px, 2.5vw, 42px);
-        min-height: 0;
-        padding-top: 28px;
-        flex: 1;
-    }
-
-    .fandom-character-preview,
-    .fandom-character-list {
-        border: 1px solid rgba(var(--fandom-accent), .22);
-        border-radius: 14px;
-        background: linear-gradient(145deg, rgba(var(--fandom-accent), .09), rgba(4,12,18,.28));
-    }
-
-    .fandom-character-preview {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 260px;
-        padding: 28px;
-        color: rgba(var(--fandom-text), .56);
-        font-size: clamp(15px, 1vw, 19px);
-        line-height: 1.55;
-        letter-spacing: .08em;
-        text-align: center;
-    }
-
-    .fandom-character-list {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 16px;
-        align-content: start;
-        padding: 20px;
-        overflow-y: auto;
-    }
-
-    .fandom-character-card {
-        min-height: 132px;
-        padding: 22px;
-        border: 1px solid rgba(var(--fandom-bright), .2);
-        border-radius: 12px;
-        color: rgba(var(--fandom-text), .62);
-        background: rgba(5,15,22,.38);
-        font-size: clamp(14px, .95vw, 18px);
-        letter-spacing: .08em;
-        text-align: left;
-    }
-
-    .fandom-panel.characters-open > :not(.fandom-characters-window):not(.fandom-panel-background) {
-        pointer-events: none;
     }
 
     .fandom-characters {
@@ -1478,10 +1390,6 @@
         .fandom-info { left: 55%; right: 4%; }
         .fandom-name { font-size: clamp(38px, 5.5vw, 56px); }
         .fandom-description { font-size: clamp(15px, 2vw, 18px); }
-        .fandom-characters-window { inset: 18px; padding: 24px; }
-        .fandom-characters-window-body { grid-template-columns: 1fr; overflow-y: auto; }
-        .fandom-character-preview { min-height: 180px; }
-        .fandom-character-list { grid-template-columns: 1fr; overflow: visible; }
         .welcome-dots { margin-top: 28px; margin-bottom: 28px; }
     }
 
@@ -1711,25 +1619,6 @@
                     <a class="fandom-characters" href="#characters">ПЕРСОНАЖИ</a>
                     <div class="fandom-counter" id="fandomCounter">03 / 06</div>
                 </div>
-                <section class="fandom-characters-window" id="fandomCharactersWindow" role="dialog" aria-modal="true" aria-labelledby="fandomCharactersTitle" aria-hidden="true">
-                    <div class="fandom-characters-window-header">
-                        <div>
-                            <div class="fandom-characters-window-kicker">КАТАЛОГ ПЕРСОНАЖЕЙ</div>
-                            <h2 class="fandom-characters-window-title" id="fandomCharactersTitle">ПРОМЕТЕЙ</h2>
-                            <div class="fandom-characters-window-count">ПЕРСОНАЖИ БУДУТ ДОБАВЛЕНЫ</div>
-                        </div>
-                        <button class="fandom-characters-close" id="fandomCharactersClose" type="button" aria-label="Вернуться к выбору фандома">×</button>
-                    </div>
-                    <div class="fandom-characters-window-body">
-                        <div class="fandom-character-preview">Здесь будет крупный портрет и краткая информация о выбранном персонаже.</div>
-                        <div class="fandom-character-list" aria-label="Список персонажей">
-                            <div class="fandom-character-card">Место для персонажа</div>
-                            <div class="fandom-character-card">Место для персонажа</div>
-                            <div class="fandom-character-card">Место для персонажа</div>
-                            <div class="fandom-character-card">Место для персонажа</div>
-                        </div>
-                    </div>
-                </section>
                 <img class="fandom-side-pattern" src="12345.png" alt="">
                 <div class="fandom-glare" id="fandomGlare"></div>
             </div>
@@ -1745,6 +1634,10 @@
     <section id="characters" class="anchor-spacer"></section>
     <section id="themes" class="anchor-spacer"></section>
 </main>
+
+<section class="fandom-characters-window" id="fandomCharactersWindow" role="dialog" aria-modal="true" aria-label="Персонажи" aria-hidden="true">
+    <button class="fandom-characters-close" id="fandomCharactersClose" type="button" aria-label="Вернуться к выбору фандома">×</button>
+</section>
 
 <script>
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
@@ -2126,7 +2019,6 @@
         const description = document.getElementById('fandomDescription');
         const charactersButton = document.querySelector('.fandom-characters');
         const charactersWindow = document.getElementById('fandomCharactersWindow');
-        const charactersWindowTitle = document.getElementById('fandomCharactersTitle');
         const charactersClose = document.getElementById('fandomCharactersClose');
         const counter = document.getElementById('fandomCounter');
         const navigationHint = document.getElementById('fandomNavigationHint');
@@ -2172,10 +2064,8 @@
         function openCharactersWindow(event) {
             event.preventDefault();
             dismissNavigationHint();
-            charactersWindowTitle.textContent = fandoms[activeIndex].name;
             charactersWindow.classList.add('open');
             charactersWindow.setAttribute('aria-hidden', 'false');
-            panel.classList.add('characters-open');
             charactersClose.focus();
         }
 
@@ -2183,7 +2073,6 @@
             if (!charactersWindow.classList.contains('open')) return;
             charactersWindow.classList.remove('open');
             charactersWindow.setAttribute('aria-hidden', 'true');
-            panel.classList.remove('characters-open');
             charactersButton.focus();
         }
 
