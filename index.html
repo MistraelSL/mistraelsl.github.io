@@ -866,6 +866,20 @@
         pointer-events: auto;
     }
 
+    .fandom-side-pattern {
+        position: absolute;
+        top: 50%;
+        right: 0;
+        z-index: 5;
+        width: auto;
+        height: min(82%, 760px);
+        max-width: 28%;
+        object-fit: contain;
+        object-position: right center;
+        transform: translateY(-50%);
+        pointer-events: none;
+    }
+
     .fandom-kicker {
         margin-bottom: 16px;
         color: rgba(152,221,248,.72);
@@ -1196,6 +1210,7 @@
                     <p class="fandom-description" id="fandomDescription">Выберите мир, чтобы открыть связанных с ним персонажей и истории.</p>
                     <a class="fandom-characters" href="#characters">ПЕРСОНАЖИ</a>
                 </div>
+                <img class="fandom-side-pattern" src="12345.png" alt="">
                 <div class="fandom-glare" id="fandomGlare"></div>
             </div>
         </div>
