@@ -1629,6 +1629,37 @@
         const description = document.getElementById('fandomDescription');
         const glare = document.getElementById('fandomGlare');
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        const movingRuneTracks = new Map();
+
+        orbit.querySelectorAll('.fandom-orbit-glyph animateMotion').forEach(function (motion) {
+            const trackUrl = motion.querySelector('mpath').getAttribute('href');
+            if (!movingRuneTracks.has(trackUrl)) movingRuneTracks.set(trackUrl, []);
+            movingRuneTracks.get(trackUrl).push(motion.parentElement);
+        });
+
+        movingRuneTracks.forEach(function (trackRunes) {
+            const sourceRunes = trackRunes.slice();
+            const runeCount = 24;
+            const duration = 48;
+
+            while (trackRunes.length < runeCount) {
+                const sourceRune = sourceRunes[trackRunes.length % sourceRunes.length];
+                const rune = sourceRune.cloneNode(true);
+                sourceRunes[sourceRunes.length - 1].parentNode.insertBefore(
+                    rune,
+                    sourceRunes[sourceRunes.length - 1].nextSibling
+                );
+                trackRunes.push(rune);
+            }
+
+            trackRunes.forEach(function (rune, index) {
+                const motion = rune.querySelector('animateMotion');
+                motion.setAttribute('dur', duration + 's');
+                motion.setAttribute('begin', '-' + (index * duration / runeCount) + 's');
+                motion.setAttribute('repeatCount', 'indefinite');
+            });
+        });
+
         const positions = [
             { x: -8, y: -7, scale: .62, opacity: .44 },
             { x: 53, y: 12, scale: .7, opacity: .58 },
