@@ -678,16 +678,16 @@
 
     .fandom-main-image {
         position: absolute;
-        inset: 0;
+        inset: -8px;
         z-index: 0;
         border-radius: inherit;
-        background-position: center;
+        background-position: var(--fandom-image-x, 50%) center;
         background-size: cover;
         background-repeat: no-repeat;
         opacity: 0;
         transition: opacity .8s ease;
-        animation: fandomImageDrift 14s ease-in-out infinite alternate;
-        will-change: opacity, background-position;
+        animation: fandomImageDrift 18s ease-in-out infinite alternate;
+        will-change: opacity, transform;
     }
 
     .fandom-main-image.visible {
@@ -695,69 +695,34 @@
     }
 
     @keyframes fandomImageDrift {
-        from { background-position: calc(50% - 5px) calc(50% - 3px); }
-        to { background-position: calc(50% + 5px) calc(50% + 3px); }
+        from { transform: translate3d(-4px, -2px, 0) scale(1.01); }
+        to { transform: translate3d(4px, 2px, 0) scale(1.025); }
     }
 
-    .fandom-main-fire {
+    .fandom-main-aura {
         position: absolute;
         left: clamp(-630px, calc(-30vw + 20px), -410px);
         top: 50%;
         z-index: 3;
         height: calc(100% + 180px);
         aspect-ratio: 1 / 1;
+        border-radius: 50%;
         transform: translateY(-50%);
         pointer-events: none;
+        animation: fandomMainAuraPulse 3.8s ease-in-out infinite;
     }
 
-    .fandom-main-fire span {
-        position: absolute;
-        right: -34px;
-        bottom: 12%;
-        width: 74px;
-        height: 230px;
-        border-radius: 50% 50% 42% 42%;
-        background: linear-gradient(
-            to top,
-            rgba(75,178,235,0) 0%,
-            rgba(74,190,245,.3) 18%,
-            rgba(130,225,255,.7) 58%,
-            rgba(216,250,255,.92) 78%,
-            transparent 100%
-        );
-        filter: blur(10px) drop-shadow(0 0 14px rgba(85,205,255,.72));
-        transform-origin: center bottom;
-        animation: fandomFireRise 3.8s ease-in-out infinite;
-    }
-
-    .fandom-main-fire span:nth-child(2) {
-        right: -12px;
-        bottom: 36%;
-        width: 54px;
-        height: 190px;
-        animation-delay: -1.25s;
-    }
-
-    .fandom-main-fire span:nth-child(3) {
-        right: 20px;
-        bottom: 58%;
-        width: 42px;
-        height: 155px;
-        animation-delay: -2.4s;
-    }
-
-    @keyframes fandomFireRise {
+    @keyframes fandomMainAuraPulse {
         0%, 100% {
-            opacity: .28;
-            transform: translateY(22px) scaleX(.72) scaleY(.82);
+            box-shadow:
+                0 0 12px rgba(70,190,240,.22),
+                0 0 30px rgba(55,175,235,.12);
         }
-        45% {
-            opacity: .9;
-            transform: translateY(-18px) scaleX(1) scaleY(1.12);
-        }
-        75% {
-            opacity: .52;
-            transform: translateY(-38px) scaleX(.82) scaleY(1.2);
+        50% {
+            box-shadow:
+                0 0 24px rgba(110,225,255,.68),
+                0 0 58px rgba(55,185,245,.34),
+                0 0 92px rgba(40,145,220,.16);
         }
     }
 
@@ -1299,11 +1264,7 @@
     <section class="fandom-section" id="fandomSection">
         <div class="fandom-scene" id="fandomScene">
             <div class="fandom-panel" id="fandomPanel">
-                <div class="fandom-main-fire" aria-hidden="true">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
+                <div class="fandom-main-aura" aria-hidden="true"></div>
                 <div class="fandom-main-orb" id="fandomMainOrb">
                     <div class="fandom-main-image visible"></div>
                     <div class="fandom-main-image"></div>
@@ -1743,16 +1704,19 @@
             {
                 name: 'ПРОМЕТЕЙ',
                 image: 'prometei.png',
+                imagePosition: '62%',
                 description: 'Мир далёких экспедиций, древних создателей и тайн, которые лучше было не пробуждать.'
             },
             {
                 name: 'ПИРАТЫ КАРИБСКОГО МОРЯ',
                 image: 'piratess.png',
+                imagePosition: '38%',
                 description: 'Проклятые моря, старые легенды, опасные сделки и свобода под чёрными парусами.'
             },
             {
                 name: 'ВЕДЬМАК',
                 image: 'vedmak.jpg',
+                imagePosition: '38%',
                 description: 'Чудовища, древняя магия и истории, в которых человеческий выбор страшнее любого проклятия.'
             },
             {
@@ -1862,6 +1826,7 @@
             orbit.style.setProperty('--active-size', 'clamp(76px, 7vw, 132px)');
 
             const nextMainImage = animateText ? 1 - visibleMainImage : visibleMainImage;
+            mainImages[nextMainImage].style.setProperty('--fandom-image-x', active.imagePosition || '50%');
             mainImages[nextMainImage].style.backgroundImage = active.image
                 ? 'url("' + active.image + '")'
                 : 'radial-gradient(circle at 38% 30%, rgba(182,235,255,.2), transparent 30%), linear-gradient(145deg, #18364c, #07141f 65%, #02070c)';
