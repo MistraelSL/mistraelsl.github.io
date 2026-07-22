@@ -1165,37 +1165,38 @@
         --fandom-text: 228, 247, 255;
         --fandom-dark: 20, 74, 102;
         position: fixed;
-        inset: clamp(12px, 1.5vw, 26px);
+        inset: 0;
         z-index: 100001;
-        border: 2px solid rgba(var(--fandom-accent), .58);
-        border-radius: 18px;
-        background:
-            linear-gradient(135deg, rgba(var(--fandom-bright), .12), transparent 34%),
-            linear-gradient(315deg, rgba(var(--fandom-accent), .08), transparent 42%),
-            linear-gradient(135deg, #0b1b27, #07121b);
-        box-shadow: 0 0 0 100vmax #04070a;
+        background: #04070a;
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
-        transform: scale(.985);
-        transition: opacity .32s ease, transform .32s ease, visibility 0s linear .32s;
-    }
-
-    .fandom-characters-window::before {
-        content: "";
-        position: fixed;
-        inset: -100vmax;
-        z-index: -1;
-        background: #04070a;
-        pointer-events: auto;
+        transition: opacity .32s ease, visibility 0s linear .32s;
     }
 
     .fandom-characters-window.open {
         opacity: 1;
         visibility: visible;
         pointer-events: auto;
+        transition: opacity .32s ease;
+    }
+
+    .fandom-characters-panel {
+        position: absolute;
+        inset: clamp(12px, 1.5vw, 26px);
+        overflow: hidden;
+        border: 2px solid rgba(var(--fandom-accent), .58);
+        border-radius: 18px;
+        background:
+            linear-gradient(135deg, rgba(var(--fandom-bright), .12), transparent 34%),
+            linear-gradient(315deg, rgba(var(--fandom-accent), .08), transparent 42%),
+            linear-gradient(135deg, #08121b, #0a1924);
+        transform: scale(.985);
+        transition: transform .32s ease;
+    }
+
+    .fandom-characters-window.open .fandom-characters-panel {
         transform: scale(1);
-        transition: opacity .32s ease, transform .32s ease;
         animation: fandomCharactersWindowPulse 3.8s ease-in-out infinite;
     }
 
@@ -1677,7 +1678,9 @@
 </main>
 
 <section class="fandom-characters-window" id="fandomCharactersWindow" role="dialog" aria-modal="true" aria-label="Персонажи" aria-hidden="true">
-    <button class="fandom-characters-close" id="fandomCharactersClose" type="button" aria-label="Вернуться к выбору фандома">×</button>
+    <div class="fandom-characters-panel">
+        <button class="fandom-characters-close" id="fandomCharactersClose" type="button" aria-label="Вернуться к выбору фандома">×</button>
+    </div>
 </section>
 
 <script>
