@@ -661,6 +661,7 @@
         position: absolute;
         left: clamp(-630px, calc(-30vw + 20px), -410px);
         top: 50%;
+        z-index: 4;
         width: auto;
         height: calc(100% + 180px);
         aspect-ratio: 1 / 1;
@@ -698,62 +699,66 @@
         to { background-position: calc(50% + 5px) calc(50% + 3px); }
     }
 
-    .fandom-main-smoke {
+    .fandom-main-fire {
         position: absolute;
-        inset: 0;
-        z-index: 2;
-        overflow: hidden;
-        border-radius: inherit;
-        pointer-events: none;
-        opacity: 0;
-    }
-
-    .fandom-main-smoke.active {
-        animation: fandomSmokeReveal 1.25s ease-out;
-    }
-
-    .fandom-main-smoke span {
-        position: absolute;
-        right: 2%;
+        left: clamp(-630px, calc(-30vw + 20px), -410px);
         top: 50%;
-        width: 190px;
+        z-index: 3;
+        height: calc(100% + 180px);
+        aspect-ratio: 1 / 1;
+        transform: translateY(-50%);
+        pointer-events: none;
+    }
+
+    .fandom-main-fire span {
+        position: absolute;
+        right: -34px;
+        bottom: 12%;
+        width: 74px;
+        height: 230px;
+        border-radius: 50% 50% 42% 42%;
+        background: linear-gradient(
+            to top,
+            rgba(75,178,235,0) 0%,
+            rgba(74,190,245,.3) 18%,
+            rgba(130,225,255,.7) 58%,
+            rgba(216,250,255,.92) 78%,
+            transparent 100%
+        );
+        filter: blur(10px) drop-shadow(0 0 14px rgba(85,205,255,.72));
+        transform-origin: center bottom;
+        animation: fandomFireRise 3.8s ease-in-out infinite;
+    }
+
+    .fandom-main-fire span:nth-child(2) {
+        right: -12px;
+        bottom: 36%;
+        width: 54px;
         height: 190px;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(153,229,255,.25), rgba(67,157,205,.11) 42%, transparent 72%);
-        filter: blur(13px);
-        transform: translate(30%, -50%) scale(.55);
+        animation-delay: -1.25s;
     }
 
-    .fandom-main-smoke span:nth-child(2) {
-        right: 7%;
-        top: 35%;
-        width: 145px;
-        height: 145px;
-        animation-delay: .12s;
+    .fandom-main-fire span:nth-child(3) {
+        right: 20px;
+        bottom: 58%;
+        width: 42px;
+        height: 155px;
+        animation-delay: -2.4s;
     }
 
-    .fandom-main-smoke span:nth-child(3) {
-        right: 5%;
-        top: 68%;
-        width: 165px;
-        height: 165px;
-        animation-delay: .24s;
-    }
-
-    .fandom-main-smoke.active span {
-        animation: fandomSmokeWisp 1.15s ease-out both;
-    }
-
-    @keyframes fandomSmokeReveal {
-        0% { opacity: 0; }
-        25% { opacity: 1; }
-        100% { opacity: 0; }
-    }
-
-    @keyframes fandomSmokeWisp {
-        0% { opacity: 0; transform: translate(35%, -40%) scale(.45); }
-        35% { opacity: .9; }
-        100% { opacity: 0; transform: translate(-35%, -75%) scale(1.35); }
+    @keyframes fandomFireRise {
+        0%, 100% {
+            opacity: .28;
+            transform: translateY(22px) scaleX(.72) scaleY(.82);
+        }
+        45% {
+            opacity: .9;
+            transform: translateY(-18px) scaleX(1) scaleY(1.12);
+        }
+        75% {
+            opacity: .52;
+            transform: translateY(-38px) scaleX(.82) scaleY(1.2);
+        }
     }
 
     .fandom-main-orb::after {
@@ -1294,14 +1299,14 @@
     <section class="fandom-section" id="fandomSection">
         <div class="fandom-scene" id="fandomScene">
             <div class="fandom-panel" id="fandomPanel">
+                <div class="fandom-main-fire" aria-hidden="true">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
                 <div class="fandom-main-orb" id="fandomMainOrb">
                     <div class="fandom-main-image visible"></div>
                     <div class="fandom-main-image"></div>
-                    <div class="fandom-main-smoke" aria-hidden="true">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
                 </div>
                 <div class="fandom-orbit" id="fandomOrbit">
                     <svg class="fandom-orbit-rails" viewBox="0 0 650 900" preserveAspectRatio="none" aria-hidden="true">
@@ -1747,7 +1752,7 @@
             },
             {
                 name: 'ВЕДЬМАК',
-                image: 'Witcher.png',
+                image: 'vedmak.jpg',
                 description: 'Чудовища, древняя магия и истории, в которых человеческий выбор страшнее любого проклятия.'
             },
             {
@@ -1771,7 +1776,6 @@
         const orbit = document.getElementById('fandomOrbit');
         const mainOrb = document.getElementById('fandomMainOrb');
         const mainImages = Array.from(mainOrb.querySelectorAll('.fandom-main-image'));
-        const mainSmoke = mainOrb.querySelector('.fandom-main-smoke');
         const nameEl = document.getElementById('fandomName');
         const description = document.getElementById('fandomDescription');
         const glare = document.getElementById('fandomGlare');
@@ -1867,10 +1871,8 @@
                 mainImages[visibleMainImage].classList.remove('visible');
                 visibleMainImage = nextMainImage;
 
-                mainSmoke.classList.remove('active');
                 orbit.classList.remove('rail-pulse');
-                void mainSmoke.offsetWidth;
-                mainSmoke.classList.add('active');
+                void orbit.offsetWidth;
                 orbit.classList.add('rail-pulse');
             }
 
