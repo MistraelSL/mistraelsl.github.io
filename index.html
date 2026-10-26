@@ -633,8 +633,12 @@
         background-position: center 70%;
         background-size: cover;
         background-repeat: no-repeat;
-        transition: opacity .7s ease;
+        transform: scale(1.035);
+        transition:
+            opacity .85s ease,
+            transform 1.5s cubic-bezier(.2,.7,.2,1);
         pointer-events: none;
+        will-change: opacity, transform;
     }
 
     .fandom-panel-background::after {
@@ -648,6 +652,7 @@
 
     .fandom-panel-background.visible {
         opacity: 1;
+        transform: scale(1);
     }
 
     .fandom-panel::before {
@@ -681,6 +686,51 @@
 
     .fandom-panel:hover::before { opacity: 1; }
 
+    .fandom-panel-frame {
+        position: absolute;
+        inset: 14px;
+        z-index: 9;
+        border: 1px solid rgba(var(--fandom-accent), .18);
+        border-radius: 12px;
+        pointer-events: none;
+        transition: border-color .7s ease;
+    }
+
+    .fandom-panel-frame::before,
+    .fandom-panel-frame::after {
+        content: "";
+        position: absolute;
+        width: 72px;
+        height: 72px;
+        border-color: rgba(var(--fandom-bright), .58);
+        border-style: solid;
+        pointer-events: none;
+        transition: border-color .7s ease;
+    }
+
+    .fandom-panel-frame::before {
+        top: -1px;
+        left: -1px;
+        border-width: 2px 0 0 2px;
+        border-radius: 12px 0 0;
+    }
+
+    .fandom-panel-frame::after {
+        right: -1px;
+        bottom: -1px;
+        border-width: 0 2px 2px 0;
+        border-radius: 0 0 12px;
+    }
+
+    .fandom-panel.world-changing .fandom-panel-frame {
+        animation: fandomFramePulse 1.15s ease-out 1;
+    }
+
+    @keyframes fandomFramePulse {
+        0%, 100% { border-color: rgba(var(--fandom-accent), .18); }
+        42% { border-color: rgba(var(--fandom-bright), .68); }
+    }
+
     .fandom-glare {
         display: none;
     }
@@ -698,10 +748,33 @@
         border: 3px solid rgba(var(--fandom-accent), .62);
         background: #07101a center / cover no-repeat;
         box-shadow:
-            0 0 12px rgba(110,220,255,.7),
-            0 0 45px rgba(70,190,240,.35),
+            0 0 12px rgba(var(--fandom-accent), .56),
+            0 0 45px rgba(var(--fandom-accent), .26),
             inset 0 0 80px rgba(4,11,18,.78);
         overflow: hidden;
+        transition: border-color .7s ease;
+    }
+
+    .fandom-main-orb::before {
+        content: "";
+        position: absolute;
+        inset: 14px;
+        z-index: 4;
+        border: 1px solid rgba(var(--fandom-bright), .3);
+        border-radius: inherit;
+        opacity: .65;
+        pointer-events: none;
+        transition: border-color .7s ease;
+    }
+
+    .fandom-panel.world-changing .fandom-main-orb::before {
+        animation: fandomMainRingFlash 1.15s ease-out 1;
+    }
+
+    @keyframes fandomMainRingFlash {
+        0% { opacity: .2; transform: scale(.975); }
+        42% { opacity: 1; }
+        100% { opacity: .65; transform: scale(1); }
     }
 
     .fandom-main-image {
@@ -713,7 +786,7 @@
         background-size: cover;
         background-repeat: no-repeat;
         opacity: 0;
-        transition: opacity .8s ease;
+        transition: opacity .95s cubic-bezier(.22,.72,.18,1);
         animation: fandomImageDrift 18s ease-in-out infinite alternate;
         will-change: opacity, transform;
     }
@@ -738,6 +811,33 @@
         transform: translateY(-50%);
         pointer-events: none;
         animation: fandomMainAuraPulse 3.8s ease-in-out infinite;
+    }
+
+    .fandom-main-aura::before,
+    .fandom-main-aura::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        pointer-events: none;
+        transition: border-color .7s ease;
+    }
+
+    .fandom-main-aura::before {
+        inset: -14px;
+        border: 1px solid rgba(var(--fandom-accent), .26);
+    }
+
+    .fandom-main-aura::after {
+        inset: -28px;
+        border: 1px solid transparent;
+        border-top-color: rgba(var(--fandom-bright), .68);
+        border-right-color: rgba(var(--fandom-accent), .14);
+        border-bottom-color: rgba(var(--fandom-accent), .46);
+        animation: fandomAuraSpin 36s linear infinite;
+    }
+
+    @keyframes fandomAuraSpin {
+        to { transform: rotate(360deg); }
     }
 
     @keyframes fandomMainAuraPulse {
@@ -778,6 +878,15 @@
         touch-action: pan-y;
     }
 
+    .fandom-orbit::before {
+        content: "";
+        position: absolute;
+        inset: 5% -20%;
+        background: radial-gradient(ellipse at 62% 50%, rgba(var(--fandom-accent), .12), transparent 66%);
+        opacity: .8;
+        pointer-events: none;
+    }
+
     .fandom-orbit-rails {
         position: absolute;
         inset: 0;
@@ -791,6 +900,7 @@
         fill: none;
         stroke: rgba(var(--fandom-accent), .52);
         stroke-width: 2;
+        stroke-linecap: round;
         vector-effect: non-scaling-stroke;
         filter: drop-shadow(0 0 7px rgba(var(--fandom-accent), .55));
         transition: stroke .55s ease, filter .55s ease;
@@ -982,6 +1092,30 @@
         transition: left .55s cubic-bezier(.2,.72,.2,1), top .55s cubic-bezier(.2,.72,.2,1);
     }
 
+    .fandom-runes::before {
+        content: "";
+        position: absolute;
+        inset: -30px;
+        border: 1px dashed rgba(var(--fandom-accent), .32);
+        border-radius: 50%;
+        opacity: .52;
+        pointer-events: none;
+        animation: fandomRuneRingSpin 32s linear infinite;
+    }
+
+    .fandom-runes.rune-surge {
+        animation: fandomRunesGlow 1.05s ease-out 1;
+    }
+
+    @keyframes fandomRuneRingSpin {
+        to { transform: rotate(360deg); }
+    }
+
+    @keyframes fandomRunesGlow {
+        0%, 100% { filter: brightness(1); }
+        42% { filter: brightness(1.65) drop-shadow(0 0 9px rgba(var(--fandom-accent), .65)); }
+    }
+
     .fandom-rune {
         position: absolute;
         color: rgb(var(--fandom-bright));
@@ -1099,11 +1233,23 @@
     }
 
     .fandom-kicker {
+        display: flex;
+        align-items: center;
+        gap: 14px;
         margin-bottom: 16px;
         color: rgba(var(--fandom-accent), .78);
         font-size: clamp(13px, .9vw, 17px);
         letter-spacing: .32em;
         text-transform: uppercase;
+    }
+
+    .fandom-kicker::before {
+        content: "";
+        flex: 0 0 auto;
+        width: 38px;
+        height: 1px;
+        background: rgba(var(--fandom-accent), .62);
+        transition: background .7s ease;
     }
 
     .fandom-name {
@@ -1380,7 +1526,7 @@
     }
 
     /* Shadows are disabled site-wide to reduce repaints. */
-    *:not(.fandom-panel):not(.fandom-characters):not(.fandom-bubble.active):not(.fandom-main-aura),
+    *:not(.fandom-panel):not(.fandom-characters):not(.fandom-bubble.active):not(.fandom-main-aura):not(.fandom-main-orb),
     *::before,
     *::after {
         box-shadow: none !important;
@@ -1575,7 +1721,20 @@
         .fandom-bubble.active::before,
         .fandom-bubble.active,
         .fandom-characters,
-        .fandom-orbit-glyph { animation: none; }
+        .fandom-main-aura,
+        .fandom-main-aura::after,
+        .fandom-main-image,
+        .fandom-main-orb::before,
+        .fandom-orbit-glyph,
+        .fandom-orbit-glyph-static,
+        .fandom-orbit-rail-path,
+        .fandom-panel-frame,
+        .fandom-rune,
+        .fandom-runes,
+        .fandom-runes::before,
+        .fandom-selection-pulse,
+        .fandom-selection-pulse::before,
+        .fandom-selection-pulse::after { animation: none !important; }
         *, *::before, *::after { transition-duration: .01ms !important; }
     }
 </style>
@@ -1651,6 +1810,7 @@
             <div class="fandom-panel" id="fandomPanel">
                 <div class="fandom-panel-background visible"></div>
                 <div class="fandom-panel-background"></div>
+                <div class="fandom-panel-frame" aria-hidden="true"></div>
                 <div class="fandom-selection-pulse" id="fandomSelectionPulse" aria-hidden="true"></div>
                 <div class="fandom-main-aura" aria-hidden="true"></div>
                 <div class="fandom-main-orb" id="fandomMainOrb">
@@ -2133,7 +2293,7 @@
             },
             {
                 name: 'ГЕНШИН',
-                image: 'Genshin.png',
+                image: '7e496a1d353e80f2821bf088f9764f59.jpg',
                 mainImage: '7e496a1d353e80f2821bf088f9764f59.jpg',
                 panelBackground: '51598467d42edb400250ef4d892de4e0.jpg',
                 theme: ['174, 133, 255', '235, 220, 255', '247, 240, 255', '66, 43, 105'],
@@ -2168,6 +2328,7 @@
         const counter = document.getElementById('fandomCounter');
         const navigationHint = document.getElementById('fandomNavigationHint');
         const selectionPulse = document.getElementById('fandomSelectionPulse');
+        const runeOrbit = document.getElementById('fandomRunes');
         const glare = document.getElementById('fandomGlare');
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
         const positions = [
@@ -2404,12 +2565,16 @@
                 mainImages[visibleMainImage].classList.remove('visible');
                 visibleMainImage = nextMainImage;
 
+                panel.classList.remove('world-changing');
                 orbit.classList.remove('rail-pulse');
                 orbit.classList.remove('static-rune-sweep');
+                runeOrbit.classList.remove('rune-surge');
                 selectionPulse.classList.remove('active');
                 void orbit.offsetWidth;
+                panel.classList.add('world-changing');
                 orbit.classList.add('rail-pulse');
                 orbit.classList.add('static-rune-sweep');
+                runeOrbit.classList.add('rune-surge');
                 selectionPulse.classList.add('active');
             }
 
